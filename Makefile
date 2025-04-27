@@ -3,6 +3,7 @@ SRCS = main.c
 SRCDIR = ./srcs/
 OBJDIR = ./objs/
 MINILIBX = ~/42libraries/minilibx-linux/ 
+TESTARGS = 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
 INCFLAGS = -lXext -lX11 -lm -lbsd -I $(MINILIBX)
@@ -13,12 +14,12 @@ all: $(NAME)
 
 clean:
 	$(RM) -r $(OBJDIR)
-	make -C $(MINILIBX) clean
 
 fclean: clean
 	$(RM) $(NAME)
+	make -C $(MINILIBX) clean
 
-re: fclean all
+re: clean all
 
 $(NAME): $(OBJS) $(MINILIBX)libmlx_Linux.a 
 	$(CC) $(CFLAGS) $(OBJS) $(MINILIBX)libmlx_Linux.a $(INCFLAGS) -o $@
@@ -32,3 +33,10 @@ $(MINILIBX)libmlx.a:
 
 $(MINILIBX)libmlx_Linux.a:
 	make -C $(MINILIBX)
+
+
+test: $(NAME) 
+	./$(NAME) $(TESTARGS)
+
+valgrind: $(NAME)
+	valgrind -s --leak-check=full ./$(NAME) $(TESTARGS)
