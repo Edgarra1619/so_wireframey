@@ -2,10 +2,10 @@ NAME = FdF
 SRCS = main.c
 SRCDIR = ./srcs/
 OBJDIR = ./objs/
-MINILIBX = ./minilibx-linux/
+MINILIBX = ~/42libraries/minilibx-linux/ 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
-INCFLAGS = -lXext -lX11 -lm -lbsd
+INCFLAGS = -lXext -lX11 -lm -lbsd -I $(MINILIBX)
 
 OBJS = $(patsubst %.c, $(OBJDIR)%.o, $(SRCS))
 
