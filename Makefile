@@ -1,12 +1,12 @@
 NAME = FdF
-SRCS = main.c
+SRCS = main.c draw.c
 SRCDIR = ./srcs/
 OBJDIR = ./objs/
-MINILIBX = ~/42libraries/minilibx-linux/ 
+MINILIBX = ~/42libraries/minilibx-linux/
 TESTARGS = 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -g
-INCFLAGS = -lXext -lX11 -lm -lbsd -I $(MINILIBX)
+INCFLAGS = -lXext -lX11 -lm -lbsd -I $(MINILIBX) -I ./includes/
 
 OBJS = $(patsubst %.c, $(OBJDIR)%.o, $(SRCS))
 
@@ -39,4 +39,4 @@ test: $(NAME)
 	./$(NAME) $(TESTARGS)
 
 valgrind: $(NAME)
-	valgrind -s --leak-check=full ./$(NAME) $(TESTARGS)
+	valgrind --leak-check=full ./$(NAME) $(TESTARGS)
