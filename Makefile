@@ -1,12 +1,12 @@
 NAME = FdF
-SRCS = main.c
+SRCS = main.c colors.c my_math.c render.c
 SRCDIR = ./srcs/
 OBJDIR = ./objs/
-MINILIBX = ~/42libraries/minilibx-linux/ 
+MINILIBX = ~/42libraries/minilibx-linux/
 TESTARGS = 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g
-INCFLAGS = -lXext -lX11 -lm -lbsd -I $(MINILIBX)
+CFLAGS = -Wall -Wextra -g
+INCFLAGS = -lXext -lX11 -lm -lbsd -I $(MINILIBX) -I ./includes/
 
 OBJS = $(patsubst %.c, $(OBJDIR)%.o, $(SRCS))
 
