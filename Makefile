@@ -6,7 +6,8 @@ MINILIBX = ~/42libraries/minilibx-linux/
 TESTARGS = 
 CC = cc
 CFLAGS = -Wall -Wextra -g -O3
-INCFLAGS = -lXext -lX11 -lm -lbsd -I $(MINILIBX) -I ./includes/
+INCFLAGS = -I $(MINILIBX) -I ./includes/
+CFLAGS = -Wall -Wextra -Werror -g
 
 OBJS = $(patsubst %.c, $(OBJDIR)%.o, $(SRCS))
 
@@ -22,7 +23,8 @@ fclean: clean
 re: clean all
 
 $(NAME): $(OBJS) $(MINILIBX)libmlx_Linux.a 
-	$(CC) $(CFLAGS) $(OBJS) $(MINILIBX)libmlx_Linux.a $(INCFLAGS) -o $@
+	$(CC) $(CFLAGS) $(OBJS) $(MINILIBX)libmlx_Linux.a $(INCFLAGS) -o $@\
+		-lXext -lX11 -lm -lbsd 
 
 $(OBJS): $(OBJDIR)%.o: $(SRCDIR)%.c
 	mkdir -p $(OBJDIR)
