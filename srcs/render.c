@@ -1,3 +1,4 @@
+#include "state.h"
 #include <vector.h>
 #include <mlx.h>
 #include <render.h>
@@ -6,6 +7,7 @@ inline void	put_pixel_image(char *image, int sline, int x, int y, int color)
 {
 	((int*) (image + y * sline))[x] = color;
 }
+
 void	put_square(void *image, t_vec2 UL, t_vec2 DR, int color)
 {
 	int	x;
@@ -53,4 +55,33 @@ void	put_line(void *image, t_vec2 a, t_vec2 b, int color)
 			put_pixel_image((char *) bits, sline, i[0] * m + k, i[0], color);
 	}
 	put_pixel_image((char *) bits, sline, a.x, a.y, color);
+}
+
+t_vec2	world_to_camera(const t_camera *camera, t_vec3 position)
+{
+	t_vec2	result;	
+
+	result.x = WINDOW_WIDTH / 2 + (position.x - position.y) * 16;
+	result.y = WINDOW_HEIGHT / 8 + (position.x + position.y) * 8
+		+ position.z * 2;
+	return (result);
+}
+
+void	render_map(void *image, t_state *state)
+{
+	unsigned int	x;
+	unsigned int	y;
+
+	y = 0;
+	while (y < state->maph - 1)
+	{
+		x = 0;
+		while (x < state->mapw - 1)
+		{
+			put_line(image, world_to_camera(state->camera,(t_vec3) {x, y, state->map[x][y]}, world_to_camera(state->camera, (t_vec3) {x, y + 1, state->map[x][y]}, GREEN);
+			put_line(image, world_to_camera(state->camera,(t_vec3) {x, y, state->map[x][y]}, world_to_camera(state->camera, (t_vec3) {x + 1, y, state->map[x][y]}, GREEN);
+			x++;
+		}
+		y++;
+	}
 }
