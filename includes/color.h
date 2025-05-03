@@ -1,7 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   color.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: edgribei <edgribei@student.42porto.co      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/30 13:58:18 by edgribei          #+#    #+#             */
+/*   Updated: 2025/04/30 14:22:45 by edgribei         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef COLOR_H
 # define COLOR_H
 
-enum	std_colors
+enum	e_std_colors
 {
 	RED = 0xFFFF0000,
 	GREEN = 0xFF00FF00,
@@ -12,14 +24,16 @@ enum	std_colors
 
 typedef union u_color
 {
-	unsigned int	color;
+	int	color;
+	unsigned int ucolor;
 	struct
 	{
 		unsigned char	a;
 		unsigned char	r;
 		unsigned char	g;
 		unsigned char	b;
-	}	rgba;
-} t_color;
+	}	s_rgba;
+}	t_color;
 
+t_color	color_lerp(t_color a, t_color b, float t);
 #endif
