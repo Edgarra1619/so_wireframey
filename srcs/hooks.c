@@ -45,7 +45,7 @@ int	keyboard_hook(int keycode, t_state *state)
 		state->camera.pos.z += 10;
 	if (keycode == 'e')
 		state->camera.pos.z -= 10;
-	render_hook(state);
+//	render_hook(state);
 	return (0);
 }
 

@@ -20,12 +20,11 @@ int	main()
 	srand(clock());
 
 	state.mlx = mlx_init();
-	mlx_do_sync(state.mlx);
 	state.window = mlx_new_window(state.mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "c not yet my pp");
 	state.buffer = mlx_new_image(state.mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
 	mlx_key_hook(state.window, keyboard_hook, &state);
 	mlx_mouse_hook(state.window, mouse_hook, &state);
-	mlx_expose_hook(state.window, render_hook, &state);
+	mlx_loop_hook(state.mlx, render_hook, &state);
 	mlx_hook(state.window, ClientMessage, LeaveWindowMask, mlx_loop_end, state.mlx);
 	mlx_loop(state.mlx);
 	free_map(state.map, state.mapw);
