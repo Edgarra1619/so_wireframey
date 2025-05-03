@@ -3,13 +3,7 @@
 #include <unistd.h>
 #include <state.h>
 #include <render.h>
-
-void	input_hook(void)
-{
-
-
-
-}
+#include <input.h>
 
 int	main()
 {
@@ -32,9 +26,10 @@ int	main()
 	put_square(buffer, start, end, 0xFFFF20FF);
 	put_line(buffer, start, end, 0xFF000000);
 	mlx_put_image_to_window(mlx, window, buffer, 0, 0);
-	//mlx_key_hook(window, int (*funct_ptr)(), void *param);
-	//mlx_mouse_hook(window, int (*funct_ptr)(), void *param)
-	read(0, str, 3);
+	mlx_key_hook(window, keyboard_hook, &state);
+	mlx_mouse_hook(window, mouse_hook, &state);
+	mlx_expose_hook(window, render_hook, &state);
+	mlx_loop(mlx);
 	mlx_destroy_image(mlx, buffer);
 	mlx_destroy_window(mlx, window);
 	mlx_destroy_display(mlx);

@@ -10,9 +10,9 @@ typedef struct s_camera
 typedef struct s_state
 {
 	t_camera	camera;
-	int		**map
-
-
+	int		**map;
+	void	*mlx;
+	void	*buffer;
 }	t_state;
 
 
