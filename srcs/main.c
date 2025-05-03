@@ -12,8 +12,8 @@ int	main()
 {
 	t_state	state;
 
-	state.camera.position = (t_vec3) {0, 0, 0};
-	state.camera.rotation = (t_vec2) {45, 57};
+	state.camera.pos = (t_vec3) {0, 0, 0};
+	state.camera.rot = (t_vec2) {45, 57};
 	state.maph = 100;
 	state.mapw = 100;
 	state.map = test_map(state.mapw, state.maph);
