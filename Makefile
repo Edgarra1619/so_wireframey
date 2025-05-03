@@ -1,5 +1,5 @@
 NAME = FdF
-SRCS = main.c colors.c my_math.c render.c
+SRCS = main.c colors.c my_math.c render.c map.c
 SRCDIR = ./srcs/
 OBJDIR = ./objs/
 MINILIBX = ~/42libraries/minilibx-linux/

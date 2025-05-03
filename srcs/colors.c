@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   colors.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: edgribei <edgribei@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/02 17:52:05 by edgribei          #+#    #+#             */
+/*   Updated: 2025/05/02 18:31:48 by edgribei         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <my_math.h>
 #include <color.h>
 
@@ -21,4 +33,25 @@ t_color	color_lerp(t_color a, t_color b, float t)
 	c.s_rgba.g = lerp(a.s_rgba.g, b.s_rgba.g, t);
 	c.s_rgba.b = lerp(a.s_rgba.b, b.s_rgba.b, t);
 	return (c);
+}
+
+//height below 0 is BLUE
+//height 0 is YELLOW
+//height 20 is GREEN
+//height 40 and above is WHITE
+//height above 40 is RED
+t_color	get_height_color(int z)
+{
+
+	if (z < 0)
+		return (color_lerp((t_color) YELLOW, (t_color) BLUE, (float) (-z) / 10));
+	if (z < 20)
+		return (color_lerp((t_color) YELLOW, (t_color) GREEN,
+				(float) z / (float) 20));
+	if (z < 40)
+		return (color_lerp((t_color) GREEN, (t_color) WHITE ,
+				((float) z - 20) / (float) 20));
+	return (color_lerp((t_color) WHITE, (t_color) RED ,
+			((float) z - 40) / (float) 100));
+
 }
