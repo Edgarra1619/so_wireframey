@@ -1,4 +1,5 @@
 #include "state.h"
+#include <math.h>
 #include <vector.h>
 #include <mlx.h>
 #include <render.h>
@@ -87,7 +88,7 @@ void	put_grad_line(void *image, t_vec2 a, t_vec2 b, t_color colora, t_color colo
 					color_lerp(colorb, colora,
 						(float) (i[0] - i[2]) / (float) (i[1] - i[2])));
 	}
-	else if (a.y != b.y)
+	if (a.y != b.y)
 	{
 		m = (float) (b.x - a.x) / (b.y - a.y);
 		k = a.x - m * a.y;
@@ -102,14 +103,22 @@ void	put_grad_line(void *image, t_vec2 a, t_vec2 b, t_color colora, t_color colo
 	put_pixel_image((char *) bits, sline, (t_vec2) {a.x, a.y}, color_lerp(colora, colorb, 0.5));
 }
 
-t_vec2	world_to_camera(const t_camera *camera, t_vec3 position)
+t_vec2	world_to_camera(const t_state *state, t_vec3 position)
 {
 	t_vec2	result;	
+	const float	sin_rotx = sin((float) state->camera.rot.x / 180 * M_PI);
+	const float	cos_rotx = cos((float) state->camera.rot.x / 180 * M_PI);
+	const float	sin_roty = sin((float) state->camera.rot.y / 180 * M_PI);
+	const float	cos_roty = cos((float) state->camera.rot.y / 180 * M_PI);
 
-	result.x = WINDOW_WIDTH / 2 + (position.x - position.y) * 16 - 
-		camera->position.x;
-	result.y = WINDOW_HEIGHT / 8 + (position.x + position.y) * 16 -
-		position.z / 5 - camera->position.y;
+	position = sum_vec3(position, (t_vec3){-state->mapw/2, -state->maph/2, 0});
+	position = sum_vec3(position, state->camera.pos);
+	result.x = WINDOW_WIDTH / 2 + 32 * ((float) position.x * cos_rotx - (float) position.y * sin_rotx);
+	result.y = WINDOW_HEIGHT / 2 + ((float) position.z * cos_roty) + 32 *
+			sin_roty *
+			((float) position.x * sin_rotx + (float) position.y * cos_rotx);
+//	result = sum_vec2(result, (t_vec2) {-state->camera.position.y, -state->camera.position.x});
+//		(position.z - camera->position.z) / 5;
 	return (result);
 }
 
@@ -125,12 +134,12 @@ void	render_map(void *img, t_state *state)
 		while (x < state->mapw)
 		{
 			if (y != state->maph - 1)
-				put_grad_line(img, world_to_camera(&(state->camera), (t_vec3) {x, y, state->map[x][y]}),
-					world_to_camera(&(state->camera), (t_vec3) {x, y + 1, state->map[x][y + 1]}),
+				put_grad_line(img, world_to_camera(state, (t_vec3) {x, y, state->map[x][y]}),
+					world_to_camera(state, (t_vec3) {x, y + 1, state->map[x][y + 1]}),
 					get_height_color(state->map[x][y]), get_height_color(state->map[x][y + 1]));
 			if (x != state->mapw - 1)
-				put_grad_line(img, world_to_camera(&state->camera,(t_vec3) {x, y, state->map[x][y]}),
-					world_to_camera(&state->camera, (t_vec3) {x + 1, y, state->map[x + 1][y]}),
+				put_grad_line(img, world_to_camera(state,(t_vec3) {x, y, state->map[x][y]}),
+					world_to_camera(state, (t_vec3) {x + 1, y, state->map[x + 1][y]}),
 					get_height_color(state->map[x + 1][y]), get_height_color(state->map[x][y]));
 			x++;
 		}

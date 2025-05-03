@@ -5,47 +5,32 @@
 #include <render.h>
 #include <map.h>
 #include <time.h>
-
-void	input_hook(void)
-{
-
-
-
-}
+#include <hooks.h>
+#include <X11/X.h>
 
 int	main()
 {
-	char	str[10];
-	void	*mlx;
-	void	*window;
-	void	*buffer;
 	t_state	state;
 
-	state.camera.position = (t_vec2) {0, 0};
-	state.camera.rotation = (t_vec2) {0, 0};
-	state.map = test_map(&state.mapw, &state.maph);
+	state.camera.position = (t_vec3) {0, 0, 0};
+	state.camera.rotation = (t_vec2) {45, 57};
+	state.maph = 100;
+	state.mapw = 100;
+	state.map = test_map(state.mapw, state.maph);
 	srand(clock());
 
-	t_vec2	start;
-	t_vec2	end;
-
-	start.x = 10;
-	start.y = 10;
-
-	end.x = 400;
-	end.y = 300;
-	//	t_state state;
-	mlx = mlx_init();
-	window = mlx_new_window(mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "c not yet my pp");
-	buffer = mlx_new_image(mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
-	render_map(buffer, &state);
-	mlx_put_image_to_window(mlx, window, buffer, 0, 0);
-	//mlx_key_hook(window, int (*funct_ptr)(), void *param);
-	//mlx_mouse_hook(window, int (*funct_ptr)(), void *param)
-	read(0, str, 3);
+	state.mlx = mlx_init();
+	mlx_do_sync(state.mlx);
+	state.window = mlx_new_window(state.mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "c not yet my pp");
+	state.buffer = mlx_new_image(state.mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
+	mlx_key_hook(state.window, keyboard_hook, &state);
+	mlx_mouse_hook(state.window, mouse_hook, &state);
+	mlx_expose_hook(state.window, render_hook, &state);
+	mlx_hook(state.window, ClientMessage, LeaveWindowMask, mlx_loop_end, state.mlx);
+	mlx_loop(state.mlx);
 	free_map(state.map, state.mapw);
-	mlx_destroy_image(mlx, buffer);
-	mlx_destroy_window(mlx, window);
-	mlx_destroy_display(mlx);
-	free(mlx);
+	mlx_destroy_image(state.mlx, state.buffer);
+	mlx_destroy_window(state.mlx, state.window);
+	mlx_destroy_display(state.mlx);
+	free(state.mlx);
 }

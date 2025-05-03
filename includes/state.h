@@ -6,7 +6,7 @@
 /*   By: edgribei <edgribei@student.42porto.co      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:00:14 by edgribei          #+#    #+#             */
-/*   Updated: 2025/05/02 13:50:34 by edgribei         ###   ########.fr       */
+/*   Updated: 2025/05/03 18:27:43 by edgribei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 
 typedef struct s_camera
 {
-	t_vec2	position;
-	t_vec2	rotation;
+	t_vec3	pos;
+	t_vec2	rot;
 }	t_camera;
 
 typedef struct s_state
@@ -26,7 +26,9 @@ typedef struct s_state
 	int			**map;
 	int			mapw;
 	int			maph;
-
+	void	*mlx;
+	void	*window;
+	void	*buffer;
 }	t_state;
 
 #endif
