@@ -5,11 +5,13 @@
 #include <my_math.h>
 #include <math.h>
 #include <unistd.h>
+#include <map.h>
 
 int	render_hook(t_state *state)
 {
 //	write(2, "render", 6);
 	put_square(state->buffer, (t_vec2){0, 0}, (t_vec2){WINDOW_WIDTH, WINDOW_HEIGHT}, (t_color) BLACK);
+	ocean_map(state->map, state->mapw, state->maph);
 	render_map(state->buffer, state);
 	mlx_put_image_to_window(state->mlx, state->window, state->buffer, 0, 0);
 	return (0);

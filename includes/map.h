@@ -16,6 +16,7 @@
 int		**test_map(int w, int h);
 //int		**parse_map(int fd, int *w, int *h);
 void	free_map(int **map, int w);
+void	ocean_map(int **map, int w, int h);
 
 
 

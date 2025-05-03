@@ -12,28 +12,49 @@
 
 #include <map.h>
 #include <stdlib.h>
+#include <math.h>
 
 int	**test_map(int w, int h)
 {
 	int	**map;
 	int	i;
-	int	j;
 
 	//TODO put ft_calloc here
 	map = calloc(w, sizeof(int *));
 	i = 0;
 	while (i < w)
 	{
-		j = 0;
 		map[i] = calloc(h, sizeof(int));
+		i++;
+	}
+	ocean_map (map, w, h);
+	return (map);
+}
+
+void	ocean_map(int **map, int w, int h)
+{
+	static int	count;
+	int			i;
+	int			j;
+
+	i = 0;
+	while (i < w)
+	{
+		j = 0;
 		while(j < h)
 		{
-			map[i][j] = (rand() % 15) - 8;
+			map[i][j] = sin((float) (i + (float) count / 20) / 2) * 15 +
+				sin((float) (i + (float) count / 12) / 4) * 20 +
+				cos((float) (i + (float) count / 8) * 2) * 3 +
+				sin((float) (j + (float) count / 20) / 3) * 10 +
+				cos((float) (j + (float) count / 8) / 2) * 15 +
+				sin((float) (j + (float) count / 40) / 4) * 20 +
+				cos((float) (j + (float) count / 8) * 2) * 3;
 			j++;
 		}
 		i++;
 	}
-	return (map);
+	count++;
 }
 
 void	free_map(int **map, int w)

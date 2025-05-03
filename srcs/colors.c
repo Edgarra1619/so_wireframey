@@ -43,15 +43,15 @@ t_color	color_lerp(t_color a, t_color b, float t)
 t_color	get_height_color(int z)
 {
 
-	if (z < 0)
-		return (color_lerp((t_color) YELLOW, (t_color) BLUE, (float) (-z) / 10));
-	if (z < 20)
-		return (color_lerp((t_color) YELLOW, (t_color) GREEN,
-				(float) z / (float) 20));
-	if (z < 40)
-		return (color_lerp((t_color) GREEN, (t_color) WHITE ,
-				((float) z - 20) / (float) 20));
+	if (z < -10)
+		return (color_lerp((t_color) 0xFF1010FF, (t_color) BLUE, (float) (-z) - 10 / 10));
+	if (z < 30)
+		return (color_lerp((t_color) 0XFF1010FF, (t_color) 0xFFF0F0FF,
+				(float) z / (float) 30));
+	if (z < 50)
+		return (color_lerp((t_color) 0xFFA0A0FF, (t_color) WHITE ,
+				((float) z - 30) / (float) 20));
 	return (color_lerp((t_color) WHITE, (t_color) RED ,
-			((float) z - 40) / (float) 100));
+			((float) z - 50) / (float) 100));
 
 }

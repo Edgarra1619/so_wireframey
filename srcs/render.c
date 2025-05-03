@@ -113,8 +113,8 @@ t_vec2	world_to_camera(const t_state *state, t_vec3 position)
 
 	position = sum_vec3(position, (t_vec3){-state->mapw/2, -state->maph/2, 0});
 	position = sum_vec3(position, state->camera.pos);
-	result.x = WINDOW_WIDTH / 2 + 32 * ((float) position.x * cos_rotx - (float) position.y * sin_rotx);
-	result.y = WINDOW_HEIGHT / 2 + ((float) position.z * cos_roty) + 32 *
+	result.x = WINDOW_WIDTH / 2 + 16 * ((float) position.x * cos_rotx - (float) position.y * sin_rotx);
+	result.y = WINDOW_HEIGHT / 2 - ((float) position.z * cos_roty) / 5 + 16 *
 			sin_roty *
 			((float) position.x * sin_rotx + (float) position.y * cos_rotx);
 //	result = sum_vec2(result, (t_vec2) {-state->camera.position.y, -state->camera.position.x});
