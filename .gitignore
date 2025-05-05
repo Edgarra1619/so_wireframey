@@ -2,6 +2,8 @@
 FdF
 resources/
 minilibx-linux/
+.cache/
+compile_commands.json
 
 # Prerequisites
 *.d

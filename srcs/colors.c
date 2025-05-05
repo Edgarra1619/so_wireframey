@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "mlx.h"
 #include <my_math.h>
 #include <color.h>
 
@@ -42,16 +43,15 @@ t_color	color_lerp(t_color a, t_color b, float t)
 //height above 40 is RED
 t_color	get_height_color(int z)
 {
-
-	if (z < -10)
-		return (color_lerp((t_color) 0xFF1010FF, (t_color) BLUE, (float) (-z) - 10 / 10));
-	if (z < 30)
-		return (color_lerp((t_color) 0XFF1010FF, (t_color) 0xFFF0F0FF,
-				(float) z / (float) 30));
-	if (z < 50)
-		return (color_lerp((t_color) 0xFFA0A0FF, (t_color) WHITE ,
-				((float) z - 30) / (float) 20));
-	return (color_lerp((t_color) WHITE, (t_color) RED ,
-			((float) z - 50) / (float) 100));
+	if (z < -40)
+		return (color_lerp((t_color) 0xFF1010FF, (t_color) BLUE, (float) ((-z) - 20) / 100));
+	if (z < 60)
+		return (color_lerp((t_color) 0XFF1111FF, (t_color) 0xFFA0A0FF,
+				(float) z + 40 / (float) 200));
+	if (z < 100)
+		return (color_lerp((t_color) 0x00A0A0FF, (t_color) 0x00C0C0FF ,
+				((float) z - 60) / (float) 100));
+	return (color_lerp((t_color) RED, (t_color) RED ,
+			((float) z - 80) / (float) 100));
 
 }
