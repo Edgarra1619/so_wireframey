@@ -2,6 +2,8 @@
 FdF
 resources/
 minilibx-linux/
+*~
+*.swp
 
 # Prerequisites
 *.d
