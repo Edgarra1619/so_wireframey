@@ -2,6 +2,8 @@
 FdF
 resources/
 minilibx-linux/
+*~
+*.swp
 .cache/
 compile_commands.json
 
