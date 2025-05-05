@@ -9,8 +9,8 @@
 
 int	render_hook(t_state *state)
 {
-	const int	cosmove = cos((float) state->camera.rot.x / 180 * M_PI) * 2;
-	const int	sinmove = sin((float) state->camera.rot.x / 180 * M_PI) * 2;
+	const int	cosmove = cos((float) state->camera.rot.x / 180.0 * M_PI) * 2;
+	const int	sinmove = sin((float) state->camera.rot.x / 180.0 * M_PI) * 2;
 	if (state->pressed_keys & KEYCODEW)
 		state->camera.pos = sum_vec3(state->camera.pos, (t_vec3) {sinmove,
 				cosmove, 0});

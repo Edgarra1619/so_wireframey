@@ -14,8 +14,8 @@ int	main()
 
 	state.camera.pos = (t_vec3) {0, 0, 0};
 	state.camera.rot = (t_vec2) {45, 57};
-	state.maph = 100;
-	state.mapw = 100;
+	state.maph = 1000;
+	state.mapw = 1000;
 	state.map = test_map(state.mapw, state.maph);
 	srand(clock());
 
