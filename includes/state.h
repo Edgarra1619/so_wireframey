@@ -20,15 +20,32 @@ typedef struct s_camera
 	t_vec2	rot;
 }	t_camera;
 
+enum	e_input
+{
+	KEYCODEW = 1 << 0,
+	KEYCODES = 1 << 1,
+	KEYCODEA = 1 << 2,
+	KEYCODED = 1 << 3,
+	KEYCODEQ = 1 << 4,
+	KEYCODEE = 1 << 5,
+};
+
+//input will be handled as a flag
+//0-5 will be wsadqe and 6-7 will be mouse buttons
 typedef struct s_state
 {
 	t_camera	camera;
 	int			**map;
 	int			mapw;
 	int			maph;
-	void	*mlx;
-	void	*window;
-	void	*buffer;
+	void		*mlx;
+	void		*window;
+	void		*buffer;
+	int			pressed_keys;
 }	t_state;
+
+
+
+
 
 #endif
