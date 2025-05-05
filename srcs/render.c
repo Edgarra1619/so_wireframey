@@ -5,6 +5,14 @@
 #include <render.h>
 #include <color.h>
 
+inline int	in_bounds(t_image *image, t_vec2 position)
+{
+	if (position.x >= image->size.x || position.x < 0 ||
+		position.y >= image->size.y || position.y < 0)
+		return (0);
+	return (1);
+}
+
 inline void	put_pixel_image(t_image *image, t_vec2 position, t_color color)
 {
 	if (position.x < 0 || position.y < 0 ||
@@ -42,6 +50,8 @@ void	put_line(t_image *image, t_vec2 a, t_vec2 b, t_color color)
 	int			k;
 	int			i[2];
 
+	if (!in_bounds(image, a) && !in_bounds(image, b))
+		return ;
 	if (a.x != b.x)
 	{
 		m = (float) (b.y - a.y) / (b.x - a.x);

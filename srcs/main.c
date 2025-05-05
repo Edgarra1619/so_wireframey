@@ -17,6 +17,7 @@ int	main()
 	state.camera.rot = (t_vec2) {45, 57};
 	state.maph = 1000;
 	state.mapw = 1000;
+	state.buffer.size = (t_vec2) {WINDOW_WIDTH, WINDOW_HEIGHT};
 	state.map = test_map(state.mapw, state.maph);
 
 	state.mlx = mlx_init();

@@ -6,7 +6,7 @@ MINILIBX = ~/42libraries/minilibx-linux/
 TESTARGS = 
 CC = cc
 INCFLAGS = -I $(MINILIBX) -I ./includes/
-CFLAGS = -Wall -Wextra -Werror -g -D WINDOW_WIDTH=960 -D WINDOW_HEIGHT=720
+CFLAGS = -Wall -Wextra -Werror -O3 -D WINDOW_WIDTH=960 -D WINDOW_HEIGHT=720
 
 OBJS = $(patsubst %.c, $(OBJDIR)%.o, $(SRCS))
 

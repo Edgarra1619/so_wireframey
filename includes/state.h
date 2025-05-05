@@ -39,6 +39,7 @@ typedef struct	s_image
 	int		sline;
 	int		bpp;
 	int		endian;
+	t_vec2	size;
 }	t_image;
 
 //input will be handled as a flag
