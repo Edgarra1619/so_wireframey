@@ -11,6 +11,7 @@ int	render_hook(t_state *state)
 {
 	const int	cosmove = cos((float) state->camera.rot.x / 180 * M_PI) * 2;
 	const int	sinmove = sin((float) state->camera.rot.x / 180 * M_PI) * 2;
+
 	if (state->pressed_keys & KEYCODEW)
 		state->camera.pos = sum_vec3(state->camera.pos, (t_vec3) {sinmove,
 				cosmove, 0});
@@ -27,10 +28,10 @@ int	render_hook(t_state *state)
 		state->camera.pos.z += 10;
 	if (state->pressed_keys & KEYCODEE)
 		state->camera.pos.z -= 10;
-	put_square(state->buffer, (t_vec2){0, 0}, (t_vec2){WINDOW_WIDTH, WINDOW_HEIGHT}, (t_color) BLACK);
+	put_square(&state->buffer, (t_vec2){0, 0}, (t_vec2){WINDOW_WIDTH, WINDOW_HEIGHT}, (t_color) BLACK);
 	ocean_map(state->map, state->mapw, state->maph);
-	render_map(state->buffer, state);
-	mlx_put_image_to_window(state->mlx, state->window, state->buffer, 0, 0);
+	render_map(&state->buffer, state);
+	mlx_put_image_to_window(state->mlx, state->window, state->buffer.ptr, 0, 0);
 	return (0);
 }
 

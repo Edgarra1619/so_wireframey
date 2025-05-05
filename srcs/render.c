@@ -1,16 +1,16 @@
-#include "state.h"
+#include <state.h>
 #include <math.h>
 #include <vector.h>
 #include <mlx.h>
 #include <render.h>
 #include <color.h>
 
-inline void	put_pixel_image(char *image, int sline, t_vec2 position, t_color color)
+inline void	put_pixel_image(t_image *image, t_vec2 position, t_color color)
 {
 	if (position.x < 0 || position.y < 0 ||
 			position.x >= WINDOW_WIDTH || position.y >= WINDOW_HEIGHT)
 		return ;
-	((int*) (image + position.y * sline))[position.x] = color.color;
+	((int*) (image->data + position.y * image->sline))[position.x] = color.color;
 }
 /*
 static void	put_pixel_image(char *image, int sline, t_vec2 position, t_color color)
@@ -19,19 +19,16 @@ static void	put_pixel_image(char *image, int sline, t_vec2 position, t_color col
 }
 */
 
-void	put_square(void *image, t_vec2 UL, t_vec2 DR, t_color color)
+void	put_square(t_image *image, t_vec2 UL, t_vec2 DR, t_color color)
 {
 	int	x;
-	int	sline;
-	char	*bits;
 
-	bits = mlx_get_data_addr(image, &x, &sline, &x);
 	while (UL.y <= DR.y)
 	{
 		x = UL.x;
 		while (x <= DR.x)
 		{
-			put_pixel_image(bits, sline, (t_vec2) {x, UL.y}, color);
+			put_pixel_image(image, (t_vec2) {x, UL.y}, color);
 			x++;
 		}
 		UL.y++;
@@ -39,13 +36,11 @@ void	put_square(void *image, t_vec2 UL, t_vec2 DR, t_color color)
 }
 
 // y = mx + b
-void	put_line(void *image, t_vec2 a, t_vec2 b, t_color color)
+void	put_line(t_image *image, t_vec2 a, t_vec2 b, t_color color)
 {
 	float		m;
 	int			k;
 	int			i[2];
-	int			sline;
-	const char	*bits = mlx_get_data_addr(image, &k, &sline, &k);
 
 	if (a.x != b.x)
 	{
@@ -54,18 +49,18 @@ void	put_line(void *image, t_vec2 a, t_vec2 b, t_color color)
 		i[0] = (a.x * (a.x < b.x)) + (b.x * (b.x < a.x));
 		i[1] = (a.x * (a.x > b.x)) + (b.x * (b.x > a.x));
 		while (i[0]++ < i[1])
-			put_pixel_image((char *) bits, sline, (t_vec2) {i[0], i[0] * m + k}, color);
+			put_pixel_image(image, (t_vec2) {i[0], i[0] * m + k}, color);
 	}
-	else if (a.y != b.y)
+	if (a.y != b.y)
 	{
 		m = (float) (b.x - a.x) / (b.y - a.y);
 		k = a.x - m * a.y;
 		i[0] = (a.y * (a.y < b.y)) + (b.y * (b.y < a.y));
 		i[1] = (a.y * (a.y > b.y)) + (b.y * (b.y > a.y));
 		while (i[0]++ < i[1])
-			put_pixel_image((char *) bits, sline, (t_vec2) {i[0] * m + k, i[0]}, color);
+			put_pixel_image(image, (t_vec2) {i[0] * m + k, i[0]}, color);
 	}
-	put_pixel_image((char *) bits, sline, (t_vec2) {a.x, a.y}, color);
+	put_pixel_image(image, (t_vec2) {a.x, a.y}, color);
 }
 
 void	put_grad_line(void *image, t_vec2 a, t_vec2 b, t_color colora, t_color colorb)
@@ -73,8 +68,6 @@ void	put_grad_line(void *image, t_vec2 a, t_vec2 b, t_color colora, t_color colo
 	float		m;
 	int			k;
 	int			i[3];
-	int			sline;
-	const char	*bits = mlx_get_data_addr(image, &k, &sline, &k);
 
 	if (a.x != b.x)
 	{
@@ -84,7 +77,7 @@ void	put_grad_line(void *image, t_vec2 a, t_vec2 b, t_color colora, t_color colo
 		i[2] = i[0];
 		i[1] = (a.x * (a.x > b.x)) + (b.x * (b.x > a.x));
 		while (i[0]++ < i[1])
-			put_pixel_image((char *) bits, sline, (t_vec2) {i[0], i[0] * m + k},
+			put_pixel_image(image, (t_vec2) {i[0], i[0] * m + k},
 					color_lerp(colorb, colora,
 						(float) (i[0] - i[2]) / (float) (i[1] - i[2])));
 	}
@@ -96,11 +89,11 @@ void	put_grad_line(void *image, t_vec2 a, t_vec2 b, t_color colora, t_color colo
 		i[2] = i[0];
 		i[1] = (a.y * (a.y > b.y)) + (b.y * (b.y > a.y));
 		while (i[0]++ < i[1])
-			put_pixel_image((char *) bits, sline, (t_vec2) {i[0] * m + k, i[0]},
+			put_pixel_image(image, (t_vec2) {i[0] * m + k, i[0]},
 					color_lerp(colorb, colora,
 						 (float) (i[0] - i[2]) / (float) (i[1] - i[2])));
 	}
-	put_pixel_image((char *) bits, sline, (t_vec2) {a.x, a.y}, color_lerp(colora, colorb, 0.5));
+	put_pixel_image(image, (t_vec2) {a.x, a.y}, color_lerp(colora, colorb, 0.5));
 }
 
 t_vec2	world_to_camera(const t_state *state, t_vec3 position)
@@ -113,16 +106,18 @@ t_vec2	world_to_camera(const t_state *state, t_vec3 position)
 
 	position = sum_vec3(position, (t_vec3){-state->mapw/2, -state->maph/2, 0});
 	position = sum_vec3(position, state->camera.pos);
-	result.x = WINDOW_WIDTH / 2 + 16 * ((float) position.x * cos_rotx - (float) position.y * sin_rotx);
-	result.y = WINDOW_HEIGHT / 2 - ((float) position.z * cos_roty) / 5 + 16 *
-			sin_roty *
-			((float) position.x * sin_rotx + (float) position.y * cos_rotx);
+	result.x = WINDOW_WIDTH / 2 + 16 * ((float) position.x * cos_rotx -
+			(float) position.y * sin_rotx);
+	result.y = WINDOW_HEIGHT / 2 - ((float) position.z * cos_roty) / 5 +
+			16 * sin_roty *
+			((float) position.x * sin_rotx +
+			(float) position.y * cos_rotx);
 //	result = sum_vec2(result, (t_vec2) {-state->camera.position.y, -state->camera.position.x});
-//		(position.z - camera->position.z) / 5;
+//	(position.z - camera->position.z) / 5;
 	return (result);
 }
 
-void	render_map(void *img, t_state *state)
+void	render_map(t_image *img, t_state *state)
 {
 	int	x;
 	int	y;
