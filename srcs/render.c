@@ -1,11 +1,12 @@
 #include <state.h>
 #include <math.h>
+#include <strings.h>
 #include <vector.h>
 #include <mlx.h>
 #include <render.h>
 #include <color.h>
 
-inline int	in_bounds(t_image *image, t_vec2 position)
+int	in_bounds(t_image *image, t_vec2 position)
 {
 	if (position.x >= image->size.x || position.x < 0 ||
 		position.y >= image->size.y || position.y < 0)
@@ -13,7 +14,7 @@ inline int	in_bounds(t_image *image, t_vec2 position)
 	return (1);
 }
 
-inline void	put_pixel_image(t_image *image, t_vec2 position, t_color color)
+inline void	put_pixel_image(t_image *image, const t_vec2 position, const t_color color)
 {
 	if (position.x < 0 || position.y < 0 ||
 			position.x >= WINDOW_WIDTH || position.y >= WINDOW_HEIGHT)
@@ -27,19 +28,22 @@ static void	put_pixel_image(char *image, int sline, t_vec2 position, t_color col
 }
 */
 
-void	put_square(t_image *image, t_vec2 UL, t_vec2 DR, t_color color)
+void	put_square(t_image *image, const t_vec2 UL, const t_vec2 DR, const t_color color)
 {
 	int	x;
+	int	y;
 
-	while (UL.y <= DR.y)
+	if (color.ucolor == BLACK)
 	{
-		x = UL.x;
-		while (x <= DR.x)
-		{
-			put_pixel_image(image, (t_vec2) {x, UL.y}, color);
-			x++;
-		}
-		UL.y++;
+		bzero(image->data, image->sline * image->size.y);
+		return ;
+	}
+	y = UL.y - 1;
+	while (++y <= DR.y)
+	{
+		x = UL.x - 1;
+		while (++x <= DR.x)
+			put_pixel_image(image, (t_vec2) {x, y}, color);
 	}
 }
 
@@ -73,12 +77,15 @@ void	put_line(t_image *image, t_vec2 a, t_vec2 b, t_color color)
 	put_pixel_image(image, (t_vec2) {a.x, a.y}, color);
 }
 
-void	put_grad_line(void *image, t_vec2 a, t_vec2 b, t_color colora, t_color colorb)
+void	put_grad_line(void *image, const t_vec2 a, const t_vec2 b,
+				   const t_color colora, const t_color colorb)
 {
 	float		m;
 	int			k;
 	int			i[3];
 
+	if (!in_bounds(image, a) && !in_bounds(image, b))
+		return ;
 	if (a.x != b.x)
 	{
 		m = (float) (b.y - a.y) / (b.x - a.x);
@@ -108,14 +115,16 @@ void	put_grad_line(void *image, t_vec2 a, t_vec2 b, t_color colora, t_color colo
 
 t_vec2	world_to_camera(const t_state *state, t_vec3 position)
 {
-	t_vec2	result;	
+	t_vec2	result;
 	const float	sin_rotx = sin((float) state->camera.rot.x / 180 * M_PI);
 	const float	cos_rotx = cos((float) state->camera.rot.x / 180 * M_PI);
 	const float	sin_roty = sin((float) state->camera.rot.y / 180 * M_PI);
 	const float	cos_roty = cos((float) state->camera.rot.y / 180 * M_PI);
 
-	position = sum_vec3(position, (t_vec3){-state->mapw/2, -state->maph/2, 0});
-	position = sum_vec3(position, state->camera.pos);
+	position.x += state->camera.pos.x - state->mapw/2;
+	position.y += state->camera.pos.y - state->maph/2;
+	position.z += state->camera.pos.z;
+//	position = sum_vec3(position, (t_vec3){-state->mapw/2, -state->maph/2, 0});
 	result.x = WINDOW_WIDTH / 2 + 16 * ((float) position.x * cos_rotx -
 			(float) position.y * sin_rotx);
 	result.y = WINDOW_HEIGHT / 2 - ((float) position.z * cos_roty) / 5 +
@@ -129,25 +138,29 @@ t_vec2	world_to_camera(const t_state *state, t_vec3 position)
 
 void	render_map(t_image *img, t_state *state)
 {
-	int	x;
-	int	y;
+	int		x;
+	int		y;
+	t_vec2	pos;
+	t_color	color;
 
-	y = 0;
-	while (y < state->maph)
+	y = -1;
+	while (++y < state->maph)
 	{
-		x = 0;
-		while (x < state->mapw)
+		x = -1;
+		while (++x < state->mapw)
 		{
+			pos = world_to_camera(state, (t_vec3) {x, y, state->map[x][y]});
+			if (!in_bounds(img, (t_vec2){x, y}))
+				continue ;
+			color = get_height_color(state->map[x][y]);
 			if (y != state->maph - 1)
-				put_grad_line(img, world_to_camera(state, (t_vec3) {x, y, state->map[x][y]}),
+				put_grad_line(img, pos,
 					world_to_camera(state, (t_vec3) {x, y + 1, state->map[x][y + 1]}),
-					get_height_color(state->map[x][y]), get_height_color(state->map[x][y + 1]));
+					color, get_height_color(state->map[x][y + 1]));
 			if (x != state->mapw - 1)
-				put_grad_line(img, world_to_camera(state,(t_vec3) {x, y, state->map[x][y]}),
+				put_grad_line(img, pos,
 					world_to_camera(state, (t_vec3) {x + 1, y, state->map[x + 1][y]}),
-					get_height_color(state->map[x + 1][y]), get_height_color(state->map[x][y]));
-			x++;
+					color, get_height_color(state->map[x + 1][y]));
 		}
-		y++;
 	}
 }

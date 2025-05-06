@@ -13,7 +13,7 @@
 #ifndef MY_MATH_H
 # define MY_MATH_H
 
-int	clamp(int num, int max, int min);
-int	lerp(int a, int b, float t);
+int	clamp(const int num, const int max, const int min);
+int	lerp(const int a, const int b, const float t);
 
 #endif

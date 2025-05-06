@@ -14,6 +14,7 @@
 # define RENDER_H
 # include <vector.h>
 # include <color.h>
+# include <state.h>
 # ifndef WINDOW_WIDTH
 #  define WINDOW_WIDTH 640
 # endif

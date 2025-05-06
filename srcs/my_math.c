@@ -1,4 +1,4 @@
-int	clamp(int num, int min, int max)
+int	clamp(const int num, const int min, const int max)
 {
 	if (num <= min)
 		return (min);
@@ -7,7 +7,7 @@ int	clamp(int num, int min, int max)
 	return (num);
 }
 
-float	clampf(float num, float min, float max)
+inline float	clampf(float num, float min, float max)
 {
 	if (num <= min)
 		return (min);
@@ -16,8 +16,11 @@ float	clampf(float num, float min, float max)
 	return (num);
 }
 
-int	lerp(int a, int b, float t)
+int	lerp(const int a, const int b, const float t)
 {
-	t = clampf(t, 0, 1);
+	if (t >= 1)
+		return (b);
+	if (t <= 0)
+		return (a);
 	return (a * (1 - t) + b * t);
 }
