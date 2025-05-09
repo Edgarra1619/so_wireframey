@@ -13,6 +13,7 @@
 #ifndef STATE_H
 # define STATE_H
 # include <vector.h>
+# include <color.h>
 
 typedef struct s_camera
 {
@@ -49,6 +50,7 @@ typedef struct	s_state
 	t_camera	camera;
 	int			**map;
 	t_vec2		**pre_map;
+	t_color		**color_map;
 	int			mapw;
 	int			maph;
 	void		*mlx;

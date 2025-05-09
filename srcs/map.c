@@ -10,24 +10,28 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <color.h>
+#include <state.h>
 #include <map.h>
 #include <stdlib.h>
 #include <math.h>
 #include <vector.h>
 
-int	**test_map(int w, int h, t_vec2 ***vecmap)
+int	**test_map(int w, int h, t_state *state)
 {
 	int	**map;
 	int	i;
 
 	//TODO put ft_calloc here
 	map = calloc(w, sizeof(int *));
-	*vecmap = calloc(w, sizeof(t_vec2*));
+	state->pre_map = calloc(w, sizeof(t_vec2*));
+	state->color_map = calloc(w, sizeof(t_color*));
 	i = 0;
 	while (i < w)
 	{
 		map[i] = calloc(h, sizeof(int));
-		(*vecmap)[i] = calloc(h, sizeof(t_vec2));
+		state->pre_map[i] = calloc(h, sizeof(t_vec2));
+		state->color_map[i] = calloc(h, sizeof(t_color));
 		i++;
 	}
 	ocean_map (map, w, h);

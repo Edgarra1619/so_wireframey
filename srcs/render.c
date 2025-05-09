@@ -142,6 +142,7 @@ void	pre_calculate_map(t_state *state)
 	int		y;
 	const	int maph = state->maph;
 	const	int mapw = state->mapw;
+	const int	**const map = (const int **)state->map;
 
 	y = -1;
 	while (++y < maph)
@@ -149,7 +150,8 @@ void	pre_calculate_map(t_state *state)
 		x = -1;
 		while (++x < mapw)
 		{
-			state->pre_map[x][y] = world_to_camera(state, (t_vec3) {x, y, state->map[x][y]});
+			state->pre_map[x][y] = world_to_camera(state, (t_vec3) {x, y, map[x][y]});
+			state->color_map[x][y] = get_height_color(map[x][y]);
 		}
 	}
 }
@@ -158,7 +160,6 @@ void	render_map(t_image *img, t_state *state)
 {
 	int		x;
 	int		y;
-	t_color	color;
 	const int	maph = state->maph;
 	const int	mapw = state->mapw;
 
@@ -169,15 +170,14 @@ void	render_map(t_image *img, t_state *state)
 		x = -1;
 		while (++x < mapw)
 		{
-			color = get_height_color(state->map[x][y]);
 			if (y != state->maph - 1)
 				put_grad_line(img, state->pre_map[x][y],
 					state->pre_map[x][y + 1],
-					color, get_height_color(state->map[x][y + 1]));
+					state->color_map[x][y], state->color_map[x][y + 1]);
 			if (x != state->mapw - 1)
 				put_grad_line(img, state->pre_map[x][y],
 					state->pre_map[x + 1][y],
-					color, get_height_color(state->map[x + 1][y]));
+					state->color_map[x][y], state->color_map[x][y + 1]);
 		}
 	}
 }

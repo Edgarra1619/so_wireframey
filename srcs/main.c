@@ -18,7 +18,7 @@ int	main()
 	state.maph = 1000;
 	state.mapw = 1000;
 	state.buffer.size = (t_vec2) {WINDOW_WIDTH, WINDOW_HEIGHT};
-	state.map = test_map(state.mapw, state.maph, &(state.pre_map));
+	state.map = test_map(state.mapw, state.maph, &state);
 
 	state.mlx = mlx_init();
 	state.window = mlx_new_window(state.mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "c not yet my pp");
