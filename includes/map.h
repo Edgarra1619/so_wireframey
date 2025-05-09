@@ -12,8 +12,9 @@
 
 #ifndef MAP_H
 # define MAP_H
+# include <vector.h>
 
-int		**test_map(int w, int h);
+int		**test_map(int w, int h, t_vec2 ***vecmap);
 //int		**parse_map(int fd, int *w, int *h);
 void	free_map(int **map, int w);
 void	ocean_map(int **map, int w, int h);

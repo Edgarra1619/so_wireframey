@@ -15,10 +15,10 @@ int	main()
 	bzero(&state, sizeof(state));
 	state.camera.pos = (t_vec3) {0, 0, 0};
 	state.camera.rot = (t_vec2) {45, 57};
-	state.maph = 100;
-	state.mapw = 100;
+	state.maph = 1000;
+	state.mapw = 1000;
 	state.buffer.size = (t_vec2) {WINDOW_WIDTH, WINDOW_HEIGHT};
-	state.map = test_map(state.mapw, state.maph);
+	state.map = test_map(state.mapw, state.maph, &(state.pre_map));
 
 	state.mlx = mlx_init();
 	state.window = mlx_new_window(state.mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "c not yet my pp");

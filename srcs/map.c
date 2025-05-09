@@ -13,18 +13,21 @@
 #include <map.h>
 #include <stdlib.h>
 #include <math.h>
+#include <vector.h>
 
-int	**test_map(int w, int h)
+int	**test_map(int w, int h, t_vec2 ***vecmap)
 {
 	int	**map;
 	int	i;
 
 	//TODO put ft_calloc here
 	map = calloc(w, sizeof(int *));
+	*vecmap = calloc(w, sizeof(t_vec2*));
 	i = 0;
 	while (i < w)
 	{
 		map[i] = calloc(h, sizeof(int));
+		(*vecmap)[i] = calloc(h, sizeof(t_vec2));
 		i++;
 	}
 	ocean_map (map, w, h);
@@ -43,13 +46,13 @@ void	ocean_map(int **map, int w, int h)
 		j = 0;
 		while(j < h)
 		{
-			map[i][j] = sin((float) (i + 3 + (float) count / 20) / 2) * 15 +
-				sin((float) (i + 1 + (float) count / 12) / 4) * 20 +
-				cos((float) (i + 2 + (float) count / 8) * 2) * 3 +
-				sin((float) (j - 1 + (float) count / 20) / 3) * 10 +
-				cos((float) (j + 2 + (float) count / 8) / 2) * 15 +
-				sin((float) (j + (float) count / 40) / 4) * 20 +
-				cos((float) (j - 3 + (float) count / 8) * 2) * 3;
+			map[i][j] = sin((float) ((float)(i * 3 + count) / 5) / 2) * 15 +
+				sin((float) ((float)(i * 1 + count) / 6) / 4) * 20 +
+				cos((float) ((float)(i * 2 + count) / 2) * 2) * 3 +
+				sin((float) ((float)(j * -1 + count) / 5) / 3) * 10 +
+				cos((float) ((float)(j * 2 + count) / 2) / 2) * 15 +
+				sin((float) ((float)(j + count) / 40) / 1) * 20 +
+				cos((float) ((float)(j * - 3 + count) / 2) * 2) * 3;
 			j++;
 		}
 		i++;

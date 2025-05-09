@@ -95,7 +95,7 @@ void	put_grad_line(void *image, const t_vec2 a, const t_vec2 b,
 		i[1] = (a.x * (a.x > b.x)) + (b.x * (b.x > a.x));
 		while (i[0]++ < i[1])
 			put_pixel_image(image, (t_vec2) {i[0], i[0] * m + k},
-					color_lerp(colorb, colora,
+					color_lerp(colora, colorb,
 						(float) (i[0] - i[2]) / (float) (i[1] - i[2])));
 	}
 	if (a.y != b.y)
@@ -107,7 +107,7 @@ void	put_grad_line(void *image, const t_vec2 a, const t_vec2 b,
 		i[1] = (a.y * (a.y > b.y)) + (b.y * (b.y > a.y));
 		while (i[0]++ < i[1])
 			put_pixel_image(image, (t_vec2) {i[0] * m + k, i[0]},
-					color_lerp(colorb, colora,
+					color_lerp(colora, colorb,
 						 (float) (i[0] - i[2]) / (float) (i[1] - i[2])));
 	}
 	put_pixel_image(image, (t_vec2) {a.x, a.y}, color_lerp(colora, colorb, 0.5));
@@ -136,30 +136,47 @@ t_vec2	world_to_camera(const t_state *state, t_vec3 position)
 	return (result);
 }
 
+void	pre_calculate_map(t_state *state)
+{
+	int		x;
+	int		y;
+	const	int maph = state->maph;
+	const	int mapw = state->mapw;
+
+	y = -1;
+	while (++y < maph)
+	{
+		x = -1;
+		while (++x < mapw)
+		{
+			state->pre_map[x][y] = world_to_camera(state, (t_vec3) {x, y, state->map[x][y]});
+		}
+	}
+}
+
 void	render_map(t_image *img, t_state *state)
 {
 	int		x;
 	int		y;
-	t_vec2	pos;
 	t_color	color;
+	const int	maph = state->maph;
+	const int	mapw = state->mapw;
 
+	pre_calculate_map(state);
 	y = -1;
-	while (++y < state->maph)
+	while (++y < maph)
 	{
 		x = -1;
-		while (++x < state->mapw)
+		while (++x < mapw)
 		{
-			pos = world_to_camera(state, (t_vec3) {x, y, state->map[x][y]});
-			if (!in_bounds(img, (t_vec2){x, y}))
-				continue ;
 			color = get_height_color(state->map[x][y]);
 			if (y != state->maph - 1)
-				put_grad_line(img, pos,
-					world_to_camera(state, (t_vec3) {x, y + 1, state->map[x][y + 1]}),
+				put_grad_line(img, state->pre_map[x][y],
+					state->pre_map[x][y + 1],
 					color, get_height_color(state->map[x][y + 1]));
 			if (x != state->mapw - 1)
-				put_grad_line(img, pos,
-					world_to_camera(state, (t_vec3) {x + 1, y, state->map[x + 1][y]}),
+				put_grad_line(img, state->pre_map[x][y],
+					state->pre_map[x + 1][y],
 					color, get_height_color(state->map[x + 1][y]));
 		}
 	}

@@ -48,6 +48,7 @@ typedef struct	s_state
 {
 	t_camera	camera;
 	int			**map;
+	t_vec2		**pre_map;
 	int			mapw;
 	int			maph;
 	void		*mlx;
