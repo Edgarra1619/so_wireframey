@@ -6,7 +6,7 @@ MINILIBX = ~/42libraries/minilibx-linux/
 TESTARGS = 
 CC = gcc
 INCFLAGS = -I $(MINILIBX) -I ./includes/
-CFLAGS = -Wall -Wextra -Werror -O3 -g -D WINDOW_WIDTH=960 -D WINDOW_HEIGHT=720
+CFLAGS = -Wall -Wextra -Werror -O3 -g -pg -D WINDOW_WIDTH=960 -D WINDOW_HEIGHT=720
 
 OBJS = $(patsubst %.c, $(OBJDIR)%.o, $(SRCS))
 
@@ -42,7 +42,7 @@ test: $(NAME)
 gprof: $(NAME)
 	./$(NAME) $(TESTARGS)
 	rm gprof-output -f
-	gprof -l $(NAME) > gprof-output
+	gprof $(NAME) > gprof-output
 
 valgrind: $(NAME)
 	valgrind --leak-check=full --show-leak-kinds=all ./$(NAME) $(TESTARGS)
