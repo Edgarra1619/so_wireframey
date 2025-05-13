@@ -23,10 +23,13 @@ enum	e_std_colors
 	BLACK = 0xFF000000,
 };
 
+//preferably, this would have some anonymous structs and unions so
+//I could actually pad some
 typedef union u_color
 {
 	int	color;
 	unsigned int ucolor;
+	char	gif_color[4]; // use + 1 to avoid having to pad this one
 	struct
 	{
 		unsigned char	b;

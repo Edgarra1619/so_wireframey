@@ -12,6 +12,7 @@
 
 #ifndef MAP_H
 # define MAP_H
+# include <color.h>
 # include <vector.h>
 # include <state.h>
 
@@ -20,6 +21,13 @@ int		**test_map(int w, int h, t_state *state);
 void	free_map(int **map, int w);
 void	ocean_map(int **map, int w, int h);
 
+//both the height map and the color map are a problem for the mapping function
+typedef struct	s_map
+{
+	int		**height_map;
+	t_color	**color_map;
+	t_vec2	size;
+} t_map;
 
 
 #endif
