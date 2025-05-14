@@ -15,8 +15,8 @@ int	main()
 	bzero(&state, sizeof(state));
 	state.camera.pos = (t_vec3) {0, 0, 0};
 	state.camera.rot = (t_vec2) {45, 57};
-	state.maph = 1000;
-	state.mapw = 1000;
+	state.maph = 100;
+	state.mapw = 100;
 	state.buffer.size = (t_vec2) {WINDOW_WIDTH, WINDOW_HEIGHT};
 	state.map = test_map(state.mapw, state.maph, &state);
 
@@ -31,7 +31,9 @@ int	main()
 	mlx_loop_hook(state.mlx, render_hook, &state);
 	mlx_hook(state.window, ClientMessage, LeaveWindowMask, mlx_loop_end, state.mlx);
 	mlx_loop(state.mlx);
-	free_map(state.map, state.mapw);
+	free_map((void **)state.map, state.mapw);
+	free_map((void **)state.pre_map, state.mapw);
+	free_map((void **)state.color_map, state.mapw);
 	mlx_destroy_image(state.mlx, state.buffer.ptr);
 	mlx_destroy_window(state.mlx, state.window);
 	mlx_destroy_display(state.mlx);

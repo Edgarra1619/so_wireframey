@@ -6,7 +6,7 @@
 /*   By: edgribei <edgribei@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 15:58:36 by edgribei          #+#    #+#             */
-/*   Updated: 2025/05/05 14:15:55 by edgribei         ###   ########.fr       */
+/*   Updated: 2025/05/09 14:13:31 by edgribei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	ocean_map(int **map, int w, int h)
 	count++;
 }
 
-void	free_map(int **map, int w)
+void	free_map(void **map, int w)
 {
 	int	i;
 

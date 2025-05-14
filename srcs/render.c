@@ -110,16 +110,12 @@ void	put_grad_line(void *image, const t_vec2 a, const t_vec2 b,
 					color_lerp(colora, colorb,
 						 (float) (i[0] - i[2]) / (float) (i[1] - i[2])));
 	}
-	put_pixel_image(image, (t_vec2) {a.x, a.y}, color_lerp(colora, colorb, 0.5));
+	put_pixel_image(image, (t_vec2) {a.x, a.y}, colora);
 }
 
-t_vec2	world_to_camera(const t_state *state, t_vec3 position)
+t_vec2	world_to_camera(const t_state *state, t_vec3 position, const float sin_rotx, const float cos_rotx, const float sin_roty, const float cos_roty)
 {
 	t_vec2	result;
-	const float	sin_rotx = sin((float) state->camera.rot.x / 180 * M_PI);
-	const float	cos_rotx = cos((float) state->camera.rot.x / 180 * M_PI);
-	const float	sin_roty = sin((float) state->camera.rot.y / 180 * M_PI);
-	const float	cos_roty = cos((float) state->camera.rot.y / 180 * M_PI);
 
 	position.x += state->camera.pos.x - state->mapw/2;
 	position.y += state->camera.pos.y - state->maph/2;
@@ -138,6 +134,10 @@ t_vec2	world_to_camera(const t_state *state, t_vec3 position)
 
 void	pre_calculate_map(t_state *state)
 {
+	const float	sin_rotx = sin((float) state->camera.rot.x / 180 * M_PI);
+	const float	cos_rotx = cos((float) state->camera.rot.x / 180 * M_PI);
+	const float	sin_roty = sin((float) state->camera.rot.y / 180 * M_PI);
+	const float	cos_roty = cos((float) state->camera.rot.y / 180 * M_PI);
 	int		x;
 	int		y;
 	const	int maph = state->maph;
@@ -150,7 +150,7 @@ void	pre_calculate_map(t_state *state)
 		x = -1;
 		while (++x < mapw)
 		{
-			state->pre_map[x][y] = world_to_camera(state, (t_vec3) {x, y, map[x][y]});
+			state->pre_map[x][y] = world_to_camera(state, (t_vec3) {x, y, map[x][y]}, sin_rotx, cos_rotx, sin_roty, cos_roty);
 			state->color_map[x][y] = get_height_color(map[x][y]);
 		}
 	}
@@ -170,14 +170,14 @@ void	render_map(t_image *img, t_state *state)
 		x = -1;
 		while (++x < mapw)
 		{
-			if (y != state->maph - 1)
+			if (y != maph - 1)
 				put_grad_line(img, state->pre_map[x][y],
 					state->pre_map[x][y + 1],
 					state->color_map[x][y], state->color_map[x][y + 1]);
-			if (x != state->mapw - 1)
+			if (x != mapw - 1)
 				put_grad_line(img, state->pre_map[x][y],
 					state->pre_map[x + 1][y],
-					state->color_map[x][y], state->color_map[x][y + 1]);
+					state->color_map[x][y], state->color_map[x + 1][y]);
 		}
 	}
 }
