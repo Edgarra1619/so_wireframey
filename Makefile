@@ -4,9 +4,9 @@ SRCDIR = ./srcs/
 OBJDIR = ./objs/
 MINILIBX = ~/42libraries/minilibx-linux/
 TESTARGS = 
-CC = gcc
+CC = cc
 INCFLAGS = -I $(MINILIBX) -I ./includes/
-CFLAGS = -Wall -Wextra -Werror -O3 -pg -g -D WINDOW_WIDTH=960 -D WINDOW_HEIGHT=720
+CFLAGS = -Wall -Wextra -Werror -pg -g -O3 -D WINDOW_WIDTH=960 -D WINDOW_HEIGHT=720
 
 OBJS = $(patsubst %.c, $(OBJDIR)%.o, $(SRCS))
 
@@ -29,12 +29,8 @@ $(OBJS): $(OBJDIR)%.o: $(SRCDIR)%.c
 	mkdir -p $(OBJDIR)
 	$(CC) $(CFLAGS) $(INCFLAGS) $^ -c -o $@
 
-$(MINILIBX)libmlx.a:
+$(MINILIBX)libmlx.a $(MINILIBX)libmlx_Linux.a:
 	make -C $(MINILIBX)
-
-$(MINILIBX)libmlx_Linux.a:
-	make -C $(MINILIBX)
-
 
 test: $(NAME) 
 	./$(NAME) $(TESTARGS)

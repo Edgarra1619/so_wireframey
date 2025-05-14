@@ -6,7 +6,7 @@
 #include <render.h>
 #include <color.h>
 
-int	in_bounds(t_image *image, t_vec2 position)
+int	in_bounds(const t_image *const image, const t_vec2 position)
 {
 	if (position.x >= image->size.x || position.x < 0 ||
 		position.y >= image->size.y || position.y < 0)
@@ -14,7 +14,7 @@ int	in_bounds(t_image *image, t_vec2 position)
 	return (1);
 }
 
-inline void	put_pixel_image(t_image *image, const t_vec2 position, const t_color color)
+inline void	put_pixel_image(t_image *const image, const t_vec2 position, const t_color color)
 {
 	if (position.x < 0 || position.y < 0 ||
 			position.x >= WINDOW_WIDTH || position.y >= WINDOW_HEIGHT)
@@ -28,7 +28,7 @@ static void	put_pixel_image(char *image, int sline, t_vec2 position, t_color col
 }
 */
 
-void	put_square(t_image *image, const t_vec2 UL, const t_vec2 DR, const t_color color)
+void	put_square(t_image *const image, const t_vec2 UL, const t_vec2 DR, const t_color color)
 {
 	int	x;
 	int	y;

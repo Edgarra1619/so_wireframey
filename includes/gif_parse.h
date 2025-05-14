@@ -21,15 +21,6 @@ typedef struct	s_giftree
 	int					content;
 }	t_giftree;
 
-t_giftree	*start_tree(int ct_size)
-{
-	
-
-
-
-
-
-
-}
+t_giftree	*start_tree(int ct_size);
 
 #endif

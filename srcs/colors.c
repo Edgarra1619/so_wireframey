@@ -6,7 +6,7 @@
 /*   By: edgribei <edgribei@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 17:52:05 by edgribei          #+#    #+#             */
-/*   Updated: 2025/05/02 18:31:48 by edgribei         ###   ########.fr       */
+/*   Updated: 2025/05/14 19:06:46 by edgribei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,10 @@ t_color	color_sum(const t_color a, const t_color b)
 {
 	t_color	c;
 
-	c.s_rgba.a = clamp((int) a.s_rgba.a + (int) b.s_rgba.a, 0, 255);
-	c.s_rgba.r = clamp((int) a.s_rgba.r + (int) b.s_rgba.r, 0, 255);
-	c.s_rgba.g = clamp((int) a.s_rgba.g + (int) b.s_rgba.g, 0, 255);
-	c.s_rgba.b = clamp((int) a.s_rgba.b + (int) b.s_rgba.b, 0, 255);
+	c.s_rgba.a = clamp(a.s_rgba.a + b.s_rgba.a, 0, 255);
+	c.s_rgba.r = clamp(a.s_rgba.r + b.s_rgba.r, 0, 255);
+	c.s_rgba.g = clamp(a.s_rgba.g + b.s_rgba.g, 0, 255);
+	c.s_rgba.b = clamp(a.s_rgba.b + b.s_rgba.b, 0, 255);
 	return (c);
 }
 
