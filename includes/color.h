@@ -6,7 +6,7 @@
 /*   By: edgribei <edgribei@student.42porto.co      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 13:58:18 by edgribei          #+#    #+#             */
-/*   Updated: 2025/05/02 18:21:10 by edgribei         ###   ########.fr       */
+/*   Updated: 2025/05/19 14:11:08 by edgribei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ enum	e_std_colors
 //I could actually pad some
 typedef union u_color
 {
-	int	color;
-	unsigned int ucolor;
-	char	gif_color[4]; // use + 1 to avoid having to pad this one
+	int				color;
+	unsigned int	ucolor;
+	char			gif_color[4]; // use + 1 to avoid having to pad this one
 	struct
 	{
 		unsigned char	b;

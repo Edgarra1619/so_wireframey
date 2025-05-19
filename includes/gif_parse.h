@@ -1,6 +1,6 @@
 #ifndef GIF_PARSE_H
 # define GIF_PARSE_H
-
+# include <map.h>
 # include <stdint.h>
 typedef struct	s_gif_header
 {
@@ -12,31 +12,31 @@ typedef struct	s_gif_header
 	char	_ignored[2];
 }	t_gif_header;
 
-
-//the branches should be a list, when using this as a general case
-//however, this is for the gif
-typedef struct	s_giftree
-{
-	struct s_giftree	*branches[255];
-	int					content;
-}	t_giftree;
-
 //if prev code is -1, it's a core code
 //if last_index is -1, it isn't initialized
+//if prev_code is itself, then it's a clear code
 typedef struct	s_code
 {
 	int	prev_code;
 	int	last_index;
 } t_code;
 
-
 typedef struct	s_ctable
 {
 	int			prev_code;
 	char		code_size;
 	int			clear_code;
+	char		lzw;
 	t_code		*table;
 } t_ctable;
+
+typedef struct s_gifmap
+{
+	t_map	*map;
+	t_vec2	offset;
+	t_color *cltab;
+}	t_gifmap;
+
 
 t_giftree	*start_tree(int ct_size);
 #endif

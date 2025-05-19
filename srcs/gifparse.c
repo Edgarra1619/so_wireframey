@@ -5,6 +5,21 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
+
+
+void	add_to_map(t_gifmap *map, t_color color)
+{
+	map->map->color_map[map->offset.x][map->offset.y] = color;
+	map->map->height_map[map->offset.x][map->offset.y] = 
+		color.s_rgba.r + color.s_rgba.g + color.s_rgba.b;
+	map->offset.x++;
+	if (map->offset.x == map->map->size.x)
+	{
+		map->offset.x = 0;
+		map->offset.y++;
+	}
+}
+
 //returns what got overflowed
 int	bitshift_left(const size_t shift, char *data, size_t size)
 {
@@ -36,55 +51,11 @@ int	bitshift_left(const size_t shift, char *data, size_t size)
 	return (result);
 }
 
-void	parse_color_table(t_color *const table, const int size, const int fd)
-{
-	int	i;
 
-	i = 0;
-	while (i < size)
-	{
-		read(fd, table + i, 3);
-		i++;
-	}
-}
-
-char	*parse_block(const t_color *const cltab, size_t ctsize, char lzw, const int fd)
-{
-	unsigned char	block_size;
-	size_t			bits_read;
-	char	data[256];
-	t_giftree	*const codetab = start_tree(ctsize);
-	int				code;
-	int				prev_code;
-
-	read(fd, &block_size, 1);
-	read(fd, data, block_size);
-	//block_size * 8 / lzw; WARN this is the max size for the data
-	//the actual size will be computed over the execution of the parser
-	//pseudo implementation TODO actually finish this
-	bits_read = 0;
-	code = bitshift_left(lzw, data, block_size);
-	put_code(code, codetab, stream);
-	while (bits_read + lzw < block_size * 8)
-	{
-		prev_code = code;
-		code = bitshift_left(lzw, data, block_size);
-		if (find_code(code, codetab))
-		{
-			put_code(code, codetab, stream);
-			new_code(code, prev_code, codetab);
-		}
-		else
-		{
-			put_code(new_code(prev_code, prev_code, codetab), codetab, stream);
-		}
-		bits_read += lzw;
-	}
-}
 
 void	parse_image(t_color *table, int size, int fd)
 {
-
+	t_gifmap	
 
 
 
@@ -97,6 +68,18 @@ t_gif_header	parse_header(int fd)
 	
 	read(fd, &info, sizeof(info));
 	return (info);
+}
+
+void	parse_color_table(t_color *const table, const int size, const int fd)
+{
+	int	i;
+
+	i = 0;
+	while (i < size)
+	{
+		read(fd, table + i, 3);
+		i++;
+	}
 }
 
 //TODO parse 87a
