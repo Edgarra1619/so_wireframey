@@ -15,8 +15,8 @@ int	main()
 	bzero(&state, sizeof(state));
 	state.camera.pos = (t_vec3) {0, 0, 0};
 	state.camera.rot = (t_vec2) {45, 57};
-	state.maph = 1000;
-	state.mapw = 1000;
+	state.maph = 500;
+	state.mapw = 500;
 	state.buffer.size = (t_vec2) {WINDOW_WIDTH, WINDOW_HEIGHT};
 	state.map = test_map(state.mapw, state.maph, &state);
 

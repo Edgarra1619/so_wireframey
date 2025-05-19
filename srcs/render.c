@@ -33,11 +33,6 @@ void	put_square(t_image *const image, const t_vec2 UL, const t_vec2 DR, const t_
 	int	x;
 	int	y;
 
-	if (color.ucolor == BLACK)
-	{
-		bzero(image->data, image->sline * image->size.y);
-		return ;
-	}
 	y = UL.y - 1;
 	while (++y <= DR.y)
 	{

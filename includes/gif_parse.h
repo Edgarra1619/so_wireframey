@@ -21,6 +21,22 @@ typedef struct	s_giftree
 	int					content;
 }	t_giftree;
 
-t_giftree	*start_tree(int ct_size);
+//if prev code is -1, it's a core code
+//if last_index is -1, it isn't initialized
+typedef struct	s_code
+{
+	int	prev_code;
+	int	last_index;
+} t_code;
 
+
+typedef struct	s_ctable
+{
+	int			prev_code;
+	char		code_size;
+	int			clear_code;
+	t_code		*table;
+} t_ctable;
+
+t_giftree	*start_tree(int ct_size);
 #endif

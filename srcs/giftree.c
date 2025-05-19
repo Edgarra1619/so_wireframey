@@ -21,11 +21,32 @@ static t_giftree	*new_treenode(int content)
 		return (NULL);
 	tree->content = content;
 	return (tree);
+};
+
+t_ctable *start_ctable(size_t ctsize)
+{
+	
 }
 
+
+
+void	free_tree(t_giftree *const tree)
+{
+	int	i;
+
+	i = 0;
+	while (tree->branches[i])
+	{
+		free_tree(tree->branches[i]);
+		i++;
+	}
+	free(tree);
+}
+
+//head of the tree keeps the max instruction
 t_giftree	*start_tree(int ct_size)
 {
-	t_giftree *const	tree = calloc(sizeof(t_giftree), 1);
+	t_giftree *const	tree = new_treenode(ct_size + 2);
 	int					i;
 
 	if (!tree)
@@ -33,11 +54,10 @@ t_giftree	*start_tree(int ct_size)
 	i = 0;
 	while (i < ct_size)
 	{
-		
-
-
+		tree->branches[i] = new_treenode(i);
+		if (!tree->branches[i])
+			free_tree(tree);
+		i++;
 	}
-	(void) i;
-	(void) ct_size;
 	return (tree);
 }
