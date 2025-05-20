@@ -6,7 +6,7 @@
 /*   By: edgribei <edgribei@student.42porto.co      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:00:14 by edgribei          #+#    #+#             */
-/*   Updated: 2025/05/05 14:27:14 by edgribei         ###   ########.fr       */
+/*   Updated: 2025/05/20 18:05:12 by edgribei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,8 @@ typedef struct	s_image
 typedef struct	s_state
 {
 	t_camera	camera;
+	t_map		*maps;
+	int			mapcount;
 	int			**map;
 	t_vec2		**pre_map;
 	t_color		**color_map;

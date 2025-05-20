@@ -1,13 +1,13 @@
 NAME = FdF
-SRCS = main.c colors.c my_math.c render.c map.c hooks.c vector.c
+SRCS = main.c colors.c my_math.c render.c map.c hooks.c vector.c gifparse.c gifimg_utils.c
 SRCDIR = ./srcs/
 OBJDIR = ./objs/
+LIBFT = ./libft/
 MINILIBX = ~/42libraries/minilibx-linux/
 TESTARGS = 
 CC = cc
-INCFLAGS = -I $(MINILIBX) -I ./includes/
+INCFLAGS = -I $(MINILIBX) -I ./includes/ -I $(LIBFT)
 CFLAGS = -Wall -Wextra -Werror -pg -g -O3 -D WINDOW_WIDTH=960 -D WINDOW_HEIGHT=720
-
 OBJS = $(patsubst %.c, $(OBJDIR)%.o, $(SRCS))
 
 all: $(NAME)
@@ -21,13 +21,16 @@ fclean: clean
 
 re: clean all
 
-$(NAME): $(OBJS) $(MINILIBX)libmlx_Linux.a 
+$(NAME): $(OBJS) $(MINILIBX)libmlx_Linux.a $(LIBFT)libft.a
 	$(CC) $(CFLAGS) $(OBJS) $(MINILIBX)libmlx_Linux.a $(INCFLAGS) -o $@\
 		-lXext -lX11 -lm -lbsd 
 
 $(OBJS): $(OBJDIR)%.o: $(SRCDIR)%.c
 	mkdir -p $(OBJDIR)
 	$(CC) $(CFLAGS) $(INCFLAGS) $^ -c -o $@
+
+$(LIBFT)libft.a:
+	make -C $(LIBFT)
 
 $(MINILIBX)libmlx.a $(MINILIBX)libmlx_Linux.a:
 	make -C $(MINILIBX)

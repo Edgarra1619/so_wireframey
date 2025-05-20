@@ -151,6 +151,8 @@ void	pre_calculate_map(t_state *state)
 	}
 }
 
+//TODO make render_map receive a map and a state
+//			(for the camera and for the mlx stuff)
 void	render_map(t_image *img, t_state *state)
 {
 	int		x;

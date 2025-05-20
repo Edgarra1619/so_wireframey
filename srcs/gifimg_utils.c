@@ -19,6 +19,37 @@ static void	add_to_map(t_gifmap *const map, const t_color color)
 	}
 }
 
+//returns what got overflowed
+static int	bitshift_left(const size_t shift, char *data, size_t size)
+{
+	const size_t		byte_shift = size / 8;
+	const char			mask = 255 << (8 - (shift % 8));
+	size_t				i;
+	int					result;
+
+	i = 0;
+	result = data[0] * byte_shift;
+	while (i < size)
+	{
+		if (i < size - byte_shift)
+			data[i] = data[i + byte_shift];
+		else
+			data[i] = 0;
+		i++;
+	}
+	size -= byte_shift;
+	i = 0;
+	result |= data[0] & mask >> (8 - (shift % 8));
+	while (i < size - 1)
+	{
+		data[i] = (data[i] << (shift % 8)) |
+			((data[i + 1] & mask) >> (8 - (shift % 8)));
+		i++;
+	}
+	data[size] = data[size] << (shift % 8);
+	return (result);
+}
+
 static int new_code(int first_index, t_ctable *const tab)
 {
 	int		code;
@@ -98,38 +129,6 @@ static int	solve_code(int code, t_ctable *const tab,
 	return (code);
 }
 
-//returns what got overflowed
-static int	bitshift_left(const size_t shift, char *data, size_t size)
-{
-	const size_t		byte_shift = size / 8;
-	const char			mask = 255 << (8 - (shift % 8));
-	size_t				i;
-	int					result;
-
-	i = 0;
-	result = data[0] * byte_shift;
-	while (i < size)
-	{
-		if (i < size - byte_shift)
-			data[i] = data[i + byte_shift];
-		else
-			data[i] = 0;
-		i++;
-	}
-	size -= byte_shift;
-	i = 0;
-	result |= data[0] & mask >> (8 - (shift % 8));
-	while (i < size - 1)
-	{
-		data[i] = (data[i] << (shift % 8)) |
-			((data[i + 1] & mask) >> (8 - (shift % 8)));
-		i++;
-	}
-	data[size] = data[size] << (shift % 8);
-	return (result);
-}
-
-
 //returns 0 on end of image
 char	parse_block(const char lzw, const int fd, t_gifmap *const map)
 {
@@ -150,7 +149,7 @@ char	parse_block(const char lzw, const int fd, t_gifmap *const map)
 		if (solve_code(bitshift_left(codetab.code_size, data, block_size),
 				&codetab, map) == codetab.clear_code)
 			bits_read += codetab.code_size;
-		if (codetab.prev_code == codetab.clear_code + 1)
+		else if (codetab.prev_code == codetab.clear_code + 1)
 		{
 			free(codetab.table);
 			return (0);

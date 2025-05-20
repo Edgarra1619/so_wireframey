@@ -2,7 +2,7 @@
 # define GIF_PARSE_H
 # include <map.h>
 # include <stdint.h>
-# include <endian.h>
+
 typedef struct	s_gif_header
 {
 	char	signature[3];
@@ -31,12 +31,13 @@ typedef struct	s_ctable
 	t_code		*table;
 } t_ctable;
 
-typedef struct s_gifmap
+typedef struct		s_gifmap
 {
-	t_map	*map;
-	t_vec2	offset;
-	t_color *cltab;
-}	t_gifmap;
+	t_map			*map;
+	t_vec2			offset;
+	t_color			*cltab;
+}					t_gifmap;
 
+t_map	*parse_gif (const char *path, int *image_count);
 char parse_block(char lzw, int fd, t_gifmap * map);
 #endif

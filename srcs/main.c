@@ -6,7 +6,7 @@
 #include <map.h>
 #include <hooks.h>
 #include <X11/X.h>
-
+#include <gifparse.h>
 int	main()
 {
 	t_state	state;
@@ -15,11 +15,8 @@ int	main()
 	bzero(&state, sizeof(state));
 	state.camera.pos = (t_vec3) {0, 0, 0};
 	state.camera.rot = (t_vec2) {45, 57};
-	state.maph = 500;
-	state.mapw = 500;
-	state.buffer.size = (t_vec2) {WINDOW_WIDTH, WINDOW_HEIGHT};
-	state.map = test_map(state.mapw, state.maph, &state);
 
+	state.maps = parse_gif("./maps/nerd-final-fantasy-vii.gif", &(state.mapcount));
 	state.mlx = mlx_init();
 	state.window = mlx_new_window(state.mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "c not yet my pp");
 	state.buffer.ptr = mlx_new_image(state.mlx, WINDOW_WIDTH, WINDOW_HEIGHT);

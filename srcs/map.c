@@ -6,7 +6,7 @@
 /*   By: edgribei <edgribei@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 15:58:36 by edgribei          #+#    #+#             */
-/*   Updated: 2025/05/09 14:13:31 by edgribei         ###   ########.fr       */
+/*   Updated: 2025/05/20 17:07:22 by edgribei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,30 @@
 #include <math.h>
 #include <vector.h>
 
+void	new_map(t_map *map)
+{
+	const size_t	w = map->size.x;
+	const size_t	h = map->size.y;
+	size_t			i;
+
+	//TODO put ft_calloc here and guard it
+	map->height_map = calloc(w, sizeof(int*));
+	map->color_map = calloc(w, sizeof(t_color*));
+	i = 0;
+	while (i < w)
+	{
+		map->height_map[i] = calloc(h, sizeof(int));
+		map->color_map[i] = calloc(h, sizeof(t_color));
+		i++;
+	}
+}
+
 int	**test_map(int w, int h, t_state *state)
 {
 	int	**map;
 	int	i;
 
-	//TODO put ft_calloc here
+	//TODO put ft_calloc here and guard it
 	map = calloc(w, sizeof(int *));
 	state->pre_map = calloc(w, sizeof(t_vec2*));
 	state->color_map = calloc(w, sizeof(t_color*));
