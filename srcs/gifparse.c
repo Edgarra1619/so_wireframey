@@ -2,6 +2,7 @@
 #include <gif_parse.h>
 #include <map.h>
 #include <fcntl.h>
+#include <stdint.h>
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -51,14 +52,20 @@ int	bitshift_left(const size_t shift, char *data, size_t size)
 	return (result);
 }
 
-
-
-void	parse_image(t_color *table, int size, int fd)
+//called after the image separator byte (2C)
+t_map	*parse_image(t_color *table, int size, int fd)
 {
-	t_gifmap	
+	t_gifmap	map;
+	char		lzw;
+	int16_t		size[2];
 
-
-
+	//skip the image alignment and ignore it
+	read(fd, size, 4);
+	//TODO parse size and create a map to pass to parse block
+	read(fd, size, 4);
+	read(fd, &lzw, 1);
+	while (parse_block(lzw, fd, map))
+		;
 
 }
 

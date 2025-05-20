@@ -1,7 +1,10 @@
-#include <maps.h>
+#include <map.h>
 #include <vector.h>
 #include <color.h>
 #include <unistd.h>
+#include <gif_parse.h>
+#include <stdlib.h>
+#include <string.h>
 
 static void	add_to_map(t_gifmap *const map, const t_color color)
 {
@@ -29,11 +32,11 @@ static int new_code(int first_index, t_ctable *const tab)
 	//TODO put ft_memcpy and ft_memset
 	if (code == ((int) 1 << tab->code_size) - 1)
 	{
-		new_tab = malloc(sizeof(t_ctable) * ((int) 1 << tab->code_size) + 1);
+		new_tab = malloc(sizeof(t_code) * ((int) 1 << ++(tab->code_size)));
 		//TODO guard this
-		memset(new_tab, -1, sizeof(t_ctable) * ((int) 1 << tab->code_size + 1));
+		memset(new_tab, -1, sizeof(t_code) * ((int) 1 << tab->code_size));
 		memcpy(new_tab, tab->table,
-				sizeof(t_ctable) * ((int) 1 << tab->code_size);
+				sizeof(t_code) * ((int) 1 << (tab->code_size - 1)));
 		free(tab->table);
 		tab->table = new_tab;
 	}
@@ -51,28 +54,42 @@ static void	put_code(const int code, t_ctable *const tab,
 	tab->prev_code = code;
 }
 
-void	clear_code(t_ctable *const tab)
+t_code	*new_table(const unsigned char lzw)
+{
+	t_code	*const new_tab = malloc((unsigned int) 1 << (lzw + 1));
+	unsigned int	i;
+
+	if (!new_tab)
+		return (NULL);
+	//put ft_memset here
+	memset(new_tab, -1, sizeof(t_code) * ((int) 1 << (lzw + 1)));
+	i = 0;
+	while (i < (1 << lzw) + 2)
+		new_tab->last_index = i++;
+	return (new_tab);
+}
+
+static void	clear_code(t_ctable *const tab)
 {
 	tab->prev_code = 0;
 	tab->code_size = tab->lzw;
 	free(tab->table);
 	tab->table = new_table(tab->lzw);
+	//TODO MEGA guard this
 }
 
 static int	solve_code(int code, t_ctable *const tab,
 	t_gifmap *const map)
 {
 	if (code == tab->clear_code + 1)
-		return (code);
-	if (code == tab->clear_code)
+		tab->prev_code = code;
+	else if (code == tab->clear_code)
 	{
 		clear_code(tab);
-		put_code( codetab, map);
+		put_code(code, tab, map);
 	}
 	else if (tab->table[code].last_index == -1)
-	{
-		put_code(new_code(prev_code, tab), tab, map);
-	}
+		put_code(new_code(tab->prev_code, tab), tab, map);
 	else
 	{
 		new_code(code, tab);
@@ -113,7 +130,7 @@ static int	bitshift_left(const size_t shift, char *data, size_t size)
 }
 
 
-//returns 1 on end of image
+//returns 0 on end of image
 char	parse_block(const char lzw, const int fd, t_gifmap *const map)
 {
 	unsigned char	block_size;
@@ -123,23 +140,22 @@ char	parse_block(const char lzw, const int fd, t_gifmap *const map)
 
 	read(fd, &block_size, 1);
 	read(fd, data, block_size);
-	//block_size * 8 / lzw; WARN this is the max size for the data
-	//the actual size will be computed over the execution of the parser
-	//pseudo implementation TODO actually finish this
+	codetab.lzw = lzw;
 	codetab.table = NULL;
+	codetab.code_size = lzw;
 	bits_read = 0;
-	while (bits_read + codetab->code_size < block_size * 8)
+	while (bits_read + codetab.code_size < block_size * 8)
 	{
-		//TODO solve the first character case
-		if (solve_code(bitshift_left(codetab.code_size, data, block_size),
-			&codetab, map) ==
-				codetab.clear_code + 1)
-		{
-			free(codetab->table);
-			return (1);
-		}
 		bits_read += codetab.code_size;
+		if (solve_code(bitshift_left(codetab.code_size, data, block_size),
+				&codetab, map) == codetab.clear_code)
+			bits_read += codetab.code_size;
+		if (codetab.prev_code == codetab.clear_code + 1)
+		{
+			free(codetab.table);
+			return (0);
+		}
 	}
-	free(codetab->table);
-	return (0);
+	free(codetab.table);
+	return (1);
 }
