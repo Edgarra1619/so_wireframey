@@ -1,10 +1,10 @@
 #include <state.h>
 #include <math.h>
-#include <strings.h>
 #include <vector.h>
 #include <mlx.h>
 #include <render.h>
 #include <color.h>
+#include <map.h>
 
 int	in_bounds(const t_image *const image, const t_vec2 position)
 {
@@ -108,13 +108,11 @@ void	put_grad_line(void *image, const t_vec2 a, const t_vec2 b,
 	put_pixel_image(image, (t_vec2) {a.x, a.y}, colora);
 }
 
-t_vec2	world_to_camera(const t_state *state, t_vec3 position, const float sin_rotx, const float cos_rotx, const float sin_roty, const float cos_roty)
+t_vec2	world_to_camera(const t_camera *camera, t_vec3 position, const float sin_rotx, const float cos_rotx, const float sin_roty, const float cos_roty)
 {
 	t_vec2	result;
 
-	position.x += state->camera.pos.x - state->mapw/2;
-	position.y += state->camera.pos.y - state->maph/2;
-	position.z += state->camera.pos.z;
+	position = sum_vec3(position, camera->pos);
 //	position = sum_vec3(position, (t_vec3){-state->mapw/2, -state->maph/2, 0});
 	result.x = WINDOW_WIDTH / 2 + 16 * ((float) position.x * cos_rotx -
 			(float) position.y * sin_rotx);
@@ -127,40 +125,37 @@ t_vec2	world_to_camera(const t_state *state, t_vec3 position, const float sin_ro
 	return (result);
 }
 
-void	pre_calculate_map(t_state *state)
+void	pre_calculate_map(const t_camera *const camera, const t_map *const map, t_vec2 **const pre_map)
 {
-	const float	sin_rotx = sin((float) state->camera.rot.x / 180 * M_PI);
-	const float	cos_rotx = cos((float) state->camera.rot.x / 180 * M_PI);
-	const float	sin_roty = sin((float) state->camera.rot.y / 180 * M_PI);
-	const float	cos_roty = cos((float) state->camera.rot.y / 180 * M_PI);
+	const float	sin_rotx = sin((float) camera->rot.x / 180 * M_PI);
+	const float	cos_rotx = cos((float) camera->rot.x / 180 * M_PI);
+	const float	sin_roty = sin((float) camera->rot.y / 180 * M_PI);
+	const float	cos_roty = cos((float) camera->rot.y / 180 * M_PI);
 	int		x;
 	int		y;
-	const	int maph = state->maph;
-	const	int mapw = state->mapw;
-	const int	**const map = (const int **)state->map;
-
+	const	int maph = map->size.y;
+	const	int mapw = map->size.x;
 	y = -1;
 	while (++y < maph)
 	{
 		x = -1;
 		while (++x < mapw)
-		{
-			state->pre_map[x][y] = world_to_camera(state, (t_vec3) {x, y, map[x][y]}, sin_rotx, cos_rotx, sin_roty, cos_roty);
-			state->color_map[x][y] = get_height_color(map[x][y]);
-		}
+			pre_map[x][y] = world_to_camera(camera, (t_vec3) {x, y, map->height_map[x][y]}, sin_rotx, cos_rotx, sin_roty, cos_roty);
 	}
 }
 
+
 //TODO make render_map receive a map and a state
 //			(for the camera and for the mlx stuff)
-void	render_map(t_image *img, t_state *state)
+void	render_map(t_image *const img, const t_map *const map,
+			const t_camera *const camera, t_vec2 **pre_map)
 {
 	int		x;
 	int		y;
-	const int	maph = state->maph;
-	const int	mapw = state->mapw;
+	const int	maph = map->size.y;
+	const int	mapw = map->size.x;
 
-	pre_calculate_map(state);
+	pre_calculate_map(camera, map, pre_map);
 	y = -1;
 	while (++y < maph)
 	{
@@ -168,13 +163,13 @@ void	render_map(t_image *img, t_state *state)
 		while (++x < mapw)
 		{
 			if (y != maph - 1)
-				put_grad_line(img, state->pre_map[x][y],
-					state->pre_map[x][y + 1],
-					state->color_map[x][y], state->color_map[x][y + 1]);
+				put_grad_line(img, pre_map[x][y],
+					pre_map[x][y + 1],
+					map->color_map[x][y], map->color_map[x][y + 1]);
 			if (x != mapw - 1)
-				put_grad_line(img, state->pre_map[x][y],
-					state->pre_map[x + 1][y],
-					state->color_map[x][y], state->color_map[x + 1][y]);
+				put_grad_line(img, pre_map[x][y],
+					pre_map[x + 1][y],
+					map->color_map[x][y], map->color_map[x + 1][y]);
 		}
 	}
 }

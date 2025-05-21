@@ -5,9 +5,9 @@ OBJDIR = ./objs/
 LIBFT = ./libft/
 MINILIBX = ~/42libraries/minilibx-linux/
 TESTARGS = 
-CC = cc
+CC = clang
 INCFLAGS = -I $(MINILIBX) -I ./includes/ -I $(LIBFT)
-CFLAGS = -Wall -Wextra -Werror -pg -g -O3 -D WINDOW_WIDTH=960 -D WINDOW_HEIGHT=720
+CFLAGS = -Wall -Wextra -Werror -gdwarf-4 -O0 -D WINDOW_WIDTH=960 -D WINDOW_HEIGHT=720
 OBJS = $(patsubst %.c, $(OBJDIR)%.o, $(SRCS))
 
 all: $(NAME)
@@ -22,7 +22,7 @@ fclean: clean
 re: clean all
 
 $(NAME): $(OBJS) $(MINILIBX)libmlx_Linux.a $(LIBFT)libft.a
-	$(CC) $(CFLAGS) $(OBJS) $(MINILIBX)libmlx_Linux.a $(INCFLAGS) -o $@\
+	$(CC) $(CFLAGS) $(OBJS) $(LIBFT)libft.a $(MINILIBX)libmlx_Linux.a $(INCFLAGS) -o $@\
 		-lXext -lX11 -lm -lbsd 
 
 $(OBJS): $(OBJDIR)%.o: $(SRCDIR)%.c
@@ -45,3 +45,6 @@ gprof: $(NAME)
 
 valgrind: $(NAME)
 	valgrind --leak-check=full ./$(NAME) $(TESTARGS)
+
+gdb: $(NAME)
+	gdbtui --args $(TESTARGS) $(NAME)

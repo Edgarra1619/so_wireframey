@@ -29,13 +29,12 @@ typedef union u_color
 {
 	int				color;
 	unsigned int	ucolor;
-	char			gif_color[4]; // use + 1 to avoid having to pad this one
+	char			gif_color[3]; // use + 1 to avoid having to pad this one
 	struct
 	{
 		unsigned char	b;
 		unsigned char	g;
 		unsigned char	r;
-		unsigned char	a;
 	}	s_rgba;
 }	t_color;
 

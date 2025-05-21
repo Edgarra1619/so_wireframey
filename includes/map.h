@@ -14,7 +14,7 @@
 # define MAP_H
 # include <color.h>
 # include <vector.h>
-# include <state.h>
+//# include <state.h>
 
 
 //both the height map and the color map are a problem for the mapping function
@@ -25,8 +25,9 @@ typedef struct	s_map
 	t_vec2	size;
 } t_map;
 
-//t_map *malloc_map
-int		**test_map(int w, int h, t_state *state);
+void	new_map(t_map *map);
+void	pre_map_alloc(void *state);
+//int		**test_map(int w, int h, t_state *state);
 //int		**parse_map(int fd, int *w, int *h);
 void	free_map(void **map, int w);
 void	ocean_map(int **map, int w, int h);

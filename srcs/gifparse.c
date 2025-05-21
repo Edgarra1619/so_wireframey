@@ -26,7 +26,7 @@ t_map	*parse_image(const t_color *const table, int fd)
 	map.map->size.y = size[1];
 	new_map(map.map);
 	read(fd, &lzw, 1);
-	while (parse_block(lzw, fd, map))
+	while (parse_block(lzw, fd, &map))
 		;
 	return (map.map);
 }
@@ -46,6 +46,7 @@ void	parse_color_table(t_color *const table, const int size, const int fd)
 	i = 0;
 	while (i < size)
 	{
+		table[i].color = 0;
 		read(fd, table + i, 3);
 		i++;
 	}
@@ -69,14 +70,14 @@ t_map	*parse_allimg(const int fd, int *image_count,
 		ft_lstadd_back(&list_maps, ft_lstnew(parse_image(cltab, fd)));
 		read(fd, buffer + 6, 2);
 	}
-	*image_count = ft_lstsize(lst_maps);
+	*image_count = ft_lstsize(list_maps);
 	array = malloc(sizeof(t_map) * (*image_count));
 	i = 0;
 	while (list_maps)
 	{
 		temp = list_maps->next;
-		array[i] = list_maps->content;
-		free(list_maps);
+		array[i] = *((t_map *) list_maps->content);
+		ft_lstdelone(list_maps, free);
 		list_maps = temp;
 	}
 	return (array);
@@ -93,17 +94,22 @@ t_map	*parse_gif(const char *path, int *image_count)
 
 	*image_count = 0;
 	if (fd < 0)
+	{
+		write(2, "COULDN'T OPEN FILE\n", 19);
 		return (NULL);
+	}
 	info = parse_header(fd);
 	// TODO put ft_strcmp and ft_calloc here
 	if (strncmp(info.signature, "GIF", 3) || !(info.packed & 0b10000000))
 	{
 		if (!(info.packed & 0b1000000))
 			write(2, "GIF HAS LOCAL COLOR TABLES\n", 27);
+		else
+			write(2, "THIS IS NOT A GIF\n", 18);
 		close(fd);
 		return (NULL);
 	}
-	parse_color_table(glob_coltable, 1 << ((info.packed & 0b0111) + 1), fd);
+	parse_color_table(glob_coltable, (int) 1 << ((info.packed & 0b0111) + 1), fd);
 	maps = parse_allimg(fd, image_count, glob_coltable);
 	close (fd);
 	return (maps);

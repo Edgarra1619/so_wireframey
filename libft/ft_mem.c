@@ -47,11 +47,9 @@ void	*ft_memcpy(void *dest, const void *src, size_t n)
 void	*ft_memmove(void *dest, const void *src, size_t n)
 {
 	size_t	i;
-	char	*ndest;
 
 	if (!dest && !src)
 		return (NULL);
-	ndest = (char *) dest;
 	if (src < dest)
 		return (ft_memcpy (dest, src, n));
 	i = 0;

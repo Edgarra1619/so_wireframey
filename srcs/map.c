@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft.h"
 #include <color.h>
 #include <state.h>
 #include <map.h>
@@ -33,6 +34,30 @@ void	new_map(t_map *map)
 		map->color_map[i] = calloc(h, sizeof(t_color));
 		i++;
 	}
+}
+
+void	pre_map_alloc(void *stat)
+{
+	t_vec2	max_size;
+	int		i;
+	t_state	*const state = (t_state*) stat;
+
+	max_size = (t_vec2){0, 0};
+	i = 0;
+	while (i < state->mapcount)
+	{
+		if (state->maps[i].size.x > max_size.x)
+			max_size.x = state->maps[i].size.x;
+		if (state->maps[i].size.y > max_size.y)
+			max_size.y = state->maps[i].size.y;
+		i++;
+	}
+	state->pre_map = ft_calloc(max_size.x, sizeof(t_vec2*));
+	//TODO GUARD THIS
+	i = 0;
+	while (i < max_size.x)
+		state->pre_map[i++] = ft_calloc(max_size.y, sizeof(t_vec2));
+		//and guard this
 }
 
 int	**test_map(int w, int h, t_state *state)

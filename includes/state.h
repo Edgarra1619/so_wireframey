@@ -13,6 +13,7 @@
 #ifndef STATE_H
 # define STATE_H
 # include <vector.h>
+#include <map.h>
 # include <color.h>
 
 typedef struct s_camera
