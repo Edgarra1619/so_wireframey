@@ -6,7 +6,7 @@
 /*   By: edgribei <edgribei@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 15:58:36 by edgribei          #+#    #+#             */
-/*   Updated: 2025/05/20 17:07:22 by edgribei         ###   ########.fr       */
+/*   Updated: 2025/05/21 18:58:44 by edgribei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ void	new_map(t_map *map)
 		i++;
 	}
 }
+
 
 void	pre_map_alloc(void *stat)
 {
@@ -114,5 +115,19 @@ void	free_map(void **map, int w)
 	i = 0;
 	while (i < w)
 		free(map[i++]);
+	free(map);
+}
+
+void	free_maps(t_map *map, int count)
+{
+	int	i;
+
+	i = 0;
+	while (i < count)
+	{
+		free_map((void**) map[i].height_map, map[i].size.x);
+		free_map((void**) map[i].color_map, map[i].size.x);
+		i++;
+	}
 	free(map);
 }

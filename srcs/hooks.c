@@ -7,6 +7,14 @@
 #include <unistd.h>
 #include <map.h>
 
+static inline void	put_pixel_image(t_image *const image, const t_vec2 position, const t_color color)
+{
+	if (position.x < 0 || position.y < 0 ||
+			position.x >= WINDOW_WIDTH || position.y >= WINDOW_HEIGHT)
+		return ;
+	((int*) (image->data + position.y * image->sline))[position.x] = color.color;
+}
+
 int	render_hook(t_state *state)
 {
 	const int	cosmove = cos((float) state->camera.rot.x / 180.0 * M_PI) * 2;
@@ -29,7 +37,19 @@ int	render_hook(t_state *state)
 	if (state->pressed_keys & KEYCODEE)
 		state->camera.pos.z -= 10;
 	put_square(&state->buffer, (t_vec2){0, 0}, (t_vec2){WINDOW_WIDTH, WINDOW_HEIGHT}, (t_color) BLACK);
-	render_map(&state->buffer, state->maps, &state->camera, state->pre_map);
+	
+	int x = 0;
+	while (x < state->maps->size.x)
+	{
+		int	y = 0;
+		while (y < state->maps->size.y)
+		{
+			put_pixel_image(&state->buffer, (t_vec2) {x, y + 100}, state->maps->color_map[x][y]);
+			y++;
+		}
+		x++;
+	}
+	//render_map(&state->buffer, state->maps, &state->camera, state->pre_map);
 	mlx_put_image_to_window(state->mlx, state->window, state->buffer.ptr, 0, 0);
 	return (0);
 }

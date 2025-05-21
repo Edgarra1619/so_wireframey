@@ -6,7 +6,7 @@
 /*   By: edgribei <edgribei@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 15:08:02 by edgribei          #+#    #+#             */
-/*   Updated: 2025/05/13 17:12:18 by edgribei         ###   ########.fr       */
+/*   Updated: 2025/05/21 18:54:40 by edgribei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ void	pre_map_alloc(void *state);
 //int		**test_map(int w, int h, t_state *state);
 //int		**parse_map(int fd, int *w, int *h);
 void	free_map(void **map, int w);
+void	free_maps(t_map *map, int count);
 void	ocean_map(int **map, int w, int h);
 
 #endif

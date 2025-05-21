@@ -16,6 +16,7 @@ t_map	*parse_image(const t_color *const table, int fd)
 	char		lzw;
 	uint16_t		size[2];
 
+	map.offset = (t_vec2) {0, 0};
 	map.map = malloc(sizeof(t_map));
 	map.cltab = table;
 	//skip the image alignment and ignore it
@@ -26,6 +27,7 @@ t_map	*parse_image(const t_color *const table, int fd)
 	map.map->size.y = size[1];
 	new_map(map.map);
 	read(fd, &lzw, 1);
+	read(fd, &lzw, 1);
 	while (parse_block(lzw, fd, &map))
 		;
 	return (map.map);
@@ -34,8 +36,8 @@ t_map	*parse_image(const t_color *const table, int fd)
 t_gif_header	parse_header(int fd)
 {
 	t_gif_header	info;
-	
-	read(fd, &info, sizeof(info));
+
+	read(fd, &info, 13);
 	return (info);
 }
 
@@ -52,23 +54,53 @@ void	parse_color_table(t_color *const table, const int size, const int fd)
 	}
 }
 
+void	skip_blockdata(const int fd)
+{
+	char	buffer[256];
+
+	read(fd, buffer, 1);
+	while (*buffer)
+	{
+		read(fd, buffer, *buffer);
+		read(fd, buffer, 1);
+	}
+}
+
+void	skip_extensions(const int fd)
+{
+	unsigned char	buffer[256];
+
+	read(fd, buffer, 1);
+	if (*buffer == 0xFE || *buffer == 0x01 || *buffer == 0xF9)
+		skip_blockdata(fd);
+	else if (*buffer == 0xFF)
+	{
+		read(fd, buffer, 1);
+		read(fd, buffer, *buffer);
+		skip_blockdata(fd);
+	}
+}
+
 t_map	*parse_allimg(const int fd, int *image_count,
 		const t_color *const cltab)
 {
 	t_list	*list_maps;
 	t_list	*temp;
 	t_map	*array;
-	char	buffer[8];
+	char	buffer[2];
 	int		i;
 
-	read(fd, buffer + 7, 1);
-	while (buffer[7] == 0x21)
-		read(fd, buffer, 8);
+	read(fd, buffer + 1, 1);
+	while (buffer[1] == 0x21)
+	{
+		skip_extensions(fd);
+		read(fd, buffer + 1, 1);
+	}
 	list_maps = NULL;
-	while (buffer[7] == 0x2C)
+	while (buffer[1] == 0x2C)
 	{
 		ft_lstadd_back(&list_maps, ft_lstnew(parse_image(cltab, fd)));
-		read(fd, buffer + 6, 2);
+		read(fd, buffer, 2);
 	}
 	*image_count = ft_lstsize(list_maps);
 	array = malloc(sizeof(t_map) * (*image_count));

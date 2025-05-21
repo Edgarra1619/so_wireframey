@@ -4,7 +4,7 @@ SRCDIR = ./srcs/
 OBJDIR = ./objs/
 LIBFT = ./libft/
 MINILIBX = ~/42libraries/minilibx-linux/
-TESTARGS = 
+TESTARGS = ./maps/nerd.gif
 CC = clang
 INCFLAGS = -I $(MINILIBX) -I ./includes/ -I $(LIBFT)
 CFLAGS = -Wall -Wextra -Werror -gdwarf-4 -O0 -D WINDOW_WIDTH=960 -D WINDOW_HEIGHT=720
@@ -44,7 +44,7 @@ gprof: $(NAME)
 	gprof $(NAME) > gprof-output
 
 valgrind: $(NAME)
-	valgrind --leak-check=full ./$(NAME) $(TESTARGS)
+	valgrind --track-origins=yes --leak-check=full ./$(NAME) $(TESTARGS)
 
 gdb: $(NAME)
-	gdbtui --args $(TESTARGS) $(NAME)
+	gdbtui --args $(NAME) $(TESTARGS)

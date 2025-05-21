@@ -14,7 +14,7 @@ int	in_bounds(const t_image *const image, const t_vec2 position)
 	return (1);
 }
 
-inline void	put_pixel_image(t_image *const image, const t_vec2 position, const t_color color)
+static inline void	put_pixel_image(t_image *const image, const t_vec2 position, const t_color color)
 {
 	if (position.x < 0 || position.y < 0 ||
 			position.x >= WINDOW_WIDTH || position.y >= WINDOW_HEIGHT)

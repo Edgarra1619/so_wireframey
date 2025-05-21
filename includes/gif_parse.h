@@ -26,7 +26,6 @@ typedef struct	s_ctable
 {
 	int			prev_code;
 	char		code_size;
-	int			clear_code;
 	char		lzw;
 	t_code		*table;
 } t_ctable;
