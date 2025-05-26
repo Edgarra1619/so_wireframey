@@ -48,3 +48,6 @@ valgrind: $(NAME)
 
 gdb: $(NAME)
 	gdbtui --args $(NAME) $(TESTARGS)
+
+vgdb: $(NAME)
+	valgrind --vgdb=yes --vgdb-error=0 --track-origins=yes --leak-check=full ./$(NAME) $(TESTARGS)

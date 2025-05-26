@@ -90,17 +90,15 @@ t_map	*parse_allimg(const int fd, int *image_count,
 	char	buffer[2];
 	int		i;
 
-	read(fd, buffer + 1, 1);
-	while (buffer[1] == 0x21)
-	{
-		skip_extensions(fd);
-		read(fd, buffer + 1, 1);
-	}
+	read(fd, buffer, 1);
 	list_maps = NULL;
-	while (buffer[1] == 0x2C)
+	while (buffer[0] != 0x3B)
 	{
-		ft_lstadd_back(&list_maps, ft_lstnew(parse_image(cltab, fd)));
-		read(fd, buffer, 2);
+		if(buffer[0] == 0x21)
+			skip_extensions(fd);
+		if (buffer[0] == 0x2C)
+			ft_lstadd_back(&list_maps, ft_lstnew(parse_image(cltab, fd)));
+		read(fd, buffer, 1);
 	}
 	*image_count = ft_lstsize(list_maps);
 	array = malloc(sizeof(t_map) * (*image_count));
