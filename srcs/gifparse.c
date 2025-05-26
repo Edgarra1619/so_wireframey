@@ -1,3 +1,4 @@
+#include "vector.h"
 #include <color.h>
 #include <gif_parse.h>
 #include <map.h>
@@ -19,11 +20,12 @@ t_map	*parse_image(const t_color *table, int fd)
 	uint16_t		size[2];
 	t_color			coltable[256];
 
-	map.offset = (t_vec2) {0, 0};
+	map.offset = 0;
 	map.map = malloc(sizeof(t_map));
 	map.cltab = table;
 	//skip the image alignment and ignore it
 	read(fd, size, 4);
+	map.map->position = (t_vec2) {size[0], size[1]};
 	//TODO parse size and create a map to pass to parse block
 	read(fd, size, 4);
 	map.map->size.x = size[0];

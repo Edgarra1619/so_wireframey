@@ -27,11 +27,13 @@ void	new_map(t_map *map)
 	//TODO put ft_calloc here and guard it
 	map->height_map = calloc(w, sizeof(int*));
 	map->color_map = calloc(w, sizeof(t_color*));
-	i = 0;
+	map->height_map[0] = calloc(w * h, sizeof(int));
+	map->color_map[0] = calloc(w * h, sizeof(t_color));
+	i = 1;
 	while (i < w)
 	{
-		map->height_map[i] = calloc(h, sizeof(int));
-		map->color_map[i] = calloc(h, sizeof(t_color));
+		map->height_map[i] = map->height_map[0] + i * h;
+		map->color_map[i] = map->color_map[0] + i * h;
 		i++;
 	}
 }
@@ -54,10 +56,11 @@ void	pre_map_alloc(void *stat)
 		i++;
 	}
 	state->pre_map = ft_calloc(max_size.x, sizeof(t_vec2*));
+	state->pre_map[0] = ft_calloc(max_size.x * max_size.y, sizeof(t_vec2));
 	//TODO GUARD THIS
 	i = 0;
-	while (i < max_size.x)
-		state->pre_map[i++] = ft_calloc(max_size.y, sizeof(t_vec2));
+	while (++i < max_size.x)
+		state->pre_map[i] = state->pre_map[0] + i * max_size.y;
 		//and guard this
 }
 
@@ -108,13 +111,9 @@ void	ocean_map(int **map, int w, int h)
 	count++;
 }
 
-void	free_map(void **map, int w)
+void	free_map(void **map)
 {
-	int	i;
-
-	i = 0;
-	while (i < w)
-		free(map[i++]);
+	free(map[0]);
 	free(map);
 }
 
@@ -125,8 +124,8 @@ void	free_maps(t_map *map, int count)
 	i = 0;
 	while (i < count)
 	{
-		free_map((void**) map[i].height_map, map[i].size.x);
-		free_map((void**) map[i].color_map, map[i].size.x);
+		free_map((void**) map[i].height_map);
+		free_map((void**) map[i].color_map);
 		i++;
 	}
 	free(map);

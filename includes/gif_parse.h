@@ -33,7 +33,7 @@ typedef struct	s_ctable
 typedef struct		s_gifmap
 {
 	t_map			*map;
-	t_vec2			offset;
+	int				offset;
 	const t_color	*cltab;
 }					t_gifmap;
 

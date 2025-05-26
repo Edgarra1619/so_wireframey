@@ -5,10 +5,11 @@ OBJDIR = ./objs/
 LIBFT = ./libft/
 MINILIBX = ~/42libraries/minilibx-linux/
 TESTARGS = ./maps/nerd.gif
-#TESTARGS = ./maps/rr.gif
-CC = cc 
+TESTARGS = ./maps/rr.gif
+TESTARGS = ./maps/naenaeagain.gif
+CC = gcc
 INCFLAGS = -I $(MINILIBX) -I ./includes/ -I $(LIBFT)
-CFLAGS = -Wall -Wextra -gdwarf-4 -O0 -D WINDOW_WIDTH=960 -D WINDOW_HEIGHT=720
+CFLAGS = -Wall -Wextra -gdwarf-4 -O3 -D WINDOW_WIDTH=960 -D WINDOW_HEIGHT=720
 OBJS = $(patsubst %.c, $(OBJDIR)%.o, $(SRCS))
 
 all: $(NAME)

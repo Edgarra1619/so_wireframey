@@ -23,13 +23,14 @@ typedef struct	s_map
 	int		**height_map;
 	t_color	**color_map;
 	t_vec2	size;
+	t_vec2	position;
 } t_map;
 
 void	new_map(t_map *map);
 void	pre_map_alloc(void *state);
 //int		**test_map(int w, int h, t_state *state);
 //int		**parse_map(int fd, int *w, int *h);
-void	free_map(void **map, int w);
+void	free_map(void **map);
 void	free_maps(t_map *map, int count);
 void	ocean_map(int **map, int w, int h);
 

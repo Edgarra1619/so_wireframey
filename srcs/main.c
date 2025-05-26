@@ -33,7 +33,7 @@ int	main(int argc, char **argv)
 	mlx_loop_hook(state.mlx, render_hook, &state);
 	mlx_hook(state.window, ClientMessage, LeaveWindowMask, mlx_loop_end, state.mlx);
 	mlx_loop(state.mlx);
-	free_map((void**) state.pre_map, state.maps->size.x);
+	free_map((void**) state.pre_map);
 	free_maps(state.maps, state.mapcount);
 	mlx_destroy_image(state.mlx, state.buffer.ptr);
 	mlx_destroy_window(state.mlx, state.window);
