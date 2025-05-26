@@ -8,13 +8,16 @@
 #include <stdlib.h> //mallocs and frees and such
 #include <libft.h> //the list functions
 
+void	parse_color_table(t_color *const table, const int size, const int fd);
+
 //called after the image separator byte (2C)
 //does not accept interlacing
-t_map	*parse_image(const t_color *const table, int fd)
+t_map	*parse_image(const t_color *table, int fd)
 {
-	t_gifmap	map;
-	char		lzw;
+	t_gifmap		map;
+	char			lzw;
 	uint16_t		size[2];
+	t_color			coltable[256];
 
 	map.offset = (t_vec2) {0, 0};
 	map.map = malloc(sizeof(t_map));
@@ -27,9 +30,13 @@ t_map	*parse_image(const t_color *const table, int fd)
 	map.map->size.y = size[1];
 	new_map(map.map);
 	read(fd, &lzw, 1);
+	if (lzw & 0b10000000)
+	{
+		parse_color_table(coltable, (int) 1 << ((lzw & 0b0111) + 1), fd);
+		map.cltab = coltable;
+	}
 	read(fd, &lzw, 1);
-	while (parse_block(lzw, fd, &map))
-		;
+	parse_imgdata(lzw, fd, &map);
 	return (map.map);
 }
 
@@ -106,7 +113,7 @@ t_map	*parse_allimg(const int fd, int *image_count,
 	while (list_maps)
 	{
 		temp = list_maps->next;
-		array[i] = *((t_map *) list_maps->content);
+		array[i++] = *((t_map *) list_maps->content);
 		ft_lstdelone(list_maps, free);
 		list_maps = temp;
 	}

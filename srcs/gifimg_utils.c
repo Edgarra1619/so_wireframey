@@ -25,7 +25,7 @@ static unsigned int	bitshift_left(size_t shift,
 {
 	size_t				i;
 	uint16_t			result;
-	const unsigned char	mask = -1 << (shift % 8);
+	const unsigned char	mask = (unsigned char) -1 << (shift % 8);
 
 	result = data[0] * (shift >= 8) << (shift % 8) | (data[shift >= 8] >> (8 - shift % 8));
 	i = 0;
@@ -45,18 +45,18 @@ static int new_code(int first_index, t_ctable *const tab)
 	int		code;
 	t_code	*new_tab;
 
-	code = first_index;
+	code = (int) 1 << tab->lzw;
 	while (code < ((int) 1 << tab->code_size) && tab->table[code].last_index != -1)
 		code++;
 	while (tab->table[first_index].prev_code != -1 &&
 			tab->table[first_index].prev_code != first_index)
 		first_index = tab->table[first_index].prev_code;
 	//TODO put ft_memcpy and ft_memset
-	if (code == ((int) 1 << tab->code_size))
+	if (code == (((int) 1 << tab->code_size) - 1) && tab->code_size < 12)
 	{
 		new_tab = malloc(sizeof(t_code) * ((int) 1 << ++(tab->code_size)));
 		//TODO guard this
-		ft_memset(new_tab, -1, sizeof(t_code) * ((int) 1 << tab->code_size));
+		memset(new_tab, -1, sizeof(t_code) * ((int) 1 << tab->code_size));
 		ft_memcpy(new_tab, tab->table,
 				sizeof(t_code) * ((int) 1 << (tab->code_size - 1)));
 		free(tab->table);
@@ -85,12 +85,12 @@ t_code	*new_table(const unsigned char lzw)
 		return (NULL);
 	//put ft_memset here
 	i = 0;
-	while (i < (1 << lzw) + 2)
+	while (i < ((unsigned int) 1 << lzw) + 2)
 	{
 		new_tab[i].last_index = i;
 		new_tab[i++].prev_code = -1;
 	}
-	while (i < (1 << (lzw + 1)))
+	while (i < ((unsigned int) 1 << (lzw + 1)))
 	{
 		new_tab[i].last_index = -1;
 		new_tab[i++].prev_code = -1;
@@ -110,10 +110,12 @@ static void	clear_code(t_ctable *const tab)
 static int	solve_code(int code, t_ctable *const tab,
 	t_gifmap *const map)
 {
-	if (code == ((int) 1 << tab->lzw) + 1)
-		tab->prev_code = code;
-	else if (code == (int) 1 << tab->lzw)
+	const int	cc = (int) 1 << (int) tab->lzw;
+
+	if (code == cc)
 		clear_code(tab);
+	else if (code == ((int) 1 << tab->lzw) + 1)
+		tab->prev_code = code;
 	else if (tab->table[code].last_index == -1)
 		put_code(new_code(tab->prev_code, tab), tab, map);
 	else
@@ -124,40 +126,59 @@ static int	solve_code(int code, t_ctable *const tab,
 	return (code);
 }
 
-//returns 0 on end of image
-char	parse_block(const char lzw, const int fd, t_gifmap *const map)
+unsigned char	*read_data(const int fd, size_t *const size)
 {
 	unsigned char	block_size;
-	size_t			bits_read;
-	unsigned char			data[256];
-	static t_ctable		codetab;
+	unsigned char	*data;
+	unsigned char	*temp;
 
+	data = NULL;
+	*size = 0;
 	read(fd, &block_size, 1);
-	if (!block_size)
+	while(block_size)
 	{
-		free(codetab.table);
-		codetab.table = NULL;
-		return (0);
+		temp = malloc(*size + block_size + 1);
+		ft_memcpy(temp, data, *size);
+		read(fd, temp + *size, block_size);
+		free(data);
+		data = temp;
+		*size += block_size;
+		read(fd, &block_size, 1);
 	}
-	read(fd, data, block_size);
+	data[*size] = 0;
+	return(data);
+}
+
+//this needs to have ALL of the blocks at the same time;
+//returns 0 on end of image
+char	parse_imgdata(const char lzw, const int fd, t_gifmap *const map)
+{
+	size_t			data_size;
+	size_t			bits_read;
+	unsigned char	*data;
+	t_ctable		codetab;
+
+	data = read_data(fd, &data_size);
 	codetab.lzw = lzw;
-	if(codetab.table == NULL)
-		clear_code(&codetab);
-	put_code(bitshift_left(codetab.code_size, data, block_size),
+	codetab.table = NULL;
+	clear_code(&codetab);
+	put_code(bitshift_left(codetab.code_size, data, data_size),
 		&codetab, map);
 	bits_read = codetab.code_size;
-	while (bits_read + codetab.code_size < (unsigned int) block_size * 8)
+	while (bits_read + codetab.code_size < (unsigned int) data_size * 8)
 	{
 		bits_read += codetab.code_size;
-		if (solve_code(bitshift_left(codetab.code_size, data, block_size),
+		if (solve_code(bitshift_left(codetab.code_size, data, data_size),
 				&codetab, map) == (int) 1 << lzw)
 		{
 			bits_read += codetab.code_size;
-			put_code(bitshift_left(codetab.code_size, data, block_size),
+			put_code(bitshift_left(codetab.code_size, data, data_size),
 					&codetab, map);
 		}
 		else if (codetab.prev_code == ((int) 1 << lzw) + 1)
 			break;
 	}
+	free(codetab.table);
+	free(data);
 	return (1);
 }

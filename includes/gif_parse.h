@@ -38,5 +38,5 @@ typedef struct		s_gifmap
 }					t_gifmap;
 
 t_map	*parse_gif (const char *path, int *image_count);
-char parse_block(char lzw, int fd, t_gifmap *map);
+char parse_imgdata(char lzw, int fd, t_gifmap *map);
 #endif

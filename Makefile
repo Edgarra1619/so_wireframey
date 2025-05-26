@@ -5,9 +5,10 @@ OBJDIR = ./objs/
 LIBFT = ./libft/
 MINILIBX = ~/42libraries/minilibx-linux/
 TESTARGS = ./maps/nerd.gif
-CC = clang
+#TESTARGS = ./maps/rr.gif
+CC = cc 
 INCFLAGS = -I $(MINILIBX) -I ./includes/ -I $(LIBFT)
-CFLAGS = -Wall -Wextra -Werror -gdwarf-4 -O0 -D WINDOW_WIDTH=960 -D WINDOW_HEIGHT=720
+CFLAGS = -Wall -Wextra -gdwarf-4 -O0 -D WINDOW_WIDTH=960 -D WINDOW_HEIGHT=720
 OBJS = $(patsubst %.c, $(OBJDIR)%.o, $(SRCS))
 
 all: $(NAME)
@@ -50,4 +51,4 @@ gdb: $(NAME)
 	gdbtui --args $(NAME) $(TESTARGS)
 
 vgdb: $(NAME)
-	valgrind --vgdb=yes --vgdb-error=0 --track-origins=yes --leak-check=full ./$(NAME) $(TESTARGS)
+	valgrind --vgdb=yes --vgdb-error=0 --track-origins=yes ./$(NAME) $(TESTARGS)
