@@ -113,11 +113,10 @@ t_vec2	world_to_camera(const t_camera *camera, t_vec3 position, const float sin_
 	t_vec2	result;
 
 	position = sum_vec3(position, camera->pos);
-//	position = sum_vec3(position, (t_vec3){-state->mapw/2, -state->maph/2, 0});
-	result.x = WINDOW_WIDTH / 2 + 16 * ((float) position.x * cos_rotx -
+	result.x = WINDOW_WIDTH / 2 + 1 * ((float) position.x * cos_rotx -
 			(float) position.y * sin_rotx);
 	result.y = WINDOW_HEIGHT / 2 - ((float) position.z * cos_roty) / 5 +
-			16 * sin_roty *
+			1 * sin_roty *
 			((float) position.x * sin_rotx +
 			(float) position.y * cos_rotx);
 //	result = sum_vec2(result, (t_vec2) {-state->camera.position.y, -state->camera.position.x});
@@ -135,12 +134,17 @@ void	pre_calculate_map(const t_camera *const camera, const t_map *const map, t_v
 	int		y;
 	const	int maph = map->size.y;
 	const	int mapw = map->size.x;
+
 	y = -1;
 	while (++y < maph)
 	{
 		x = -1;
 		while (++x < mapw)
-			pre_map[x][y] = world_to_camera(camera, (t_vec3) {x, y, map->height_map[x][y]}, sin_rotx, cos_rotx, sin_roty, cos_roty);
+			pre_map[x][y] = world_to_camera(camera,
+					(t_vec3) {x + map->position.x, y
+					+ map->position.y,
+					map->height_map[x][y]},
+					sin_rotx, cos_rotx, sin_roty, cos_roty);
 	}
 }
 

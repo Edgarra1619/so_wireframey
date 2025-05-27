@@ -9,59 +9,43 @@
 #include <state.h>
 #include <mlx.h>
 
+//MAKE THIS CONSIDER TRANSPARENT
 static void	add_to_map(t_gifmap *const map, const t_color color)
 {
-	map->map->color_map[map->offset % map->map->size.x][map->offset / map->map->size.x] = color;
-	mlx_pixel_put(g_state.mlx, g_state.window, map->offset % map->map->size.x, map->offset / map->map->size.x, color.color);
-	map->map->height_map[map->offset % map->map->size.x][map->offset / map->map->size.x] = 
-		color.s_rgba.r + color.s_rgba.g + color.s_rgba.b;
+	if (color.s_rgba.a)
+	{
+		map->map->color_map[map->offset % map->map->size.x][map->offset / map->map->size.x] = color;
+		map->map->height_map[map->offset % map->map->size.x][map->offset / map->map->size.x] = 
+			color.s_rgba.r + color.s_rgba.g + color.s_rgba.b;
+	}
+	else
+	{
+		map->map->color_map[map->offset % map->map->size.x]
+			[map->offset / map->map->size.x] = map->fmap->color_map
+			[map->offset % map->map->size.x + map->map->position.x]
+			[map->offset / map->map->size.x + map->map->position.y];
+		map->map->height_map[map->offset % map->map->size.x]
+			[map->offset / map->map->size.x] = map->fmap->height_map
+			[map->offset % map->map->size.x + map->map->position.x]
+			[map->offset / map->map->size.x + map->map->position.y];
+	}
 	map->offset++;
 }
-/*
-static unsigned int	bitshift_left(size_t shift,
-			unsigned char *const data, size_t size)
-{
-	size_t				i;
-	uint16_t			result;
-	const unsigned char	mask = (unsigned char) -1 << (shift % 8);
 
-	result = data[0] * (shift >= 8) << (shift % 8) | (data[shift >= 8] >> (8 - shift % 8));
-	i = 0;
-	while (i < size - 1 - shift / 8)
-	{
-		data[i] = (data[i + shift / 8] << (shift % 8)) |
-			(data[i + 1 + shift / 8] & mask >> (8 - (shift % 8)));
-		i++;
-	}
-	while (i < size)
-		data[i++] = 0;
-	return (result);
-}
-*/
-static unsigned int	bitshift_left(size_t shift, unsigned char *const data, size_t size)
+static unsigned int	extract_bits(size_t shift, t_gifdata *const data)
 {
-	uint16_t		result;
+	unsigned int	result;
 	size_t			i;
 
-	result = ((1 << shift) - 1) & (data[0] | (int) data[1] << 8);
+	result = 0;
 	i = 0;
-	
-	while(shift / 8 && i < size)
+	while (i < shift)
 	{
-		if(i == size - 1)
-			data[i] = 0;
-		else
-			data[i] = data[i + 1];
-		i++;
+		result = result | ((1 & (data->data[data->bytes] >> data->bits)) << i++);
+		data->bytes += (data->bits + 1) / 8;
+		data->bits = (data->bits + 1) % 8;
 	}
-	i = 0;
-	while (i < size - 1)
-	{
-		data[i] = ((int)data[i] >> shift % 8) | ((int)data[i + 1] << (8 - shift % 8));
-		i++;
-	}
-	data[i] >>=  shift;
-	return(result);
+	return (result);
 }
 
 static int new_code(int first_index, t_ctable *const tab)
@@ -152,63 +136,60 @@ static int	solve_code(int code, t_ctable *const tab,
 	return (code);
 }
 
-unsigned char	*read_data(const int fd, size_t *const size)
+unsigned char	*read_data(const int fd, t_gifdata *const data)
 {
 	unsigned char	block_size;
-	void			*data;
 	void			*temp;
 	size_t			current_size;
 
-	*size = 0;
-	data = NULL;
+	ft_bzero(data, sizeof(*data));
 	current_size = 0;
 	read(fd, &block_size, 1);
 	while (block_size)
 	{
-		if ((*size + block_size) > current_size)
+		if ((data->size + block_size) > current_size)
 		{
 			temp = malloc(current_size + 255 * 16 + 1);
 			current_size += 255 * 16;
-			memcpy(temp, data, *size);
-			free(data);
-			data = temp;
+			ft_memcpy(temp, data->data, data->size);
+			free(data->data);
+			data->data = temp;
 		}
-		read(fd, data + *size, block_size);
-		*size += block_size;
+		read(fd, data->data + data->size, block_size);
+		data->size += block_size;
 		read(fd, &block_size, 1);
 	}
-	((char *)data)[*size] = 0;
-	return(data);
+	data->data[data->size] = 0;
+	return(data->data);
 }
 
 //this needs to have ALL of the blocks at the same time;
 //returns 0 on end of image
 char	parse_imgdata(const char lzw, const int fd, t_gifmap *const map)
 {
-	size_t			data_size;
-	size_t			bits_read;
-	t_ctable		codetab;
-	unsigned char	*data;
+	size_t		bits_read;
+	t_ctable	codetab;
+	t_gifdata	data;
 
-	data = read_data(fd, &data_size);
+	read_data(fd, &data);
 	codetab.lzw = lzw;
 	codetab.table = NULL;
 	clear_code(&codetab);
 	bits_read = 0;
-	while (bits_read + codetab.code_size < (unsigned int) data_size * 8)
+	while (bits_read + codetab.code_size < (unsigned int) data.size * 8)
 	{
 		bits_read += codetab.code_size;
-		if (solve_code(bitshift_left(codetab.code_size, data, data_size),
+		if (solve_code(extract_bits(codetab.code_size, &data),
 				&codetab, map) == (int) 1 << lzw)
 		{
 			bits_read += codetab.code_size;
-			put_code(bitshift_left(codetab.code_size, data, data_size),
+			put_code(extract_bits(codetab.code_size, &data),
 					&codetab, map);
 		}
 		else if (codetab.prev_code == ((int) 1 << lzw) + 1)
 			break;
 	}
 	free(codetab.table);
-	free(data);
+	free(data.data);
 	return (1);
 }

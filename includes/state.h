@@ -6,7 +6,7 @@
 /*   By: edgribei <edgribei@student.42porto.co      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:00:14 by edgribei          #+#    #+#             */
-/*   Updated: 2025/05/20 18:05:12 by edgribei         ###   ########.fr       */
+/*   Updated: 2025/05/27 14:25:43 by edgribei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,5 @@ typedef struct	s_state
 	t_image		buffer;
 	int			pressed_keys;
 }	t_state;
-
-extern t_state g_state;
 
 #endif

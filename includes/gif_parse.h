@@ -2,6 +2,7 @@
 # define GIF_PARSE_H
 # include <map.h>
 # include <stdint.h>
+# include <sys/types.h>
 
 typedef struct	s_gif_header
 {
@@ -33,9 +34,18 @@ typedef struct	s_ctable
 typedef struct		s_gifmap
 {
 	t_map			*map;
+	t_map			*fmap;
 	int				offset;
-	const t_color	*cltab;
+	t_color	*cltab;
 }					t_gifmap;
+
+typedef struct		s_gifdata
+{
+	unsigned char	*data;
+	size_t			size;
+	size_t			bytes;
+	char			bits;
+}					t_gifdata;
 
 t_map	*parse_gif (const char *path, int *image_count);
 char parse_imgdata(char lzw, int fd, t_gifmap *map);
