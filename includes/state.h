@@ -13,7 +13,7 @@
 #ifndef STATE_H
 # define STATE_H
 # include <vector.h>
-#include <map.h>
+# include <map.h>
 # include <color.h>
 
 typedef struct s_camera
@@ -61,5 +61,7 @@ typedef struct	s_state
 	t_image		buffer;
 	int			pressed_keys;
 }	t_state;
+
+extern t_state g_state;
 
 #endif

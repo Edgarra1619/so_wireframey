@@ -9,13 +9,17 @@
 #include <gif_parse.h>
 #include <stdio.h>
 
+t_state g_state = {0};
+
 int	main(int argc, char **argv)
 {
 	t_state	state;
 
 	//TODO put ft_bzero here
-	bzero(&state, sizeof(state));
-	state.camera.rot = (t_vec2) {45, 57};
+	g_state.mlx = mlx_init();
+	g_state.window = mlx_new_window(g_state.mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "c not yet my pp");
+	//bzero(&g_state, sizeof(g_state));
+	g_state.camera.rot = (t_vec2) {45, 57};
 	if (argc < 2)
 		return (0);
 	state.maps = parse_gif(argv[1], &(state.mapcount));

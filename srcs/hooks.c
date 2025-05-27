@@ -40,17 +40,17 @@ int	render_hook(t_state *state)
 //	put_square(&state->buffer, (t_vec2){0, 0}, (t_vec2){WINDOW_WIDTH, WINDOW_HEIGHT}, (t_color) BLACK);
 	
 	int x = 0;
-	while (x < state->maps[count / 10].size.x)
+	while (x < state->maps[count / DELAY].size.x)
 	{
 		int	y = 0;
-		while (y < state->maps[count / 10].size.y)
+		while (y < state->maps[count / DELAY].size.y)
 		{
-			put_pixel_image(&state->buffer, (t_vec2) {x + state->maps[count/10].position.x, y + state->maps[count/10].position.y + 100}, state->maps[count / 10].color_map[x][y]);
+			put_pixel_image(&state->buffer, (t_vec2) {x + state->maps[count / DELAY].position.x, y + state->maps[count / DELAY].position.y + 100}, state->maps[count / DELAY].color_map[x][y]);
 			y++;
 		}
 		x++;
 	}
-	count = (count + 1) % (state->mapcount * 10);
+	count = (count + 1) % (state->mapcount * DELAY);
 	//render_map(&state->buffer, state->maps, &state->camera, state->pre_map);
 	mlx_put_image_to_window(state->mlx, state->window, state->buffer.ptr, 0, 0);
 	return (0);

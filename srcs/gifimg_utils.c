@@ -6,10 +6,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <libft.h>
+#include <state.h>
+#include <mlx.h>
 
 static void	add_to_map(t_gifmap *const map, const t_color color)
 {
 	map->map->color_map[map->offset % map->map->size.x][map->offset / map->map->size.x] = color;
+	mlx_pixel_put(g_state.mlx, g_state.window, map->offset % map->map->size.x, map->offset / map->map->size.x, color.color);
 	map->map->height_map[map->offset % map->map->size.x][map->offset / map->map->size.x] = 
 		color.s_rgba.r + color.s_rgba.g + color.s_rgba.b;
 	map->offset++;
@@ -60,13 +63,12 @@ static unsigned int	bitshift_left(size_t shift, unsigned char *const data, size_
 	data[i] >>=  shift;
 	return(result);
 }
+
 static int new_code(int first_index, t_ctable *const tab)
 {
 	int		code;
 	t_code	*new_tab;
 
-	if(tab->code_size == 12)
-		return (first_index);
 	code = (int) 1 << tab->lzw;
 	while (code < ((int) 1 << tab->code_size) && tab->table[code].last_index != -1)
 		code++;
@@ -76,6 +78,8 @@ static int new_code(int first_index, t_ctable *const tab)
 	//TODO put ft_memcpy and ft_memset
 	if (code == (((int) 1 << tab->code_size) - 1))
 	{
+		if(tab->code_size == 12)
+			return (first_index);
 		new_tab = malloc(sizeof(t_code) * ((size_t) 1 << ++(tab->code_size)));
 		//TODO guard this
 		ft_memset(new_tab, -1, sizeof(t_code) * ((size_t) 1 << tab->code_size));

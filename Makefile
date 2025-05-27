@@ -7,9 +7,9 @@ MINILIBX = ~/42libraries/minilibx-linux/
 TESTARGS = ./maps/nerd.gif
 TESTARGS = ./maps/rr.gif
 TESTARGS = ./maps/naenaeagain.gif
-CC = gcc
+CC = clang
 INCFLAGS = -I $(MINILIBX) -I ./includes/ -I $(LIBFT)
-CFLAGS = -Wall -Wextra -gdwarf-4 -O3 -D WINDOW_WIDTH=960 -D WINDOW_HEIGHT=720
+CFLAGS = -Wall -Wextra -gdwarf-4 -O3 -D WINDOW_WIDTH=960 -D WINDOW_HEIGHT=720 -D DELAY=10
 OBJS = $(patsubst %.c, $(OBJDIR)%.o, $(SRCS))
 
 all: $(NAME)
