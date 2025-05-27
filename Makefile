@@ -6,10 +6,10 @@ LIBFT = ./libft/
 MINILIBX = ~/42libraries/minilibx-linux/
 TESTARGS = ./maps/nerd.gif
 TESTARGS = ./maps/rr.gif
-#TESTARGS = ./maps/naenaeagain.gif
+TESTARGS = ./maps/naenae.gif
 CC = clang
 INCFLAGS = -I $(MINILIBX) -I ./includes/ -I $(LIBFT)
-CFLAGS = -Wall -Wextra -gdwarf-4 -O3 -D WINDOW_WIDTH=1920 -D WINDOW_HEIGHT=1080 -D DELAY=1
+CFLAGS = -Wall -Wextra -pg -gdwarf-4 -O3 -D WINDOW_WIDTH=1920 -D WINDOW_HEIGHT=1080 -D DELAY=1
 OBJS = $(patsubst %.c, $(OBJDIR)%.o, $(SRCS))
 
 all: $(NAME)

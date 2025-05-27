@@ -6,7 +6,7 @@
 /*   By: edgribei <edgribei@student.42porto.co      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 13:56:48 by edgribei          #+#    #+#             */
-/*   Updated: 2025/05/21 19:23:08 by edgribei         ###   ########.fr       */
+/*   Updated: 2025/05/27 17:44:19 by edgribei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # endif
 
 void	put_square(t_image *image, t_vec2 UL, t_vec2 DR, t_color color);
+void	clear_image(t_image *image);
 void	put_line(t_image *image, t_vec2 a, t_vec2 b, t_color color);
 //void	put_pixel_image(t_image *image, t_vec2 position, t_color color);
 void	render_map(t_image *img, const t_map *map, const t_camera *camera, t_vec2 **pre_map);

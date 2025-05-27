@@ -28,6 +28,14 @@ static void	put_pixel_image(char *image, int sline, t_vec2 position, t_color col
 }
 */
 
+//make a clean
+
+void	clear_image(t_image *const image)
+{
+	bzero(image->data, image->size.y * image->sline);
+
+}
+
 void	put_square(t_image *const image, const t_vec2 UL, const t_vec2 DR, const t_color color)
 {
 	int	x;

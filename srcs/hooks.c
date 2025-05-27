@@ -37,8 +37,8 @@ int	render_hook(t_state *state)
 		state->camera.pos.z += 10;
 	if (state->pressed_keys & KEYCODEE)
 		state->camera.pos.z -= 10;
-	put_square(&state->buffer, (t_vec2){0, 0}, (t_vec2){WINDOW_WIDTH, WINDOW_HEIGHT}, (t_color) BLACK);
-	
+//	put_square(&state->buffer, (t_vec2){0, 0}, (t_vec2){WINDOW_WIDTH, WINDOW_HEIGHT}, (t_color) BLACK);
+	clear_image(&state->buffer);
 	count = (count + 1) % (state->mapcount * DELAY);
 	render_map(&state->buffer, state->maps + count / DELAY, &state->camera, state->pre_map);
 	mlx_put_image_to_window(state->mlx, state->window, state->buffer.ptr, 0, 0);
