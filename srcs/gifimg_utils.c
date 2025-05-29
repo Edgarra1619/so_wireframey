@@ -66,7 +66,7 @@ static int new_code(int first_index, t_ctable *const tab)
 			return (first_index);
 		new_tab = malloc(sizeof(t_code) * ((size_t) 1 << ++(tab->code_size)));
 		//TODO guard this
-		ft_memset(new_tab, -1, sizeof(t_code) * ((size_t) 1 << tab->code_size));
+		ft_memset(new_tab + (1 << (tab->code_size - 1)), -1, sizeof(t_code) * ((size_t) 1 << (tab->code_size - 1)));
 		ft_memcpy(new_tab, tab->table,
 				sizeof(t_code) * ((int) 1 << (tab->code_size - 1)));
 		free(tab->table);
