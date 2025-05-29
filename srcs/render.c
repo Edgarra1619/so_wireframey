@@ -1,10 +1,11 @@
-#include <state.h>
+#include <color.h>
+#include <libft.h>
+#include <map.h>
 #include <math.h>
-#include <vector.h>
 #include <mlx.h>
 #include <render.h>
-#include <color.h>
-#include <map.h>
+#include <state.h>
+#include <vector.h>
 
 int	in_bounds(const t_image *const image, const t_vec2 position)
 {
@@ -14,116 +15,18 @@ int	in_bounds(const t_image *const image, const t_vec2 position)
 	return (1);
 }
 
-static inline void	put_pixel_image(t_image *const image, const t_vec2 position, const t_color color)
-{
-	if (position.x < 0 || position.y < 0 ||
-			position.x >= WINDOW_WIDTH || position.y >= WINDOW_HEIGHT)
-		return ;
-	((int*) (image->data + position.y * image->sline))[position.x] = color.color;
-}
-/*
-static void	put_pixel_image(char *image, int sline, t_vec2 position, t_color color)
-{
-	((int*) (image + position.y * sline))[position.x] = color.color;
-}
-*/
-
-//make a clean
-
-void	clear_image(t_image *const image)
-{
-	bzero(image->data, image->size.y * image->sline);
-
-}
-
-void	put_square(t_image *const image, const t_vec2 UL, const t_vec2 DR, const t_color color)
-{
-	int	x;
-	int	y;
-
-	y = UL.y - 1;
-	while (++y <= DR.y)
-	{
-		x = UL.x - 1;
-		while (++x <= DR.x)
-			put_pixel_image(image, (t_vec2) {x, y}, color);
-	}
-}
-
 // y = mx + b
-void	put_line(t_image *image, t_vec2 a, t_vec2 b, t_color color)
-{
-	float		m;
-	int			k;
-	int			i[2];
-
-	if (!in_bounds(image, a) && !in_bounds(image, b))
-		return ;
-	if (a.x != b.x)
-	{
-		m = (float) (b.y - a.y) / (b.x - a.x);
-		k = a.y - m * a.x;
-		i[0] = (a.x * (a.x < b.x)) + (b.x * (b.x < a.x));
-		i[1] = (a.x * (a.x > b.x)) + (b.x * (b.x > a.x));
-		while (i[0]++ < i[1])
-			put_pixel_image(image, (t_vec2) {i[0], i[0] * m + k}, color);
-	}
-	if (a.y != b.y)
-	{
-		m = (float) (b.x - a.x) / (b.y - a.y);
-		k = a.x - m * a.y;
-		i[0] = (a.y * (a.y < b.y)) + (b.y * (b.y < a.y));
-		i[1] = (a.y * (a.y > b.y)) + (b.y * (b.y > a.y));
-		while (i[0]++ < i[1])
-			put_pixel_image(image, (t_vec2) {i[0] * m + k, i[0]}, color);
-	}
-	put_pixel_image(image, (t_vec2) {a.x, a.y}, color);
-}
-
-void	put_grad_line(void *image, const t_vec2 a, const t_vec2 b,
-				   const t_color colora, const t_color colorb)
-{
-	float		m;
-	int			k;
-	int			i[3];
-
-	if (!in_bounds(image, a) && !in_bounds(image, b))
-		return ;
-	if (a.x != b.x)
-	{
-		m = (float) (b.y - a.y) / (b.x - a.x);
-		k = a.y - m * a.x;
-		i[0] = (a.x * (a.x < b.x)) + (b.x * (b.x < a.x));
-		i[2] = i[0];
-		i[1] = (a.x * (a.x > b.x)) + (b.x * (b.x > a.x));
-		while (i[0]++ < i[1])
-			put_pixel_image(image, (t_vec2) {i[0], i[0] * m + k},
-					color_lerp(colora, colorb,
-						(float) (i[0] - i[2]) / (float) (i[1] - i[2])));
-	}
-	if (a.y != b.y)
-	{
-		m = (float) (b.x - a.x) / (b.y - a.y);
-		k = a.x - m * a.y;
-		i[0] = (a.y * (a.y < b.y)) + (b.y * (b.y < a.y));
-		i[2] = i[0];
-		i[1] = (a.y * (a.y > b.y)) + (b.y * (b.y > a.y));
-		while (i[0]++ < i[1])
-			put_pixel_image(image, (t_vec2) {i[0] * m + k, i[0]},
-					color_lerp(colora, colorb,
-						 (float) (i[0] - i[2]) / (float) (i[1] - i[2])));
-	}
-	put_pixel_image(image, (t_vec2) {a.x, a.y}, colora);
-}
 
 t_vec2	world_to_camera(const t_camera *camera, t_vec3 position, const float sin_rotx, const float cos_rotx, const float sin_roty, const float cos_roty)
 {
 	t_vec2	result;
 
-	position = sum_vec3(position, camera->pos);
-	result.x = WINDOW_WIDTH / 2 + 1 * ((float) position.x * cos_rotx -
+	position.x += camera->pos.x;
+	position.y += camera->pos.y;
+	position.z += camera->pos.z;
+	result.x = WINDOW_WIDTH / 2.0 + 1 * ((float) position.x * cos_rotx -
 			(float) position.y * sin_rotx);
-	result.y = WINDOW_HEIGHT / 2 - ((float) position.z * cos_roty) / 5 +
+	result.y = WINDOW_HEIGHT / 2.0 - ((float) position.z * cos_roty) / 5 +
 			1 * sin_roty *
 			((float) position.x * sin_rotx +
 			(float) position.y * cos_rotx);
@@ -156,9 +59,9 @@ void	pre_calculate_map(const t_camera *const camera, const t_map *const map, t_v
 	}
 }
 
+//TODO make the render opt between front and back rendering according
+//to the angle of the camera;
 
-//TODO make render_map receive a map and a state
-//			(for the camera and for the mlx stuff)
 void	render_map(t_image *const img, const t_map *const map,
 			const t_camera *const camera, t_vec2 **pre_map)
 {

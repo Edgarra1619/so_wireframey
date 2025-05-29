@@ -22,13 +22,32 @@ void	*ft_memset(void *s, int c, size_t n)
 	return (s);
 }
 
-void	ft_bzero(void *s, size_t n)
+void	ft_bzero(void *s, const size_t n)
 {
-	while (n > 0)
+	const void	*fin = s + n;
+
+	while (fin > s && (unsigned long) s % sizeof(long))
 	{
-		((char *) s)[n - 1] = 0;
-		n--;
+		*((char *) s) = 0;
+		s++;
 	}
+	while ((size_t) (fin - s) >= sizeof(long))
+	{
+		*((long *) s) = 0;
+		s += sizeof(long);
+	}
+	if ((size_t)(fin - s) >= sizeof(int))
+	{
+		*((int *) s) = 0;
+		s += sizeof(int);
+	}
+	if ((size_t)(fin - s) >= sizeof(short))
+	{
+		*((short *) s) = 0;
+		s += sizeof(short);
+	}
+	if ((size_t)(fin - s) >= sizeof(char))
+		*((short *) s) = 0;
 }
 
 //goes front to back

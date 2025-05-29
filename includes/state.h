@@ -18,7 +18,7 @@
 
 typedef struct s_camera
 {
-	t_vec3	pos;
+	t_vecf3	pos;
 	t_vec2	rot;
 }	t_camera;
 

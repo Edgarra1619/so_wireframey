@@ -13,6 +13,23 @@
 #ifndef VECTOR_H
 # define VECTOR_H
 
+typedef struct s_vecf2
+{
+	float	x;
+	float	y;
+}	t_vecf2;
+
+typedef struct	s_vecf3
+{
+	float	x;
+	float	y;
+	float	z;
+}	t_vecf3;
+
+t_vecf3	sum_vecf3(const t_vecf3 a, const t_vecf3 b);
+t_vecf3	mult_vecf3i(const t_vecf3 a, const float b);
+t_vecf2	sum_vecf2(const t_vecf2 a, const t_vecf2 b);
+
 typedef struct s_vec2
 {
 	int	x;

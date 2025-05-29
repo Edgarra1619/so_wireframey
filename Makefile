@@ -1,5 +1,7 @@
 NAME = FdF
-SRCS = main.c colors.c my_math.c render.c map.c hooks.c vector.c gifparse.c gifimg_utils.c
+SRCS = main.c colors.c my_math.c render.c render_utils.c map.c hooks.c vector.c vectorf.c
+BONUS = 0
+OPTFLAG =0
 SRCDIR = ./srcs/
 OBJDIR = ./objs/
 LIBFT = ./libft/
@@ -9,10 +11,18 @@ TESTARGS = ./maps/rr.gif
 TESTARGS = ./maps/naenae.gif
 CC = clang
 INCFLAGS = -I $(MINILIBX) -I ./includes/ -I $(LIBFT)
-CFLAGS = -Wall -Wextra -pg -gdwarf-4 -O3 -D WINDOW_WIDTH=1920 -D WINDOW_HEIGHT=1080 -D DELAY=1
+CFLAGS = -Wall -Wextra -pg -gdwarf-4 -O$(OPTFLAG) -D WINDOW_WIDTH=1920 -D WINDOW_HEIGHT=1080 -D DELAY=1
 OBJS = $(patsubst %.c, $(OBJDIR)%.o, $(SRCS))
 
+ifeq ($(BONUS), 1)
+CFLAGS += -D BONUS
+SRCS += gifparse.c gifimg_utils.c
+endif
+
 all: $(NAME)
+
+bonus:
+	make BONUS=1
 
 clean:
 	$(RM) -r $(OBJDIR)
