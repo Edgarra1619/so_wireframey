@@ -1,3 +1,5 @@
+#include <vector.h>
+#include <my_math.h>
 #include <color.h>
 #include <state.h>
 #include <libft.h>
@@ -36,6 +38,26 @@ void	put_square(t_image *const image, const t_vec2 UL, const t_vec2 DR, const t_
 	}
 }
 
+void	put_line_new(t_image *image, t_vec2 a, t_vec2 b, t_color color)
+{
+	const int		steps = max(abs(a.x - b.x), abs(a.y - b.y));
+	const t_vecf2	step_size = (t_vecf2) {((float) b.x - a.x) / 16, ((float) b.y - a.y) / 16};
+	int				count;
+	t_vecf2			i;
+
+	if (!in_bounds(image, a) && !in_bounds(image, b))
+		return ;
+	count = 0;
+	i = (t_vecf2){a.x, a.y};
+	while (count < steps)
+	{
+		put_pixel_image(image, (t_vec2) {(int) i.x, (int) i.y},  color);
+		i = sum_vecf2(i, step_size);
+		count++;
+	}
+	put_pixel_image(image, b, color);
+}
+
 void	put_line(t_image *image, t_vec2 a, t_vec2 b, t_color color)
 {
 	float		m;
@@ -63,6 +85,26 @@ void	put_line(t_image *image, t_vec2 a, t_vec2 b, t_color color)
 			put_pixel_image(image, (t_vec2) {i[0] * m + k, i[0]}, color);
 	}
 	put_pixel_image(image, (t_vec2) {a.x, a.y}, color);
+}
+
+void	put_grad_line_new(t_image *image, t_vec2 a, t_vec2 b, t_color colora, t_color colorb)
+{
+	const int		steps = max(abs(a.x - b.x), abs(a.y - b.y));
+	const t_vecf2	step_size = (t_vecf2) {((float) b.x - a.x) / steps, ((float) b.y - a.y) / steps};
+	int				count;
+	t_vecf2			i;
+
+	if (!in_bounds(image, a) && !in_bounds(image, b))
+		return ;
+	count = 0;
+	i = (t_vecf2){a.x, a.y};
+	while (count < steps)
+	{
+		put_pixel_image(image, (t_vec2) {(int) i.x, (int) i.y},  color_lerp(colora, colorb, (float) count / steps));
+		i = sum_vecf2(i, step_size);
+		count++;
+	}
+	put_pixel_image(image, b, colorb);
 }
 
 void	put_grad_line(void *image, const t_vec2 a, const t_vec2 b,

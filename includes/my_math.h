@@ -15,5 +15,6 @@
 
 int	clamp(const int num, const int max, const int min);
 int	lerp(const int a, const int b, const float t);
-
+int max(const int a, const int b);
+int abs(const int a);
 #endif

@@ -25,11 +25,13 @@ t_color	color_sum(const t_color a, const t_color b)
 
 t_color	color_lerp(const t_color a, const t_color b, const float t)
 {
+	static const float	lower_bound = (float) 1 / 255;
+	static const float	upper_bound = (float) 254 / 255;
 	t_color	c;
 
-	if (t <= 0)
+	if (t <= lower_bound)
 		return (a);
-	if (t >= 1)
+	if (t >= upper_bound)
 		return (b);
 	c.s_rgba.r = lerp(a.s_rgba.r, b.s_rgba.r, t);
 	c.s_rgba.g = lerp(a.s_rgba.g, b.s_rgba.g, t);

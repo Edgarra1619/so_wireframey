@@ -24,3 +24,17 @@ int	lerp(const int a, const int b, const float t)
 		return (a);
 	return (a * (1 - t) + b * t);
 }
+
+int	max(const int a, const int b)
+{
+	if (a > b)
+		return (a);
+	return (b);
+}
+
+int	abs(const int a)
+{
+	if (a < 0)
+		return (-a);
+	return (a);
+}
