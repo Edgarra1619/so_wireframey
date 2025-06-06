@@ -7,7 +7,7 @@ int	clamp(const int num, const int min, const int max)
 	return (num);
 }
 
-inline float	clampf(float num, float min, float max)
+float	clampf(float num, float min, float max)
 {
 	if (num <= min)
 		return (min);

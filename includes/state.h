@@ -20,6 +20,10 @@ typedef struct s_camera
 {
 	t_vecf3	pos;
 	t_vec2	rot;
+	float	sin_rotx;
+	float	cos_rotx;
+	float	sin_roty;
+	float	cos_roty;
 }	t_camera;
 
 enum	e_input

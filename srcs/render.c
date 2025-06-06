@@ -15,21 +15,19 @@ int	in_bounds(const t_image *const image, const t_vec2 position)
 	return (1);
 }
 
-// y = mx + b
-
-t_vec2	world_to_camera(const t_camera *camera, t_vec3 position, const float sin_rotx, const float cos_rotx, const float sin_roty, const float cos_roty)
+t_vec2	world_to_camera(const t_camera *camera, t_vec3 position)
 {
 	t_vec2	result;
 
 	position.x += camera->pos.x;
 	position.y += camera->pos.y;
 	position.z += camera->pos.z;
-	result.x = WINDOW_WIDTH / 2.0 + 1 * ((float) position.x * cos_rotx -
-			(float) position.y * sin_rotx);
-	result.y = WINDOW_HEIGHT / 2.0 - ((float) position.z * cos_roty) / 5 +
-			1 * sin_roty *
-			((float) position.x * sin_rotx +
-			(float) position.y * cos_rotx);
+	result.x = WINDOW_WIDTH / 2.0 + 1 * ((float) position.x * camera->cos_rotx -
+			(float) position.y * camera->sin_rotx);
+	result.y = WINDOW_HEIGHT / 2.0 - ((float) position.z * camera->cos_roty) / 5 +
+			1 * camera->sin_roty *
+			((float) position.x * camera->sin_rotx +
+			(float) position.y * camera->cos_rotx);
 //	result = sum_vec2(result, (t_vec2) {-state->camera.position.y, -state->camera.position.x});
 //	(position.z - camera->position.z) / 5;
 	return (result);
@@ -37,10 +35,6 @@ t_vec2	world_to_camera(const t_camera *camera, t_vec3 position, const float sin_
 
 void	pre_calculate_map(const t_camera *const camera, const t_map *const map, t_vec2 **const pre_map)
 {
-	const float	sin_rotx = sin((float) camera->rot.x / 180 * M_PI);
-	const float	cos_rotx = cos((float) camera->rot.x / 180 * M_PI);
-	const float	sin_roty = sin((float) camera->rot.y / 180 * M_PI);
-	const float	cos_roty = cos((float) camera->rot.y / 180 * M_PI);
 	int		x;
 	int		y;
 	const	int maph = map->size.y;
@@ -54,14 +48,12 @@ void	pre_calculate_map(const t_camera *const camera, const t_map *const map, t_v
 			pre_map[x][y] = world_to_camera(camera,
 					(t_vec3) {x + map->position.x, y
 					+ map->position.y,
-					map->height_map[x][y]},
-					sin_rotx, cos_rotx, sin_roty, cos_roty);
+					map->height_map[x][y]});
 	}
 }
 
 //TODO make the render opt between front and back rendering according
 //to the angle of the camera;
-
 void	render_map(t_image *const img, const t_map *const map,
 			const t_camera *const camera, t_vec2 **pre_map)
 {

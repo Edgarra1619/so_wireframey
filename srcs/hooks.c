@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <vector.h>
 #include <mlx.h>
 #include <state.h>
@@ -8,24 +7,32 @@
 #include <unistd.h>
 #include <map.h>
 
+void	update_camera_rot(t_camera *const camera)
+{
+	camera->sin_rotx = sin((float) camera->rot.x / 180.0 * M_PI);
+	camera->cos_rotx = cos((float) camera->rot.x / 180.0 * M_PI);
+	camera->sin_roty = sin((float) camera->rot.y / 180.0 * M_PI);
+	camera->cos_roty = cos((float) camera->rot.y / 180.0 * M_PI);
+}
+
+
 int	render_hook(t_state *state)
 {
-	const float	cosmove = cos((float) state->camera.rot.x / 180.0 * M_PI) * 2;
-	const float	sinmove = sin((float) state->camera.rot.x / 180.0 * M_PI) * 2;
 	static int	count;
 
+	update_camera_rot(&state->camera);
 	if (state->pressed_keys & KEYCODEW)
-		state->camera.pos = sum_vecf3(state->camera.pos, (t_vecf3) {sinmove,
-				cosmove, 0});
+		state->camera.pos = sum_vecf3(state->camera.pos, (t_vecf3) {state->camera.sin_rotx * 2,
+				state->camera.cos_rotx * 2, 0});
 	if (state->pressed_keys & KEYCODES)
-		state->camera.pos = sum_vecf3(state->camera.pos, (t_vecf3) {-sinmove,
-				-cosmove, 0});
+		state->camera.pos = sum_vecf3(state->camera.pos, (t_vecf3) {-state->camera.sin_rotx,
+				-state->camera.cos_rotx, 0});
 	if (state->pressed_keys & KEYCODEA)
-		state->camera.pos = sum_vecf3(state->camera.pos, (t_vecf3) {cosmove,
-				-sinmove, 0});
+		state->camera.pos = sum_vecf3(state->camera.pos, (t_vecf3) {state->camera.cos_rotx,
+				-state->camera.sin_rotx, 0});
 	if (state->pressed_keys & KEYCODED)
-		state->camera.pos = sum_vecf3(state->camera.pos, (t_vecf3) {-cosmove,
-				sinmove, 0});
+		state->camera.pos = sum_vecf3(state->camera.pos, (t_vecf3) {-state->camera.cos_rotx,
+				state->camera.sin_rotx, 0});
 	if (state->pressed_keys & KEYCODEQ)
 		state->camera.pos.z += 10;
 	if (state->pressed_keys & KEYCODEE)
@@ -94,6 +101,7 @@ int	keyboard_down_hook(int keycode, t_state *state)
 
 #endif
 
+//unused in bonus
 int	mouse_up_hook(int button, t_vec3 pos, t_state *state)
 {
 	if (button == 3)

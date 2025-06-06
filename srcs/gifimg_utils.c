@@ -9,7 +9,7 @@
 #include <state.h>
 #include <mlx.h>
 
-//MAKE THIS CONSIDER TRANSPARENT
+//MAKE THIS CONSIDER TRANSPARENT BETTER
 static void	add_to_map(t_gifmap *const map, const t_color color)
 {
 	if (color.s_rgba.a)
@@ -48,10 +48,25 @@ static unsigned int	extract_bits(size_t shift, t_gifdata *const data)
 	return (result);
 }
 
+static t_code *increase_table(t_ctable *tab)
+{
+	t_code *new_tab = malloc(sizeof(t_code) * ((size_t) 1 << ++(tab->code_size)));
+	if (new_tab)
+	{
+		ft_memset(new_tab + (1 << (tab->code_size - 1)), -1,
+			sizeof(t_code) * ((size_t) 1 << (tab->code_size - 1)));
+		ft_memcpy(new_tab, tab->table, sizeof(t_code) * ((int) 1 << (tab->code_size - 1)));
+	}
+	free(tab->table);
+	tab->table = new_tab;
+	if(!new_tab)
+		tab->prev_code = 1 + (1 << tab->lzw);
+	return (new_tab);
+}
+
 static int new_code(int first_index, t_ctable *const tab)
 {
 	int		code;
-	t_code	*new_tab;
 
 	code = (int) 1 << tab->lzw;
 	while (code < ((int) 1 << tab->code_size) && tab->table[code].last_index != -1)
@@ -64,13 +79,8 @@ static int new_code(int first_index, t_ctable *const tab)
 	{
 		if(tab->code_size == 12)
 			return (first_index);
-		new_tab = malloc(sizeof(t_code) * ((size_t) 1 << ++(tab->code_size)));
-		//TODO guard this
-		ft_memset(new_tab + (1 << (tab->code_size - 1)), -1, sizeof(t_code) * ((size_t) 1 << (tab->code_size - 1)));
-		ft_memcpy(new_tab, tab->table,
-				sizeof(t_code) * ((int) 1 << (tab->code_size - 1)));
-		free(tab->table);
-		tab->table = new_tab;
+		if (!increase_table(tab))
+			return (-1);
 	}
 	tab->table[code].last_index = first_index;
 	tab->table[code].prev_code = tab->prev_code;
@@ -80,6 +90,8 @@ static int new_code(int first_index, t_ctable *const tab)
 static void	put_code(const int code, t_ctable *const tab,
 		t_gifmap *const map)
 {
+	if(code < 0)
+		return ;
 	if (tab->table[code].prev_code != -1 && tab->table[code].prev_code != code)
 		put_code(tab->table[code].prev_code, tab, map);
 	add_to_map(map, map->cltab[tab->table[code].last_index]);
@@ -151,9 +163,12 @@ unsigned char	*read_data(const int fd, t_gifdata *const data)
 		{
 			temp = malloc(current_size + 255 * 16 + 1);
 			current_size += 255 * 16;
-			ft_memcpy(temp, data->data, data->size);
+			if (temp)
+				ft_memcpy(temp, data->data, data->size);
 			free(data->data);
 			data->data = temp;
+			if (!temp)
+				return (NULL);
 		}
 		read(fd, data->data + data->size, block_size);
 		data->size += block_size;
@@ -164,7 +179,6 @@ unsigned char	*read_data(const int fd, t_gifdata *const data)
 }
 
 //this needs to have ALL of the blocks at the same time;
-//returns 0 on end of image
 char	parse_imgdata(const char lzw, const int fd, t_gifmap *const map)
 {
 	size_t		bits_read;
@@ -172,15 +186,15 @@ char	parse_imgdata(const char lzw, const int fd, t_gifmap *const map)
 	t_gifdata	data;
 
 	read_data(fd, &data);
-	codetab.lzw = lzw;
-	codetab.table = NULL;
+	codetab = (t_ctable){0, 0, lzw, 0};
 	clear_code(&codetab);
 	bits_read = 0;
-	while (bits_read + codetab.code_size < (unsigned int) data.size * 8)
+	while (bits_read + codetab.code_size < (unsigned int) data.size * 8 &&
+		codetab.table && data.data)
 	{
 		bits_read += codetab.code_size;
 		if (solve_code(extract_bits(codetab.code_size, &data),
-				&codetab, map) == (int) 1 << lzw)
+				&codetab, map) == (int) 1 << lzw && codetab.table)
 		{
 			bits_read += codetab.code_size;
 			put_code(extract_bits(codetab.code_size, &data),

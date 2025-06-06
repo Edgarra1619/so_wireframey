@@ -1,66 +1,85 @@
-#include <mlx.h>
-#include <stdlib.h>
-#include <strings.h>
-#include <state.h>
-#include <render.h>
-#include <map.h>
-#include <hooks.h>
 #include <X11/X.h>
 #include <gif_parse.h>
-#include <stdio.h>
+#include <hooks.h>
+#include <libft.h>
+#include <map.h>
+#include <mlx.h>
+#include <render.h>
+#include <state.h>
+#include <stdlib.h>
 
 #ifdef BONUS
-static void	start_mlx_loop(t_state *state)
-{
-	mlx_hook(state->window, ButtonPress, ButtonPressMask,
-		  mouse_down_hook, state);
-	mlx_hook(state->window, ButtonRelease, ButtonReleaseMask,
-		  mouse_up_hook, state);
-	mlx_hook(state->window, KeyPress, KeyPressMask,
-		  keyboard_down_hook, state);
-	mlx_hook(state->window, KeyRelease, KeyReleaseMask,
-		  keyboard_up_hook, state);
-	mlx_loop_hook(state->mlx, render_hook, state);
-	mlx_hook(state->window, ClientMessage, LeaveWindowMask,
-		  mlx_loop_end, state->mlx);
-	mlx_loop(state->mlx);
+static void start_mlx_loop(t_state *state) {
+  mlx_hook(state->window, ButtonPress, ButtonPressMask, mouse_down_hook, state);
+  mlx_hook(state->window, ButtonRelease, ButtonReleaseMask, mouse_up_hook,
+           state);
+  mlx_hook(state->window, KeyPress, KeyPressMask, keyboard_down_hook, state);
+  mlx_hook(state->window, KeyRelease, KeyReleaseMask, keyboard_up_hook, state);
+  mlx_loop_hook(state->mlx, render_hook, state);
+  mlx_hook(state->window, ClientMessage, LeaveWindowMask, mlx_loop_end,
+           state->mlx);
+  mlx_loop(state->mlx);
 }
-# else
-static void	start_mlx_loop(t_state *state)
-{
-	mlx_hook(state->window, KeyPress, KeyPressMask,
-		  keyboard_down_hook, state);
-	mlx_loop_hook(state->mlx, render_hook, state);
-	mlx_hook(state->window, ClientMessage, LeaveWindowMask,
-		  mlx_loop_end, state->mlx);
-	mlx_loop(state->mlx);
+#else
+static void start_mlx_loop(t_state *state) {
+  mlx_hook(state->window, KeyPress, KeyPressMask, keyboard_down_hook, state);
+  mlx_loop_hook(state->mlx, render_hook, state);
+  mlx_hook(state->window, ClientMessage, LeaveWindowMask, mlx_loop_end,
+           state->mlx);
+  mlx_loop(state->mlx);
 }
-
 #endif
 
-int	main(int argc, char **argv)
-{
-	t_state	state;
+// returns -1 if failed
+int safe_start_mlx(t_state *const state) {
+  state->mlx = mlx_init();
+  if (!state->mlx)
+    return (-1);
+  state->window = mlx_new_window(state->mlx, WINDOW_WIDTH, WINDOW_HEIGHT,
+                                 "c not yet my pp");
+  if (!state->window)
+    return (-1);
+  state->buffer.ptr = mlx_new_image(state->mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
+  if (!state->buffer.ptr)
+    return (-1);
+  state->buffer.data =
+      mlx_get_data_addr(state->buffer.ptr, &state->buffer.bpp,
+                        &state->buffer.sline, &state->buffer.endian);
+  if (!state->buffer.data)
+    return (-1);
+  state->buffer.size = (t_vec2){WINDOW_WIDTH, WINDOW_HEIGHT};
+  start_mlx_loop(state);
+  return (0);
+}
 
-	//TODO put ft_bzero here
-	bzero(&state, sizeof(state));
-	state.camera.rot = (t_vec2) {45, 57};
-	if (argc < 2)
-		return (0);
-	state.maps = parse_gif(argv[1], &(state.mapcount));
-	pre_map_alloc(&state);
-	printf("%d", state.mapcount);
-	state.camera.pos = (t_vecf3) {-state.maps->size.x / 2.0, -state.maps->size.y / 2.0, 0};
-	state.mlx = mlx_init();
-	state.window = mlx_new_window(state.mlx, WINDOW_WIDTH, WINDOW_HEIGHT, "c not yet my pp");
-	state.buffer.ptr = mlx_new_image(state.mlx, WINDOW_WIDTH, WINDOW_HEIGHT);
-	state.buffer.data = mlx_get_data_addr(state.buffer.ptr, &state.buffer.bpp, &state.buffer.sline, &state.buffer.endian);
-	state.buffer.size = (t_vec2){WINDOW_WIDTH, WINDOW_HEIGHT};
-	start_mlx_loop(&state);
-	free_map((void**) state.pre_map);
-	free_maps(state.maps, state.mapcount);
-	mlx_destroy_image(state.mlx, state.buffer.ptr);
-	mlx_destroy_window(state.mlx, state.window);
-	mlx_destroy_display(state.mlx);
-	free(state.mlx);
+void free_state(t_state *const state) {
+  free_map((void **)state->pre_map);
+  free_maps(state->maps, state->mapcount);
+  mlx_destroy_image(state->mlx, state->buffer.ptr);
+  mlx_destroy_window(state->mlx, state->window);
+  mlx_destroy_display(state->mlx);
+  free(state->mlx);
+}
+
+int main(int argc, char **argv) {
+  t_state state;
+
+  // TODO put ft_bzero here
+  ft_bzero(&state, sizeof(state));
+  state.camera.rot = (t_vec2){45, 57};
+  if (argc != 2) {
+    ft_putstr_fd("Wrong number of arguments\n", 2);
+    return (1);
+  }
+  state.maps = parse_gif(argv[1], &(state.mapcount));
+  if (!state.mapcount) {
+    ft_putstr_fd("Unable to parse file\n", 2);
+    return (1);
+  }
+  pre_map_alloc(&state);
+  state.camera.pos =
+      (t_vecf3){-state.maps->size.x / 2.0, -state.maps->size.y / 2.0, 0};
+  if (safe_start_mlx(&state))
+    ft_putstr_fd("Something happened while opening window!\n", 2);
+  free_state(&state);
 }
