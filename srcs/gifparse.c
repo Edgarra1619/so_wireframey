@@ -23,19 +23,22 @@ t_map *parse_image(t_color *table, int fd, const unsigned char *const gctrl,
 	map.map = malloc(sizeof(t_map));
 	if (!map.map)
 		return (NULL);
-	if (fmap)
-		map.fmap = fmap->content;
 	map.cltab = table;
-	read(fd, size, 10);
+	read(fd, size, 9);
 	map.map->position = (t_vec2){size[0], size[1]};
 	map.map->size = (t_vec2){size[2], size[3]};
-	new_map(map.map);
+	//TODO guard this
+	if (!copy_map(map.map, fmap))
+		return (NULL);
 	if (*((char *)(size + 4)) & 0b10000000)
 		map.cltab = parse_color_table(coltable,
 			(int)1 << ((*((char *)(size + 4)) & 0b0111) + 1), fd);
 	if (gctrl[0] & 1)
 		map.cltab[gctrl[3]].s_rgba.a = 0;
+	read(fd, ((char*)size) + 9, 1);
 	parse_imgdata(((char*)size)[9], fd, &map);
+	if (fmap)
+		map.map->size = ((t_map *)fmap->content)->size;
 	return (map.map);
 }
 
@@ -97,7 +100,7 @@ t_map *parse_allimg(const int fd, int *image_count, t_color *const cltab) {
 			skip_extensions(fd, buffer + 1);
 		else if (buffer[0] == 0x2C)
 			ft_lstadd_back(&list_maps,
-				 ft_lstnew(parse_image(cltab, fd, buffer + 1, list_maps)));
+				 ft_lstnew(parse_image(cltab, fd, buffer + 1, ft_lstlast(list_maps))));
 		else
 		{
 			ft_lstclear(&list_maps, free);

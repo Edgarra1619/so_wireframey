@@ -11,7 +11,7 @@ TESTARGS = ./maps/rr.gif
 TESTARGS = ./maps/naenae.gif
 CC = clang
 INCFLAGS = -I $(MINILIBX) -I ./includes/ -I $(LIBFT)
-CFLAGS = -Wall -Wextra -pg -gdwarf-4 -O$(OPTFLAG) -D WINDOW_WIDTH=1920 -D WINDOW_HEIGHT=1080 -D DELAY=1
+CFLAGS = -Wall -Wextra -gdwarf-4 -O$(OPTFLAG) -D WINDOW_WIDTH=1920 -D WINDOW_HEIGHT=1080 -D DELAY=1
 OBJS = $(patsubst %.c, $(OBJDIR)%.o, $(SRCS))
 
 ifeq ($(BONUS), 1)
@@ -56,7 +56,7 @@ gprof: $(NAME)
 	gprof $(NAME) > gprof-output
 
 valgrind: $(NAME)
-	valgrind --track-origins=yes --leak-check=full ./$(NAME) $(TESTARGS)
+	valgrind --track-origins=yes --leak-check=full --show-leak-kinds=all ./$(NAME) $(TESTARGS)
 
 gdb: $(NAME)
 	gdbtui --args $(NAME) $(TESTARGS)

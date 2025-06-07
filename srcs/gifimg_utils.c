@@ -12,22 +12,12 @@
 //MAKE THIS CONSIDER TRANSPARENT BETTER
 static void	add_to_map(t_gifmap *const map, const t_color color)
 {
+	t_vec2	pos = (t_vec2) {map->map->position.x + (map->offset % map->map->size.x),
+			map->map->position.y + map->offset / map->map->size.x};
 	if (color.s_rgba.a)
 	{
-		map->map->color_map[map->offset % map->map->size.x][map->offset / map->map->size.x] = color;
-		map->map->height_map[map->offset % map->map->size.x][map->offset / map->map->size.x] = 
-			color.s_rgba.r + color.s_rgba.g + color.s_rgba.b;
-	}
-	else
-	{
-		map->map->color_map[map->offset % map->map->size.x]
-			[map->offset / map->map->size.x] = map->fmap->color_map
-			[map->offset % map->map->size.x + map->map->position.x]
-			[map->offset / map->map->size.x + map->map->position.y];
-		map->map->height_map[map->offset % map->map->size.x]
-			[map->offset / map->map->size.x] = map->fmap->height_map
-			[map->offset % map->map->size.x + map->map->position.x]
-			[map->offset / map->map->size.x + map->map->position.y];
+		map->map->color_map[pos.x][pos.y] = color;
+		map->map->height_map[pos.x][pos.y] = color.s_rgba.r + color.s_rgba.g + color.s_rgba.b;
 	}
 	map->offset++;
 }

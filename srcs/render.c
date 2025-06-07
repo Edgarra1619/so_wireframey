@@ -46,9 +46,7 @@ void	pre_calculate_map(const t_camera *const camera, const t_map *const map, t_v
 		x = -1;
 		while (++x < mapw)
 			pre_map[x][y] = world_to_camera(camera,
-					(t_vec3) {x + map->position.x, y
-					+ map->position.y,
-					map->height_map[x][y]});
+					(t_vec3) {x, y, map->height_map[x][y]});
 	}
 }
 

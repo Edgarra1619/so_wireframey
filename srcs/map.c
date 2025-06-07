@@ -18,17 +18,30 @@
 #include <math.h>
 #include <vector.h>
 
-void	new_map(t_map *map)
+int	new_map(t_map *map)
 {
 	const size_t	w = map->size.x;
 	const size_t	h = map->size.y;
 	size_t			i;
 
-	//TODO put ft_calloc here and guard it
-	map->height_map = calloc(w, sizeof(int*));
-	map->color_map = calloc(w, sizeof(t_color*));
-	map->height_map[0] = calloc(w * h, sizeof(int));
-	map->color_map[0] = calloc(w * h, sizeof(t_color));
+	map->height_map = ft_calloc(w, sizeof(int*));
+	map->color_map = ft_calloc(w, sizeof(t_color*));
+	if(!map->height_map || !map->color_map)
+	{
+		free(map->height_map);
+		free(map->color_map);
+		return (-1);
+	}
+	map->height_map[0] = ft_calloc(w * h, sizeof(int));
+	map->color_map[0] = ft_calloc(w * h, sizeof(t_color));
+	if(!map->height_map || !map->color_map)
+	{
+		free(map->height_map[0]);
+		free(map->color_map[0]);
+		free(map->height_map);
+		free(map->color_map);
+		return (-1);
+	}
 	i = 1;
 	while (i < w)
 	{
@@ -36,8 +49,30 @@ void	new_map(t_map *map)
 		map->color_map[i] = map->color_map[0] + i * h;
 		i++;
 	}
+	return (0);
 }
 
+t_map	*copy_map(t_map *dest, t_list *list_src)
+{
+	const t_vec2	orig_size = dest->size;
+	t_map			*src;
+
+	if (!list_src)
+	{
+		new_map(dest);
+		return (dest);
+	}
+	src = list_src->content;
+	dest->size = src->size;
+	if (new_map(dest) == -1)
+		return (NULL);
+	ft_memcpy(*(dest->color_map), *(src->color_map),
+		sizeof(t_color) * src->size.x * src->size.y);
+	ft_memcpy(*(dest->height_map), *(src->height_map),
+		sizeof(int) * src->size.x * src->size.y);
+	dest->size = orig_size;
+	return (dest);
+}
 
 void	pre_map_alloc(void *stat)
 {
@@ -64,6 +99,7 @@ void	pre_map_alloc(void *stat)
 		//and guard this
 }
 
+/*
 int	**test_map(int w, int h, t_state *state)
 {
 	int	**map;
@@ -84,6 +120,7 @@ int	**test_map(int w, int h, t_state *state)
 	ocean_map (map, w, h);
 	return (map);
 }
+
 
 void	ocean_map(int **map, int w, int h)
 {
@@ -110,6 +147,7 @@ void	ocean_map(int **map, int w, int h)
 	}
 	count++;
 }
+*/
 
 void	free_map(void **map)
 {
