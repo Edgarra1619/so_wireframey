@@ -19,7 +19,9 @@
 typedef struct s_camera
 {
 	t_vecf3	pos;
-	t_vec2	rot;
+	t_vecf2	rot;
+	float	zoom;
+	float	vertical_scale;
 	float	sin_rotx;
 	float	cos_rotx;
 	float	sin_roty;
@@ -55,15 +57,14 @@ typedef struct	s_state
 	t_camera	camera;
 	t_map		*maps;
 	int			mapcount;
-	int			**map;
 	t_vec2		**pre_map;
-	t_color		**color_map;
 	int			mapw;
 	int			maph;
 	void		*mlx;
 	void		*window;
 	t_image		buffer;
 	int			pressed_keys;
+	t_vec2		mouse_pos;
 }	t_state;
 
 #endif

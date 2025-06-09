@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <vector.h>
 #include <mlx.h>
 #include <state.h>
@@ -7,6 +8,7 @@
 #include <unistd.h>
 #include <map.h>
 
+
 void	update_camera_rot(t_camera *const camera)
 {
 	camera->sin_rotx = sin((float) camera->rot.x / 180.0 * M_PI);
@@ -15,6 +17,16 @@ void	update_camera_rot(t_camera *const camera)
 	camera->cos_roty = cos((float) camera->rot.y / 180.0 * M_PI);
 }
 
+void	rotate_camera(t_camera *const camera, t_vecf2 rotation)
+{
+	camera->rot.y = clampf(camera->rot.y - rotation.y, 0, 90);
+	camera->rot.x = camera->rot.x + rotation.x;
+	if (camera->rot.x < 0)
+		camera->rot.x += 360;
+	if (camera->rot.x > 360)
+		camera->rot.x -= 360;
+	update_camera_rot(camera);
+}
 
 int	render_hook(t_state *state)
 {
@@ -69,14 +81,6 @@ int	keyboard_down_hook(int keycode, t_state *state)
 {
 	if (keycode == 0xFF1B)
 		mlx_loop_end(state->mlx);
-	if (keycode == 'i')
-		state->camera.rot.y = clamp(state->camera.rot.y + 10, 0, 90);
-	if (keycode == 'k')
-		state->camera.rot.y = clamp(state->camera.rot.y - 10, 0, 90);
-	if (keycode == 'j')
-		state->camera.rot.x = (state->camera.rot.x + 10) % 360;
-	if (keycode == 'l')
-		state->camera.rot.x = (state->camera.rot.x - 10) % 360;
 	if (keycode == 'w')
 		state->pressed_keys |= KEYCODEW;
 	if (keycode == 's')
@@ -104,12 +108,12 @@ int	keyboard_down_hook(int keycode, t_state *state)
 //unused in bonus
 int	mouse_up_hook(int button, t_vec3 pos, t_state *state)
 {
-	if (button == 3)
-	{
-		mlx_mouse_hide(state->mlx, state->window);
-		mlx_mouse_move(state->mlx, state->window, 0, 0);
-	}
 	(void) pos;
+	if(button == 5)
+		state->camera.zoom /= 1.1;
+	if(button == 4)
+		state->camera.zoom *= 1.1;
+	printf("%d %d %d %d up\n", button, pos.x, pos.y, pos.z);
 	return (0);
 }
 
@@ -117,11 +121,19 @@ int	mouse_up_hook(int button, t_vec3 pos, t_state *state)
 int	mouse_down_hook(int button, t_vec3 pos, t_state *state)
 {
 	if (button == 3)
-	{
-		mlx_mouse_hide(state->mlx, state->window);
-		mlx_mouse_move(state->mlx, state->window, 0, 0);
-	}
+		state->mouse_pos = (t_vec2) {pos.x, pos.z};
 	(void) pos;
+	printf("%d down\n", button);
 	return (0);
 }
 
+int	mouse_move_hook(int posx, int posy, t_state *state)
+{
+	const t_vecf2	mov = (t_vecf2)
+		{(float) (state->mouse_pos.x - posx) / 10,
+		(float)(state->mouse_pos.y - posy) / 10};
+
+	rotate_camera(&state->camera, mov);
+	state->mouse_pos = (t_vec2) {posx, posy};
+	return(0);
+}

@@ -22,12 +22,12 @@ t_vec2	world_to_camera(const t_camera *camera, t_vec3 position)
 	position.x += camera->pos.x;
 	position.y += camera->pos.y;
 	position.z += camera->pos.z;
-	result.x = WINDOW_WIDTH / 2.0 + 1 * ((float) position.x * camera->cos_rotx -
+	result.x = WINDOW_WIDTH / 2.0 + camera->zoom * ((float) position.x * camera->cos_rotx -
 			(float) position.y * camera->sin_rotx);
-	result.y = WINDOW_HEIGHT / 2.0 - ((float) position.z * camera->cos_roty) / 5 +
-			1 * camera->sin_roty *
-			((float) position.x * camera->sin_rotx +
-			(float) position.y * camera->cos_rotx);
+	result.y = WINDOW_HEIGHT / 2.0 + camera->zoom *
+		( - ((float) position.z * camera->cos_roty) / camera->vertical_scale +
+		camera->sin_roty * ((float) position.x * camera->sin_rotx +
+		(float) position.y * camera->cos_rotx));
 //	result = sum_vec2(result, (t_vec2) {-state->camera.position.y, -state->camera.position.x});
 //	(position.z - camera->position.z) / 5;
 	return (result);
