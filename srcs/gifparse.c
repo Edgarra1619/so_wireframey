@@ -27,7 +27,6 @@ t_map *parse_image(t_color *table, int fd, const unsigned char *const gctrl,
 	read(fd, size, 9);
 	map.map->position = (t_vec2){size[0], size[1]};
 	map.map->size = (t_vec2){size[2], size[3]};
-	//TODO guard this
 	if (!copy_map(map.map, fmap))
 		return (NULL);
 	if (*((char *)(size + 4)) & 0b10000000)
@@ -85,7 +84,8 @@ void skip_extensions(const int fd, unsigned char *const gctrl) {
 		skip_blockdata(fd);
 }
 
-t_map *parse_allimg(const int fd, int *image_count, t_color *const cltab) {
+t_map *parse_allimg(const int fd, int *image_count, t_color *const cltab)
+{
 	t_list *list_maps;
 	t_list *temp;
 	t_map *array;
@@ -99,6 +99,7 @@ t_map *parse_allimg(const int fd, int *image_count, t_color *const cltab) {
 		if (buffer[0] == 0x21)
 			skip_extensions(fd, buffer + 1);
 		else if (buffer[0] == 0x2C)
+			//TODO guard this
 			ft_lstadd_back(&list_maps,
 				 ft_lstnew(parse_image(cltab, fd, buffer + 1, ft_lstlast(list_maps))));
 		else
@@ -109,6 +110,7 @@ t_map *parse_allimg(const int fd, int *image_count, t_color *const cltab) {
 		read(fd, buffer, 1);
 	}
 	*image_count = ft_lstsize(list_maps);
+	//TODO guard this
 	array = malloc(sizeof(t_map) * (*image_count));
 	i = 0;
 	while (list_maps) {
@@ -120,8 +122,6 @@ t_map *parse_allimg(const int fd, int *image_count, t_color *const cltab) {
 	return (array);
 }
 
-// TODO parse 87a
-// TODO parse 89a = parse 87a but skip the extensions
 t_map *parse_gif(const char *path, int *image_count) {
 	const int fd = open(path, O_RDONLY);
 	t_gif_header info;
@@ -132,7 +132,6 @@ t_map *parse_gif(const char *path, int *image_count) {
 	if (fd < 0)
 		return (NULL);
 	info = parse_header(fd);
-	// TODO put ft_strcmp and ft_calloc here
 	if (ft_strncmp(info.signature, "GIF", 3) || !(info.version[0] == '8')) {
 		close(fd);
 		return (NULL);

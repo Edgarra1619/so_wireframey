@@ -64,7 +64,6 @@ static int new_code(int first_index, t_ctable *const tab)
 	while (tab->table[first_index].prev_code != -1 &&
 			tab->table[first_index].prev_code != first_index)
 		first_index = tab->table[first_index].prev_code;
-	//TODO put ft_memcpy and ft_memset
 	if (code == (((int) 1 << tab->code_size) - 1))
 	{
 		if(tab->code_size == 12)
@@ -116,7 +115,6 @@ static void	clear_code(t_ctable *const tab)
 	tab->code_size = tab->lzw + 1;
 	free(tab->table);
 	tab->table = new_table(tab->lzw);
-	//TODO MEGA guard this
 }
 
 static int	solve_code(int code, t_ctable *const tab,

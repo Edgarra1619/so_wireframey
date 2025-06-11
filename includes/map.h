@@ -12,7 +12,7 @@
 
 #ifndef MAP_H
 # define MAP_H
-#include <libft.h>
+# include <libft.h>
 # include <color.h>
 # include <vector.h>
 //# include <state.h>
@@ -27,8 +27,8 @@ typedef struct	s_map
 	t_vec2	position;
 } t_map;
 
-int	new_map(t_map *map);
-void	pre_map_alloc(void *state);
+int		new_map(t_map *map);
+int		pre_map_alloc(void *state);
 //int		**test_map(int w, int h, t_state *state);
 //int		**parse_map(int fd, int *w, int *h);
 void	free_map(void **map);

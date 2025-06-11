@@ -10,12 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <libft.h>
 #include <color.h>
 #include <state.h>
 #include <map.h>
 #include <stdlib.h>
-#include <math.h>
 #include <vector.h>
 
 int	new_map(t_map *map)
@@ -36,18 +35,14 @@ int	new_map(t_map *map)
 	map->color_map[0] = ft_calloc(w * h, sizeof(t_color));
 	if(!map->height_map || !map->color_map)
 	{
-		free(map->height_map[0]);
-		free(map->color_map[0]);
-		free(map->height_map);
-		free(map->color_map);
+		free_maps(map, 1);
 		return (-1);
 	}
-	i = 1;
-	while (i < w)
+	i = 0;
+	while (++i < w)
 	{
 		map->height_map[i] = map->height_map[0] + i * h;
 		map->color_map[i] = map->color_map[0] + i * h;
-		i++;
 	}
 	return (0);
 }
@@ -74,29 +69,32 @@ t_map	*copy_map(t_map *dest, t_list *list_src)
 	return (dest);
 }
 
-void	pre_map_alloc(void *stat)
+//TODO guard calls
+int	pre_map_alloc(void *stat)
 {
+	t_state	*const state = (t_state*) stat;
 	t_vec2	max_size;
 	int		i;
-	t_state	*const state = (t_state*) stat;
 
 	max_size = (t_vec2){0, 0};
-	i = 0;
-	while (i < state->mapcount)
+	i = -1;
+	while (++i < state->mapcount)
 	{
 		if (state->maps[i].size.x > max_size.x)
 			max_size.x = state->maps[i].size.x;
 		if (state->maps[i].size.y > max_size.y)
 			max_size.y = state->maps[i].size.y;
-		i++;
 	}
 	state->pre_map = ft_calloc(max_size.x, sizeof(t_vec2*));
+	if(!state->pre_map)
+		return (-1);
 	state->pre_map[0] = ft_calloc(max_size.x * max_size.y, sizeof(t_vec2));
-	//TODO GUARD THIS
+	if(!state->pre_map)
+		return (-1);
 	i = 0;
 	while (++i < max_size.x)
 		state->pre_map[i] = state->pre_map[0] + i * max_size.y;
-		//and guard this
+	return (0);
 }
 
 /*
@@ -105,7 +103,7 @@ int	**test_map(int w, int h, t_state *state)
 	int	**map;
 	int	i;
 
-	//TODO put ft_calloc here and guard it
+	//put ft_calloc here and guard it
 	map = calloc(w, sizeof(int *));
 	state->pre_map = calloc(w, sizeof(t_vec2*));
 	state->color_map = calloc(w, sizeof(t_color*));
@@ -151,7 +149,8 @@ void	ocean_map(int **map, int w, int h)
 
 void	free_map(void **map)
 {
-	free(map[0]);
+	if (map)
+		free(map[0]);
 	free(map);
 }
 
