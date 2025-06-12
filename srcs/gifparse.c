@@ -88,11 +88,11 @@ void skip_extensions(const int fd, unsigned char *const gctrl)
 
 t_list	*parse_allimg_loop(const int fd, t_color *const cltab)
 {
-	unsigned char buffer[5];
 	t_list *list_maps;
+	unsigned char buffer[5];
 	void	*test[2];
 
-	ft_bzero(buffer, 5 + sizeof(t_list));
+	ft_bzero(buffer, 5 + sizeof(t_list*));
 	read(fd, buffer, 1);
 	while (buffer[0] != 0x3B)
 	{
