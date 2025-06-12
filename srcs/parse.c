@@ -28,9 +28,8 @@
 int	parse_file(const char *path, t_state *state)
 {
 	state->maps = parse_gif(path, &(state->mapcount));
-	if(state->maps)
-
-
+	if (state->maps)
+		return (0);
 
 	return (0);
 }
