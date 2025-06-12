@@ -22,12 +22,13 @@ t_vec2	world_to_camera(const t_camera *camera, t_vec3 position)
 	position.x += camera->pos.x;
 	position.y += camera->pos.y;
 	position.z += camera->pos.z;
-	result.x = WINDOW_WIDTH / 2.0 + camera->zoom * ((float) position.x * camera->cos_rotx -
+	result.x = WINDOW_WIDTH / 2.0 + camera->zoom *
+			((float) position.x * camera->cos_rotx -
 			(float) position.y * camera->sin_rotx);
 	result.y = WINDOW_HEIGHT / 2.0 + camera->zoom *
-		( - ((float) position.z * camera->cos_roty) / camera->vertical_scale +
-		camera->sin_roty * ((float) position.x * camera->sin_rotx +
-		(float) position.y * camera->cos_rotx));
+			( - ((float) position.z * camera->cos_roty) / camera->vertical_scale +
+			camera->sin_roty * ((float) position.x * camera->sin_rotx +
+			(float) position.y * camera->cos_rotx));
 //	result = sum_vec2(result, (t_vec2) {-state->camera.position.y, -state->camera.position.x});
 //	(position.z - camera->position.z) / 5;
 	return (result);
@@ -45,8 +46,8 @@ void	pre_calculate_map(const t_camera *const camera, const t_map *const map, t_v
 	{
 		x = -1;
 		while (++x < mapw)
-			pre_map[x][y] = world_to_camera(camera,
-					(t_vec3) {x, y, map->height_map[x][y]});
+			pre_map[x][y] = world_to_camera(
+				camera, (t_vec3) {x, y, map->height_map[x][y]});
 	}
 }
 
@@ -55,26 +56,30 @@ void	pre_calculate_map(const t_camera *const camera, const t_map *const map, t_v
 void	render_map(t_image *const img, const t_map *const map,
 			const t_camera *const camera, t_vec2 **pre_map)
 {
-	int		x;
-	int		y;
-	const int	maph = map->size.y;
-	const int	mapw = map->size.x;
+	const t_vec2	iter = (t_vec2){
+		1 * (camera->sin_rotx > 0) - 1 * (camera->sin_rotx < 0),
+		1 * (camera->cos_rotx > 0) - 1 * (camera->cos_rotx < 0)};
+	const t_vec2	mapsize = map->size;
+	int				x;
+	int				y;
 
 	pre_calculate_map(camera, map, pre_map);
-	y = -1;
-	while (++y < maph)
+	y = (iter.y == -1) * (mapsize.y - 1);
+	while (y < mapsize.y && y >= 0)
 	{
-		x = -1;
-		while (++x < mapw)
+		x = (iter.x == -1) * (mapsize.x - 1);
+		while (x < mapsize.x && x >= 0)
 		{
-			if (y != maph - 1)
+			if (y != mapsize.y - 1)
 				put_grad_line(img, pre_map[x][y],
 					pre_map[x][y + 1],
 					map->color_map[x][y], map->color_map[x][y + 1]);
-			if (x != mapw - 1)
+			if (x != mapsize.x - 1)
 				put_grad_line(img, pre_map[x][y],
 					pre_map[x + 1][y],
 					map->color_map[x][y], map->color_map[x + 1][y]);
+			x += iter.x;
 		}
+		y += iter.y;
 	}
 }
