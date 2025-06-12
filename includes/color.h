@@ -27,16 +27,16 @@ enum	e_std_colors
 //I could actually pad some
 typedef union u_color
 {
-	int				color;
-	unsigned int	ucolor;
-	char			gif_color[4]; // use + 1 to avoid having to pad this one
 	struct
 	{
 		unsigned char	b;
 		unsigned char	g;
 		unsigned char	r;
 		unsigned char	a;
-	}	s_rgba;
+	};
+	int				color;
+	unsigned int	ucolor;
+	char			gif_color[4]; // use + 1 to avoid having to pad this one
 }	t_color;
 
 t_color	color_lerp(const t_color a, const t_color b, const float t);

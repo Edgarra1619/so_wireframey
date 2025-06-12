@@ -33,7 +33,7 @@ t_map *parse_image(t_color *table, int fd, const unsigned char *const gctrl,
 		map.cltab = parse_color_table(coltable,
 			(int)1 << ((*((char *)(size + 4)) & 0b0111) + 1), fd);
 	if (gctrl[0] & 1)
-		map.cltab[gctrl[3]].s_rgba.a = 0;
+		map.cltab[gctrl[3]].a = 0;
 	read(fd, ((char*)size) + 9, 1);
 	parse_imgdata(((char*)size)[9], fd, &map);
 	if (fmap)
@@ -54,9 +54,9 @@ t_color *parse_color_table(t_color *const table, const int size, const int fd) {
 	i = 0;
 	while (i < size) {
 		table[i].color = 0xFFFFFFFF;
-		read(fd, &table[i].s_rgba.r, 1);
-		read(fd, &table[i].s_rgba.g, 1);
-		read(fd, &table[i].s_rgba.b, 1);
+		read(fd, &table[i].r, 1);
+		read(fd, &table[i].g, 1);
+		read(fd, &table[i].b, 1);
 		i++;
 	}
 	return (table);

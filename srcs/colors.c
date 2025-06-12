@@ -17,9 +17,9 @@ t_color	color_sum(const t_color a, const t_color b)
 {
 	t_color	c;
 
-	c.s_rgba.r = clamp(a.s_rgba.r + b.s_rgba.r, 0, 255);
-	c.s_rgba.g = clamp(a.s_rgba.g + b.s_rgba.g, 0, 255);
-	c.s_rgba.b = clamp(a.s_rgba.b + b.s_rgba.b, 0, 255);
+	c.r = clamp(a.r + b.r, 0, 255);
+	c.g = clamp(a.g + b.g, 0, 255);
+	c.b = clamp(a.b + b.b, 0, 255);
 	return (c);
 }
 
@@ -27,17 +27,19 @@ t_color	color_lerp(const t_color a, const t_color b, const float t)
 {
 	static const float	lower_bound = (float) 1 / 255;
 	static const float	upper_bound = (float) 254 / 255;
-	const float			invt = 1 - t;
-	t_color				c;
 
 	if (t <= lower_bound)
 		return (a);
 	if (t >= upper_bound)
 		return (b);
-	c.s_rgba.r = a.s_rgba.r * t + b.s_rgba.r * invt;
-	c.s_rgba.g = a.s_rgba.g * t + b.s_rgba.g * invt;
-	c.s_rgba.b = a.s_rgba.b * t + b.s_rgba.b * invt;
-	return (c);
+	return ((t_color){
+		{
+			a.b + (b.b - a.b) * t,
+			a.g + (b.g - a.g) * t,
+			a.r + (b.r - a.r) * t,
+			a.a + (b.a - a.a) * t
+		}
+	});
 }
 
 //height below 0 is BLUE
