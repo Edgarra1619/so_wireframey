@@ -12,7 +12,7 @@ t_color *parse_color_table(t_color *const table, const int size, const int fd);
 
 // called after the image separator byte (2C)
 // does not accept interlacing
-t_map *parse_image(t_color *table, int fd, const unsigned char *const gctrl,
+t_map *parse_img(t_color *table, int fd, const unsigned char *const gctrl,
                    t_list *const fmap)
 {
 	t_gifmap	map;
@@ -62,8 +62,9 @@ t_color *parse_color_table(t_color *const table, const int size, const int fd) {
 	return (table);
 }
 
-void skip_blockdata(const int fd) {
-	char buffer[256];
+void skip_blockdata(const int fd)
+{
+	char	buffer[256];
 
 	read(fd, buffer, 1);
 	while (*buffer) {
@@ -72,8 +73,9 @@ void skip_blockdata(const int fd) {
 	}
 }
 
-void skip_extensions(const int fd, unsigned char *const gctrl) {
-	unsigned char buffer[256];
+void skip_extensions(const int fd, unsigned char *const gctrl)
+{
+	unsigned char	buffer[256];
 
 	read(fd, buffer, 1);
 	if (*buffer == 0xF9) {
@@ -84,38 +86,53 @@ void skip_extensions(const int fd, unsigned char *const gctrl) {
 		skip_blockdata(fd);
 }
 
-t_map *parse_allimg(const int fd, int *image_count, t_color *const cltab)
+t_list	*parse_allimg_loop(const int fd, t_color *const cltab)
 {
-	t_list *list_maps;
-	t_list *temp;
-	t_map *array;
 	unsigned char buffer[5];
-	int i;
+	t_list *list_maps;
+	void	*test[2];
 
-	ft_bzero(buffer, 5);
+	ft_bzero(buffer, 5 + sizeof(t_list));
 	read(fd, buffer, 1);
-	list_maps = NULL;
-	while (buffer[0] != 0x3B) {
+	while (buffer[0] != 0x3B)
+	{
 		if (buffer[0] == 0x21)
 			skip_extensions(fd, buffer + 1);
 		else if (buffer[0] == 0x2C)
-			//TODO guard this
-			ft_lstadd_back(&list_maps,
-				 ft_lstnew(parse_image(cltab, fd, buffer + 1, ft_lstlast(list_maps))));
-		else
 		{
-			ft_lstclear(&list_maps, free);
-			return (NULL);
+			test[0] = parse_img(cltab, fd, buffer + 1, ft_lstlast(list_maps));
+			test[1] = ft_lstnew(test[0]);
+			if (!test[0] || !test[1])
+			{
+				free(test[0]);
+				free(test[1]);
+				ft_lstclear(&list_maps, free);
+				return (NULL);
+			}
+			ft_lstadd_back(&list_maps, test[1]);
 		}
 		read(fd, buffer, 1);
 	}
+	return(list_maps);
+}
+
+t_map *parse_allimg(const int fd, int *image_count, t_color *const cltab)
+{
+	t_list	*list_maps;
+	t_list	*temp;
+	t_map	*array;
+	int		i;
+
+	list_maps = parse_allimg_loop(fd, cltab);
+	if (!list_maps)
+		return (NULL);
 	*image_count = ft_lstsize(list_maps);
-	//TODO guard this
 	array = malloc(sizeof(t_map) * (*image_count));
 	i = 0;
 	while (list_maps) {
 		temp = list_maps->next;
-		array[i++] = *((t_map *)list_maps->content);
+		if(array)
+			array[i++] = *((t_map *)list_maps->content);
 		ft_lstdelone(list_maps, free);
 		list_maps = temp;
 	}
@@ -123,10 +140,10 @@ t_map *parse_allimg(const int fd, int *image_count, t_color *const cltab)
 }
 
 t_map *parse_gif(const char *path, int *image_count) {
-	const int fd = open(path, O_RDONLY);
-	t_gif_header info;
-	t_color glob_coltable[256];
-	t_map *maps;
+	const int		fd = open(path, O_RDONLY);
+	t_gif_header	info;
+	t_color			glob_coltable[256];
+	t_map			*maps;
 
 	*image_count = 0;
 	if (fd < 0)
