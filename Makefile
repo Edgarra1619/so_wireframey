@@ -1,4 +1,4 @@
-NAME = FdF
+NAME = fdf
 SRCS = main.c colors.c my_math.c render.c render_utils.c map.c hooks.c vector.c vectorf.c
 BONUS = 0
 OPTFLAG = 0
