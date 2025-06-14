@@ -59,10 +59,14 @@ void free_state(t_state *const state)
 {
 	free_map((void **)state->pre_map);
 	free_maps(state->maps, state->mapcount);
-	mlx_destroy_image(state->mlx, state->buffer.ptr);
-	mlx_destroy_window(state->mlx, state->window);
-	mlx_destroy_display(state->mlx);
-	free(state->mlx);
+	if (state->mlx)
+	{
+		if (state->buffer.ptr)
+			mlx_destroy_image(state->mlx, state->buffer.ptr);
+		mlx_destroy_window(state->mlx, state->window);
+		mlx_destroy_display(state->mlx);
+		free(state->mlx);
+	}
 }
 
 static void	error_out(t_state *const state, const char *const errmsg)
