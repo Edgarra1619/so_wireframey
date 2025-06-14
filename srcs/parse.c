@@ -73,7 +73,14 @@ t_map	*parse_map_file(const char *path)
 		lines = temp;
 	}
 }
-
+#ifndef BONUS
+t_map	*parse_gif(const char *a, int *b)
+{
+	(void) a;
+	(void) b;
+	return (NULL);
+}
+#endif
 //return-1 on error
 int	parse_file(const char *path, t_state *state)
 {
