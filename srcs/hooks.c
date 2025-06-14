@@ -1,13 +1,13 @@
-#include <stdio.h>
-#include <vector.h>
-#include <mlx.h>
-#include <state.h>
-#include <render.h>
-#include <my_math.h>
-#include <math.h>
-#include <unistd.h>
 #include <map.h>
-
+#include <math.h>
+#include <mlx.h>
+#include <my_math.h>
+#include <render.h>
+#include <state.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <vector.h>
+#include <X11/keysym.h>
 
 void	update_camera_rot(t_camera *const camera)
 {
@@ -59,19 +59,19 @@ int	render_hook(t_state *state)
 //unused in bonus
 int	keyboard_up_hook(int keycode, t_state *state)
 {
-	if (keycode == 0xFF1B)
+	if (keycode == XK_Escape)
 		mlx_loop_end(state->mlx);
-	if (keycode == 'w')
+	if (keycode == XK_W)
 		state->pressed_keys &= ~KEYCODEW;
-	if (keycode == 's')
+	if (keycode == XK_S)
 		state->pressed_keys &= ~KEYCODES;
-	if (keycode == 'a')
+	if (keycode == XK_A)
 		state->pressed_keys &= ~KEYCODEA;
-	if (keycode == 'd')
+	if (keycode == XK_D)
 		state->pressed_keys &= ~KEYCODED;
-	if (keycode == 'q')
+	if (keycode == XK_Q)
 		state->pressed_keys &= ~KEYCODEQ;
-	if (keycode == 'e')
+	if (keycode == XK_E)
 		state->pressed_keys &= ~KEYCODEE;
 	return (0);
 }

@@ -30,7 +30,7 @@ char	*ft_strtrim(const char *s1, const char *set)
 	return (str);
 }
 
-static size_t	ft_count_words(const char *s, char c)
+size_t	ft_count_words(const char *s, char c)
 {
 	_Bool	in_word;
 	size_t	count;

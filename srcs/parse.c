@@ -9,7 +9,7 @@
 void	parse_line(void **line)
 {
 	t_heicolor	*const parsed_line =
-		ft_calloc(count_words(*line) + 1, sizeof(t_heicolor));
+		ft_calloc(ft_count_words(*line, ' ') + 1, sizeof(t_heicolor));
 
 	//TODO expose count_words from split
 	if(!parsed_line)

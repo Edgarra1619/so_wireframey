@@ -59,6 +59,7 @@ char	*ft_itoa(int n);
 //splitrim
 char	*ft_strtrim(const char *s1, const char *set);
 char	**ft_split(const char *str, char c);
+size_t	ft_count_words(const char *s, char c);
 //lists
 typedef struct s_list
 {
@@ -74,4 +75,7 @@ void	ft_lstdelone(t_list *lst, void (*del)(void*));
 void	ft_lstclear(t_list **lst, void (*del)(void*));
 void	ft_lstiter(t_list *lst, void (*f)(void *));
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
+
+char	*get_next_line(int fd);
+
 #endif
