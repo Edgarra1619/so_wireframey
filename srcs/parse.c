@@ -1,3 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: edgribei <edgribei@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/16 18:27:38 by edgribei          #+#    #+#             */
+/*   Updated: 2025/06/16 18:39:18 by edgribei         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "color.h"
 #include <errno.h>
 #include <fcntl.h>
 #include <libft.h>
@@ -21,6 +34,7 @@ void	parse_line(const char *line, t_map *const map, const int linbr)
 			line++;
 		if (*line == ',')
 		{
+			map->has_color = 1;
 			line += 3;
 			map->color_map[i][linbr].ucolor = ft_atoihex(line);
 			while (ft_isalnum(*line))
@@ -39,9 +53,9 @@ t_map	*parse_lines(t_list *lines)
 
 	if (!map)
 		return (NULL);
-	map->size = (t_vec2) {
+	map->size = (t_vec2){
 		ft_count_words(lines->content, ' '), ft_lstsize(lines)};
-	if(!ft_strncmp(lines->content, "GIF", 3))
+	if (!ft_strncmp(lines->content, "GIF", 3))
 	{
 		free(map);
 		return (NULL);
@@ -101,7 +115,7 @@ t_map	*parse_map_file(const char *path)
 		return (NULL);
 	}
 	lines = read_all_lines(fd);
-	map = parse_lines(lines); 
+	map = parse_lines(lines);
 	ft_lstclear(&lines, free);
 	close(fd);
 	return (map);
@@ -121,12 +135,25 @@ t_map	*parse_gif(const char *a, int *b)
 //return -1 on error
 int	parse_file(const char *path, t_state *state)
 {
+	t_vec2	p;
+
 	state->maps = parse_gif(path, &(state->mapcount));
 	if (state->maps)
 		return (0);
 	state->maps = parse_map_file(path);
 	if (state->maps)
 	{
+		if (!state->maps->has_color)
+		{
+			p.x = -1;
+			while (++p.x < state->maps->size.x)
+			{
+				p.y = -1;
+				while (++p.y < state->maps->size.y)
+					state->maps->color_map[p.x][p.y]
+						= get_height_color(state->maps->height_map[p.x][p.y]);
+			}
+		}
 		state->mapcount = 1;
 		return (0);
 	}

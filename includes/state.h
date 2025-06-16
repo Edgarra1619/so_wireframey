@@ -6,7 +6,7 @@
 /*   By: edgribei <edgribei@student.42porto.co      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:00:14 by edgribei          #+#    #+#             */
-/*   Updated: 2025/05/27 14:25:43 by edgribei         ###   ########.fr       */
+/*   Updated: 2025/06/16 19:58:21 by edgribei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ enum	e_input
 	BUTTONR = 1 << 7,
 };
 
-typedef struct	s_image
+typedef struct s_image
 {
 	void	*ptr;
 	char	*data;
@@ -52,7 +52,7 @@ typedef struct	s_image
 
 //input will be handled as a flag
 //0-5 will be wsadqe and 6-7 will be mouse buttons
-typedef struct	s_state
+typedef struct s_state
 {
 	t_camera	camera;
 	t_map		*maps;

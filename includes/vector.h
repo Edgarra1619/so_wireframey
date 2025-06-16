@@ -6,7 +6,7 @@
 /*   By: edgribei <edgribei@student.42porto.co      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:00:52 by edgribei          #+#    #+#             */
-/*   Updated: 2025/05/03 18:20:52 by edgribei         ###   ########.fr       */
+/*   Updated: 2025/06/16 19:57:39 by edgribei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ typedef struct s_vecf2
 	float	y;
 }	t_vecf2;
 
-typedef struct	s_vecf3
+typedef struct s_vecf3
 {
 	float	x;
 	float	y;
@@ -36,7 +36,7 @@ typedef struct s_vec2
 	int	y;
 }	t_vec2;
 
-typedef struct	s_vec3
+typedef struct s_vec3
 {
 	int	x;
 	int	y;

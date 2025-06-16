@@ -1,52 +1,64 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   gif_parse.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: edgribei <edgribei@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/16 19:54:38 by edgribei          #+#    #+#             */
+/*   Updated: 2025/06/16 19:56:01 by edgribei         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef GIF_PARSE_H
 # define GIF_PARSE_H
 # include <map.h>
 # include <stdint.h>
 # include <sys/types.h>
 
-typedef struct	s_gif_header
+typedef struct s_gif_header
 {
-	char	signature[3];
-	char	version[3];
+	char		signature[3];
+	char		version[3];
 	uint16_t	screen_width;
 	uint16_t	screen_height;
-	char	packed;
-	char	_ignored[2];
+	char		packed;
+	char		_ignored[2];
 }	t_gif_header;
 
 //if prev code is -1, it's a core code
 //if last_index is -1, it isn't initialized
 //if prev_code is itself, then it's a clear code
-typedef struct	s_code
+typedef struct s_code
 {
 	int	prev_code;
 	int	last_index;
-} t_code;
+}	t_code;
 
-typedef struct	s_ctable
+typedef struct s_ctable
 {
 	int			prev_code;
 	char		code_size;
 	char		lzw;
 	t_code		*table;
-} t_ctable;
+}	t_ctable;
 
-typedef struct		s_gifmap
+typedef struct s_gifmap
 {
 	t_map			*map;
 	t_map			*fmap;
 	int				offset;
-	t_color	*cltab;
-}					t_gifmap;
+	t_color			*cltab;
+}	t_gifmap;
 
-typedef struct		s_gifdata
+typedef struct s_gifdata
 {
 	unsigned char	*data;
 	size_t			size;
 	size_t			bytes;
 	char			bits;
-}					t_gifdata;
+}	t_gifdata;
 
-t_map	*parse_gif (const char *path, int *image_count);
-char parse_imgdata(char lzw, int fd, t_gifmap *map);
+t_map	*parse_gif(const char *path, int *image_count);
+char	parse_imgdata(char lzw, int fd, t_gifmap *map);
 #endif

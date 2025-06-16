@@ -6,7 +6,7 @@
 /*   By: edgribei <edgribei@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 17:52:05 by edgribei          #+#    #+#             */
-/*   Updated: 2025/05/14 19:06:46 by edgribei         ###   ########.fr       */
+/*   Updated: 2025/06/16 18:40:56 by edgribei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,13 +62,14 @@ t_color	color_flerp(const t_color a, const t_color b, const float t)
 t_color	get_height_color(const int z)
 {
 	if (z < -40)
-		return (color_lerp((t_color) 0xFF1010FF, (t_color) BLUE, (float) ((-z) - 20) / 100));
+		return (color_lerp((t_color) 0xFF1010FF,
+				(t_color) BLUE, (float)((-z) - 20) / 100));
 	if (z < 60)
 		return (color_lerp((t_color) 0XFF1111FF, (t_color) 0xFFA0A0FF,
 				(float) z + 40 / (float) 200));
 	if (z < 100)
-		return (color_lerp((t_color) 0x00A0A0FF, (t_color) 0x00C0C0FF ,
+		return (color_lerp((t_color) 0x00A0A0FF, (t_color) 0x00C0C0FF,
 				((float) z - 60) / (float) 100));
-	return (color_lerp((t_color) RED, (t_color) RED ,
+	return (color_lerp((t_color) RED, (t_color) RED,
 			((float) z - 80) / (float) 100));
 }

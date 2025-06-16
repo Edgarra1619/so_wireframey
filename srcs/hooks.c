@@ -1,10 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   hooks.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: edgribei <edgribei@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/16 19:44:13 by edgribei          #+#    #+#             */
+/*   Updated: 2025/06/16 19:47:21 by edgribei         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <map.h>
 #include <math.h>
 #include <mlx.h>
 #include <my_math.h>
 #include <render.h>
 #include <state.h>
-#include <stdio.h>
 #include <unistd.h>
 #include <vector.h>
 #include <X11/keysym.h>
@@ -51,7 +62,8 @@ int	render_hook(t_state *state)
 		state->camera.pos.z -= 10;
 	clear_image(&state->buffer);
 	count = (count + 1) % (state->mapcount * DELAY);
-	render_map(&state->buffer, state->maps + count / DELAY, &state->camera, state->pre_map);
+	render_map(&state->buffer, state->maps + count / DELAY,
+		&state->camera, state->pre_map);
 	mlx_put_image_to_window(state->mlx, state->window, state->buffer.ptr, 0, 0);
 	return (0);
 }
@@ -77,6 +89,7 @@ int	keyboard_up_hook(int keycode, t_state *state)
 }
 
 #ifdef BONUS
+
 int	keyboard_down_hook(int keycode, t_state *state)
 {
 	if (keycode == 0xFF1B)
@@ -95,7 +108,9 @@ int	keyboard_down_hook(int keycode, t_state *state)
 		state->pressed_keys |= KEYCODEE;
 	return (0);
 }
-# else
+
+#else
+
 int	keyboard_down_hook(int keycode, t_state *state)
 {
 	if (keycode == 0xFF1B)
@@ -109,7 +124,6 @@ int	keyboard_down_hook(int keycode, t_state *state)
 int	mouse_up_hook(int button, t_vec3 pos, t_state *state)
 {
 	(void) pos;
-
 	if (button == 1)
 		state->pressed_keys &= ~BUTTONL;
 	else if (button == 3)
@@ -126,9 +140,9 @@ int	mouse_down_hook(int button, t_vec3 pos, t_state *state)
 {
 	if (button == 1)
 		state->pressed_keys |= BUTTONL;
-	else if(button == 3)
+	else if (button == 3)
 		state->pressed_keys |= BUTTONR;
-	state->mouse_pos = (t_vec2) {pos.x, pos.z};
+	state->mouse_pos = (t_vec2){pos.x, pos.z};
 	(void) pos;
 	return (0);
 }
@@ -136,15 +150,15 @@ int	mouse_down_hook(int button, t_vec3 pos, t_state *state)
 int	mouse_move_hook(int posx, int posy, t_state *state)
 {
 	const t_vecf2	mov = (t_vecf2)
-		{(float) (state->mouse_pos.x - posx) / 10,
+	{(float)(state->mouse_pos.x - posx) / 10,
 		(float)(state->mouse_pos.y - posy) / 10};
 
 	if (state->pressed_keys & BUTTONL)
-		state->camera.vertical_scale =
-			clampf(powf(1.1f, -mov.y) * state->camera.vertical_scale,
-					0.1f, 10.0f);
+		state->camera.vertical_scale
+			= clampf(powf(1.1f, -mov.y) * state->camera.vertical_scale,
+				0.1f, 10.0f);
 	if (state->pressed_keys & BUTTONR)
 		rotate_camera(&state->camera, mov);
-	state->mouse_pos = (t_vec2) {posx, posy};
-	return(0);
+	state->mouse_pos = (t_vec2){posx, posy};
+	return (0);
 }

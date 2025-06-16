@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   gifimg_utils.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: edgribei <edgribei@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/16 19:34:45 by edgribei          #+#    #+#             */
+/*   Updated: 2025/06/16 19:43:50 by edgribei         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <map.h>
 #include <vector.h>
 #include <color.h>
@@ -11,8 +23,9 @@
 
 static void	add_to_map(t_gifmap *const map, const t_color color)
 {
-	t_vec2	pos = (t_vec2) {map->map->position.x + (map->offset % map->map->size.x),
-			map->map->position.y + map->offset / map->map->size.x};
+	const t_vec2	pos = (t_vec2)
+	{map->map->position.x + (map->offset % map->map->size.x),
+		map->map->position.y + map->offset / map->map->size.x};
 
 	if (color.a)
 	{
@@ -28,45 +41,49 @@ static unsigned int	extract_bits(size_t shift, t_gifdata *const data)
 	size_t			i;
 
 	result = 0;
-	i = 0;
-	while (i < shift)
+	i = -1;
+	while (++i < shift)
 	{
-		result = result | ((1 & (data->data[data->bytes] >> data->bits)) << i++);
+		result = result | ((1 & (data->data[data->bytes] >> data->bits)) << i);
 		data->bytes += (data->bits + 1) / 8;
 		data->bits = (data->bits + 1) % 8;
 	}
 	return (result);
 }
 
-static t_code *increase_table(t_ctable *tab)
+static t_code	*increase_table(t_ctable *tab)
 {
-	t_code *new_tab = malloc(sizeof(t_code) * ((size_t) 1 << ++(tab->code_size)));
+	t_code *const	new_tab
+		= malloc(sizeof(t_code) * ((size_t) 1 << ++(tab->code_size)));
+
 	if (new_tab)
 	{
 		ft_memset(new_tab + (1 << (tab->code_size - 1)), -1,
 			sizeof(t_code) * ((size_t) 1 << (tab->code_size - 1)));
-		ft_memcpy(new_tab, tab->table, sizeof(t_code) * ((int) 1 << (tab->code_size - 1)));
+		ft_memcpy(new_tab, tab->table,
+			sizeof(t_code) * ((int) 1 << (tab->code_size - 1)));
 	}
 	free(tab->table);
 	tab->table = new_tab;
-	if(!new_tab)
+	if (!new_tab)
 		tab->prev_code = 1 + (1 << tab->lzw);
 	return (new_tab);
 }
 
-static int new_code(int first_index, t_ctable *const tab)
+static int	new_code(int first_index, t_ctable *const tab)
 {
 	int		code;
 
 	code = (int) 1 << tab->lzw;
-	while (code < ((int) 1 << tab->code_size) && tab->table[code].last_index != -1)
+	while (code < ((int) 1 << tab->code_size)
+		&& tab->table[code].last_index != -1)
 		code++;
-	while (tab->table[first_index].prev_code != -1 &&
-			tab->table[first_index].prev_code != first_index)
+	while (tab->table[first_index].prev_code != -1
+		&& tab->table[first_index].prev_code != first_index)
 		first_index = tab->table[first_index].prev_code;
 	if (code == (((int) 1 << tab->code_size) - 1))
 	{
-		if(tab->code_size == 12)
+		if (tab->code_size == 12)
 			return (first_index);
 		if (!increase_table(tab))
 			return (-1);
@@ -79,7 +96,7 @@ static int new_code(int first_index, t_ctable *const tab)
 static void	put_code(const int code, t_ctable *const tab,
 		t_gifmap *const map)
 {
-	if(code < 0)
+	if (code < 0)
 		return ;
 	if (tab->table[code].prev_code != -1 && tab->table[code].prev_code != code)
 		put_code(tab->table[code].prev_code, tab, map);
@@ -89,12 +106,12 @@ static void	put_code(const int code, t_ctable *const tab,
 
 t_code	*new_table(const unsigned char lzw)
 {
-	t_code	*const new_tab = malloc(sizeof(t_code) * ((unsigned int) 1 << (lzw + 1)));
+	t_code *const	new_tab
+		= malloc(sizeof(t_code) * ((unsigned int) 1 << (lzw + 1)));
 	unsigned int	i;
 
 	if (!new_tab)
 		return (NULL);
-	//put ft_memset here
 	i = 0;
 	while (i < ((unsigned int) 1 << lzw) + 2)
 	{
@@ -142,7 +159,6 @@ unsigned char	*read_data(const int fd, t_gifdata *const data)
 	void			*temp;
 	size_t			current_size;
 
-	ft_bzero(data, sizeof(*data));
 	current_size = 0;
 	read(fd, &block_size, 1);
 	while (block_size)
@@ -163,7 +179,7 @@ unsigned char	*read_data(const int fd, t_gifdata *const data)
 		read(fd, &block_size, 1);
 	}
 	data->data[data->size] = 0;
-	return(data->data);
+	return (data->data);
 }
 
 //this needs to have ALL of the blocks at the same time;
@@ -173,23 +189,23 @@ char	parse_imgdata(const char lzw, const int fd, t_gifmap *const map)
 	t_ctable	codetab;
 	t_gifdata	data;
 
+	ft_bzero(&data, sizeof(data));
 	read_data(fd, &data);
 	codetab = (t_ctable){0, 0, lzw, 0};
 	clear_code(&codetab);
 	bits_read = 0;
-	while (bits_read + codetab.code_size < (unsigned int) data.size * 8 &&
-		codetab.table && data.data)
+	while (bits_read + codetab.code_size < (unsigned int) data.size * 8
+		&& codetab.table && data.data)
 	{
 		bits_read += codetab.code_size;
 		if (solve_code(extract_bits(codetab.code_size, &data),
 				&codetab, map) == (int) 1 << lzw && codetab.table)
 		{
 			bits_read += codetab.code_size;
-			put_code(extract_bits(codetab.code_size, &data),
-					&codetab, map);
+			put_code(extract_bits(codetab.code_size, &data), &codetab, map);
 		}
 		else if (codetab.prev_code == ((int) 1 << lzw) + 1)
-			break;
+			break ;
 	}
 	free(codetab.table);
 	free(data.data);

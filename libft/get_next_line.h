@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_bonus.h                              :+:      :+:    :+:   */
+/*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: edgribei <edgribei@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/15 17:00:49 by edgribei          #+#    #+#             */
-/*   Updated: 2025/05/08 13:37:44 by edgribei         ###   ########.fr       */
+/*   Created: 2025/06/16 18:18:09 by edgribei          #+#    #+#             */
+/*   Updated: 2025/06/16 18:18:13 by edgribei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_BONUS_H
-# define GET_NEXT_LINE_BONUS_H
+#ifndef GET_NEXT_LINE_H
+# define GET_NEXT_LINE_H
 # include <stddef.h>
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 42

@@ -6,7 +6,7 @@
 /*   By: edgribei <edgribei@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 15:58:36 by edgribei          #+#    #+#             */
-/*   Updated: 2025/05/21 18:58:44 by edgribei         ###   ########.fr       */
+/*   Updated: 2025/06/16 19:32:47 by edgribei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ int	new_map(t_map *map)
 	const size_t	h = map->size.y;
 	size_t			i;
 
-	map->height_map = ft_calloc(w, sizeof(int*));
-	map->color_map = ft_calloc(w, sizeof(t_color*));
-	if(!map->height_map || !map->color_map)
+	map->height_map = ft_calloc(w, sizeof(int *));
+	map->color_map = ft_calloc(w, sizeof(t_color *));
+	if (!map->height_map || !map->color_map)
 	{
 		free(map->height_map);
 		free(map->color_map);
@@ -33,11 +33,10 @@ int	new_map(t_map *map)
 	}
 	map->height_map[0] = ft_calloc(w * h, sizeof(int));
 	map->color_map[0] = ft_calloc(w * h, sizeof(t_color));
-	if(!map->height_map || !map->color_map)
-	{
+	if (!map->height_map || !map->color_map)
 		free_maps(map, 1);
+	if (!map->height_map || !map->color_map)
 		return (-1);
-	}
 	i = 0;
 	while (++i < w)
 	{
@@ -69,12 +68,11 @@ t_map	*copy_map(t_map *dest, t_list *list_src)
 	return (dest);
 }
 
-//TODO guard calls
 int	pre_map_alloc(void *stat)
 {
-	t_state	*const state = (t_state*) stat;
-	t_vec2	max_size;
-	int		i;
+	t_state *const	state = (t_state *) stat;
+	t_vec2			max_size;
+	int				i;
 
 	max_size = (t_vec2){0, 0};
 	i = -1;
@@ -85,11 +83,11 @@ int	pre_map_alloc(void *stat)
 		if (state->maps[i].size.y > max_size.y)
 			max_size.y = state->maps[i].size.y;
 	}
-	state->pre_map = ft_calloc(max_size.x, sizeof(t_vec2*));
-	if(!state->pre_map)
+	state->pre_map = ft_calloc(max_size.x, sizeof(t_vec2 *));
+	if (!state->pre_map)
 		return (-1);
 	state->pre_map[0] = ft_calloc(max_size.x * max_size.y, sizeof(t_vec2));
-	if(!state->pre_map)
+	if (!state->pre_map)
 		return (-1);
 	i = 0;
 	while (++i < max_size.x)
@@ -161,8 +159,8 @@ void	free_maps(t_map *map, int count)
 	i = 0;
 	while (i < count)
 	{
-		free_map((void**) map[i].height_map);
-		free_map((void**) map[i].color_map);
+		free_map((void **) map[i].height_map);
+		free_map((void **) map[i].color_map);
 		i++;
 	}
 	free(map);
