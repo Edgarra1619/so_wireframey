@@ -1,5 +1,6 @@
 NAME = fdf
 SRCS = main.c colors.c my_math.c render.c render_utils.c map.c hooks.c vector.c vectorf.c
+SRCS += parse.c
 BONUS = 0
 OPTFLAG = 0
 SRCDIR = ./srcs/
@@ -11,7 +12,7 @@ TESTARGS = ./maps/rr.gif
 TESTARGS = ./maps/naenae.gif
 CC = clang
 INCFLAGS = -I $(MINILIBX) -I ./includes/ -I $(LIBFT)
-CFLAGS = -Wall -Wextra -gdwarf-4 -O$(OPTFLAG) -D WINDOW_WIDTH=1920 -D WINDOW_HEIGHT=1080 -D DELAY=1
+CFLAGS = -Wall -Wextra -pg -gdwarf-4 -O$(OPTFLAG) -D WINDOW_WIDTH=1920 -D WINDOW_HEIGHT=1080 -D DELAY=1
 OBJS = $(patsubst %.c, $(OBJDIR)%.o, $(SRCS))
 
 ifeq ($(BONUS), 1)

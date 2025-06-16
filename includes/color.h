@@ -40,5 +40,6 @@ typedef union u_color
 }	t_color;
 
 t_color	color_lerp(const t_color a, const t_color b, const float t);
+t_color	color_flerp(const t_color a, const t_color b, const float t);
 t_color	get_height_color(const int z);
 #endif

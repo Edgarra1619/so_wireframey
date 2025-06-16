@@ -73,10 +73,12 @@ void skip_blockdata(const int fd)
 	}
 }
 
-void skip_extensions(const int fd, unsigned char *const gctrl)
+int	skip_extensions(const int fd, unsigned char *const gctrl, char prev)
 {
 	unsigned char	buffer[256];
 
+	if(prev != 0x21)
+		return (1);
 	read(fd, buffer, 1);
 	if (*buffer == 0xF9) {
 		read(fd, buffer, 1);
@@ -84,6 +86,7 @@ void skip_extensions(const int fd, unsigned char *const gctrl)
 		read(fd, buffer, 1);
 	} else if (*buffer == 0xFE || *buffer == 0x01 || *buffer == 0xFF)
 		skip_blockdata(fd);
+	return (0);
 }
 
 t_list	*parse_allimg_loop(const int fd, t_color *const cltab)
@@ -92,13 +95,12 @@ t_list	*parse_allimg_loop(const int fd, t_color *const cltab)
 	unsigned char buffer[5];
 	void	*test[2];
 
-	ft_bzero(buffer, 5 + sizeof(t_list*));
+	ft_bzero(buffer, 5);
+	list_maps = NULL;
 	read(fd, buffer, 1);
 	while (buffer[0] != 0x3B)
 	{
-		if (buffer[0] == 0x21)
-			skip_extensions(fd, buffer + 1);
-		else if (buffer[0] == 0x2C)
+		if(skip_extensions(fd, buffer + 1, buffer[0]))
 		{
 			test[0] = parse_img(cltab, fd, buffer + 1, ft_lstlast(list_maps));
 			test[1] = ft_lstnew(test[0]);

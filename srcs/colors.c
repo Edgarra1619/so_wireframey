@@ -42,6 +42,18 @@ t_color	color_lerp(const t_color a, const t_color b, const float t)
 	});
 }
 
+t_color	color_flerp(const t_color a, const t_color b, const float t)
+{
+	return ((t_color){
+		{
+			a.b + (b.b - a.b) * t,
+			a.g + (b.g - a.g) * t,
+			a.r + (b.r - a.r) * t,
+			a.a + (b.a - a.a) * t
+		}
+	});
+}
+
 //height below 0 is BLUE
 //height 0 is YELLOW
 //height 20 is GREEN

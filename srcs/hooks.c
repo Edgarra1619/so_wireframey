@@ -34,17 +34,17 @@ int	render_hook(t_state *state)
 
 	update_camera_rot(&state->camera);
 	if (state->pressed_keys & KEYCODEW)
-		state->camera.pos = sum_vecf3(state->camera.pos, (t_vecf3) {state->camera.sin_rotx * 2,
-				state->camera.cos_rotx * 2, 0});
+		state->camera.pos = sum_vecf3(state->camera.pos, (t_vecf3)
+			{state->camera.sin_rotx * 2, state->camera.cos_rotx * 2, 0});
 	if (state->pressed_keys & KEYCODES)
-		state->camera.pos = sum_vecf3(state->camera.pos, (t_vecf3) {-state->camera.sin_rotx,
-				-state->camera.cos_rotx, 0});
+		state->camera.pos = sum_vecf3(state->camera.pos, (t_vecf3)
+			{-state->camera.sin_rotx * 2, -state->camera.cos_rotx * 2, 0});
 	if (state->pressed_keys & KEYCODEA)
-		state->camera.pos = sum_vecf3(state->camera.pos, (t_vecf3) {state->camera.cos_rotx,
-				-state->camera.sin_rotx, 0});
+		state->camera.pos = sum_vecf3(state->camera.pos, (t_vecf3)
+			{state->camera.cos_rotx * 2, -state->camera.sin_rotx * 2, 0});
 	if (state->pressed_keys & KEYCODED)
-		state->camera.pos = sum_vecf3(state->camera.pos, (t_vecf3) {-state->camera.cos_rotx,
-				state->camera.sin_rotx, 0});
+		state->camera.pos = sum_vecf3(state->camera.pos, (t_vecf3)
+			{-state->camera.cos_rotx * 2, state->camera.sin_rotx * 2, 0});
 	if (state->pressed_keys & KEYCODEQ)
 		state->camera.pos.z += 10;
 	if (state->pressed_keys & KEYCODEE)
@@ -109,21 +109,27 @@ int	keyboard_down_hook(int keycode, t_state *state)
 int	mouse_up_hook(int button, t_vec3 pos, t_state *state)
 {
 	(void) pos;
-	if(button == 5)
-		state->camera.zoom /= 1.1;
-	if(button == 4)
+
+	if (button == 1)
+		state->pressed_keys &= ~BUTTONL;
+	else if (button == 3)
+		state->pressed_keys &= ~BUTTONR;
+	else if (button == 4)
 		state->camera.zoom *= 1.1;
-	printf("%d %d %d %d up\n", button, pos.x, pos.y, pos.z);
+	else if (button == 5)
+		state->camera.zoom /= 1.1;
 	return (0);
 }
 
 //unused in bonus
 int	mouse_down_hook(int button, t_vec3 pos, t_state *state)
 {
-	if (button == 3)
-		state->mouse_pos = (t_vec2) {pos.x, pos.z};
+	if (button == 1)
+		state->pressed_keys |= BUTTONL;
+	else if(button == 3)
+		state->pressed_keys |= BUTTONR;
+	state->mouse_pos = (t_vec2) {pos.x, pos.z};
 	(void) pos;
-	printf("%d down\n", button);
 	return (0);
 }
 
@@ -133,7 +139,12 @@ int	mouse_move_hook(int posx, int posy, t_state *state)
 		{(float) (state->mouse_pos.x - posx) / 10,
 		(float)(state->mouse_pos.y - posy) / 10};
 
-	rotate_camera(&state->camera, mov);
+	if (state->pressed_keys & BUTTONL)
+		state->camera.vertical_scale =
+			clampf(powf(1.1f, -mov.y) * state->camera.vertical_scale,
+					0.1f, 10.0f);
+	if (state->pressed_keys & BUTTONR)
+		rotate_camera(&state->camera, mov);
 	state->mouse_pos = (t_vec2) {posx, posy};
 	return(0);
 }

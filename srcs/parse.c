@@ -7,11 +7,35 @@
 #include <parse.h>
 #include <unistd.h>
 
+void	parse_line(const char *line, t_map *const map, const int linbr)
+{
+	int	i;
+
+	i = 0;
+	while (*line && i < map->size.x)
+	{
+		while (*line == ' ' || *line == '\n')
+			line++;
+		map->height_map[i][linbr] = ft_atoi(line);
+		while (ft_isdigit(*line))
+			line++;
+		if (*line == ',')
+		{
+			line += 3;
+			map->color_map[i][linbr].ucolor = ft_atoihex(line);
+			while (ft_isalnum(*line))
+				line++;
+		}
+		else
+			map->color_map[i][linbr].ucolor = 0xFFFFFFFF;
+		i++;
+	}
+}
 
 t_map	*parse_lines(t_list *lines)
 {
 	t_map *const	map = ft_calloc(sizeof(t_map), 1);
-	t_list			*temp;
+	int				i;
 
 	if (!map)
 		return (NULL);
@@ -20,12 +44,14 @@ t_map	*parse_lines(t_list *lines)
 	if (new_map(map))
 	{
 		free(map);
-		return (NULL)
+		return (NULL);
 	}
-	while (lines)
+	i = 0;
+	while (lines && i < map->size.y)
 	{
-
-
+		parse_line(lines->content, map, i);
+		lines = lines->next;
+		i++;
 	}
 	return (map);
 }
@@ -87,11 +113,17 @@ t_map	*parse_gif(const char *a, int *b)
 
 #endif
 
-//return-1 on error
+//return -1 on error
 int	parse_file(const char *path, t_state *state)
 {
 	state->maps = parse_gif(path, &(state->mapcount));
 	if (state->maps)
 		return (0);
-	return (0);
+	state->maps = parse_map_file(path);
+	if (state->maps)
+	{
+		state->mapcount = 1;
+		return (0);
+	}
+	return (-1);
 }

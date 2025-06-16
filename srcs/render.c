@@ -15,13 +15,14 @@ int	in_bounds(const t_image *const image, const t_vec2 position)
 	return (1);
 }
 
-t_vec2	world_to_camera(const t_camera *camera, t_vec3 position)
+t_vec2	world_to_camera(const t_camera *camera, t_vec3 pos)
 {
 	t_vec2	result;
+	t_vecf3	position;
 
-	position.x += camera->pos.x;
-	position.y += camera->pos.y;
-	position.z += camera->pos.z;
+	position.x = pos.x + camera->pos.x;
+	position.y = pos.y + camera->pos.y;
+	position.z = pos.z + camera->pos.z;
 	result.x = WINDOW_WIDTH / 2.0 + camera->zoom *
 			((float) position.x * camera->cos_rotx -
 			(float) position.y * camera->sin_rotx);

@@ -79,7 +79,7 @@ void	put_grad_line(t_image *image, t_vec2 a, t_vec2 b, t_color colora, t_color c
 	i = (t_vecf2){a.x, a.y};
 	while (count < steps)
 	{
-		put_pixel_image(image, (t_vec2) {(int) i.x, (int) i.y},  color_lerp(colora, colorb, (float) count / steps));
+		put_pixel_image(image, (t_vec2) {(int) i.x, (int) i.y},  color_flerp(colora, colorb, (float) count / steps));
 		i = sum_vecf2(i, step_size);
 		count++;
 	}
