@@ -41,6 +41,11 @@ t_map	*parse_lines(t_list *lines)
 		return (NULL);
 	map->size = (t_vec2) {
 		ft_count_words(lines->content, ' '), ft_lstsize(lines)};
+	if(!ft_strncmp(lines->content, "GIF", 3))
+	{
+		free(map);
+		return (NULL);
+	}
 	if (new_map(map))
 	{
 		free(map);
