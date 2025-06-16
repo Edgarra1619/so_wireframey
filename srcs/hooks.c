@@ -61,17 +61,17 @@ int	keyboard_up_hook(int keycode, t_state *state)
 {
 	if (keycode == XK_Escape)
 		mlx_loop_end(state->mlx);
-	if (keycode == XK_W)
+	if (keycode == 'w')
 		state->pressed_keys &= ~KEYCODEW;
-	if (keycode == XK_S)
+	if (keycode == 's')
 		state->pressed_keys &= ~KEYCODES;
-	if (keycode == XK_A)
+	if (keycode == 'a')
 		state->pressed_keys &= ~KEYCODEA;
-	if (keycode == XK_D)
+	if (keycode == 'd')
 		state->pressed_keys &= ~KEYCODED;
-	if (keycode == XK_Q)
+	if (keycode == 'q')
 		state->pressed_keys &= ~KEYCODEQ;
-	if (keycode == XK_E)
+	if (keycode == 'e')
 		state->pressed_keys &= ~KEYCODEE;
 	return (0);
 }

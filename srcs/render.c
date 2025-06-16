@@ -51,8 +51,6 @@ void	pre_calculate_map(const t_camera *const camera, const t_map *const map, t_v
 	}
 }
 
-//TODO make the render opt between front and back rendering according
-//to the angle of the camera;
 void	render_map(t_image *const img, const t_map *const map,
 			const t_camera *const camera, t_vec2 **pre_map)
 {

@@ -5,23 +5,29 @@
 #include <stdlib.h>
 #include <gif_parse.h>
 #include <parse.h>
+#include <unistd.h>
 
-void	parse_line(void **line)
+
+t_map	*parse_lines(t_list *lines)
 {
-	t_heicolor	*const parsed_line =
-		ft_calloc(ft_count_words(*line, ' ') + 1, sizeof(t_heicolor));
+	t_map *const	map = ft_calloc(sizeof(t_map), 1);
+	t_list			*temp;
 
-	//TODO expose count_words from split
-	if(!parsed_line)
+	if (!map)
+		return (NULL);
+	map->size = (t_vec2) {
+		ft_count_words(lines->content, ' '), ft_lstsize(lines)};
+	if (new_map(map))
 	{
-		free(*line);
-		*line = NULL;
-		return ;
+		free(map);
+		return (NULL)
 	}
-	while ()
+	while (lines)
+	{
 
-	free(*line);
-	*line = parsed_line;
+
+	}
+	return (map);
 }
 
 t_list	*read_all_lines(const int fd)
@@ -31,7 +37,6 @@ t_list	*read_all_lines(const int fd)
 	t_list	*new;
 
 	lines = NULL;
-	//TODO import gnl to libft
 	content = get_next_line(fd);
 	while (content)
 	{
@@ -57,30 +62,31 @@ t_map	*parse_map_file(const char *path)
 {
 	const int	fd = open(path, O_RDONLY);
 	t_list		*lines;
-	t_list		*temp;
 	t_map		*map;
 
-	if (fd < 0 || !map)
+	if (fd < 0)
 	{
-		free(map);
+		close(fd);
 		return (NULL);
 	}
 	lines = read_all_lines(fd);
-	while (lines)
-	{
-		temp = lines->next;
-		parse_line(&(lines->content));
-		lines = temp;
-	}
+	map = parse_lines(lines); 
+	ft_lstclear(&lines, free);
+	close(fd);
+	return (map);
 }
+
 #ifndef BONUS
+
 t_map	*parse_gif(const char *a, int *b)
 {
 	(void) a;
 	(void) b;
 	return (NULL);
 }
+
 #endif
+
 //return-1 on error
 int	parse_file(const char *path, t_state *state)
 {
