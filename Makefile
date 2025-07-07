@@ -11,8 +11,12 @@ TESTARGS = ./maps/nerd.gif
 TESTARGS = ./maps/rr.gif
 TESTARGS = ./maps/naenae.gif
 CC = clang
+
+WINDOW_WIDTH = 1360
+WINDOW_HEIGHT = 768
+
 INCFLAGS = -I $(MINILIBX) -I ./includes/ -I $(LIBFT)
-CFLAGS = -Wall -Wextra -pg -gdwarf-4 -O$(OPTFLAG) -D WINDOW_WIDTH=1920 -D WINDOW_HEIGHT=1080 -D DELAY=1
+CFLAGS = -Wall -Wextra -pg -gdwarf-4 -O$(OPTFLAG) -D WINDOW_WIDTH=$(WINDOW_WIDTH) -D WINDOW_HEIGHT=$(WINDOW_HEIGHT) -D DELAY=1
 OBJS = $(patsubst %.c, $(OBJDIR)%.o, $(SRCS))
 
 ifeq ($(BONUS), 1)

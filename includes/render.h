@@ -30,5 +30,6 @@ void	put_grad_line(t_image *image,
 //void	put_pixel_image(t_image *image, t_vec2 position, t_color color);
 void	render_map(t_image *img,
 			const t_map *map, const t_camera *camera, t_vec2 **pre_map);
+float	set_zoom(t_camera *camera, t_map *map);
 
 #endif

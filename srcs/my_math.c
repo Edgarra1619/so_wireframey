@@ -37,6 +37,13 @@ int	lerp(const int a, const int b, const float t)
 	return (a * (1 - t) + b * t);
 }
 
+float	minf(const float a, const float b)
+{
+	if (a > b)
+		return (b);
+	return (a);
+}
+
 int	max(const int a, const int b)
 {
 	if (a > b)

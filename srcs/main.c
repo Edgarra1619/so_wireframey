@@ -20,6 +20,7 @@
 #include <state.h>
 #include <stdlib.h>
 #include <parse.h>
+#include <my_math.h>
 
 #ifdef BONUS
 
@@ -45,6 +46,9 @@ static void	start_mlx_loop(t_state *state)
 
 static void	start_mlx_loop(t_state *state)
 {
+	state->camera.vertical_scale = 5;
+	state->camera.rot = (t_vecf2){180, 0};
+	state->camera.zoom = set_zoom(&(state->camera), state->maps);
 	mlx_hook(state->window, KeyPress, KeyPressMask, keyboard_down_hook, state);
 	mlx_loop_hook(state->mlx, render_hook, state);
 	mlx_hook(state->window, ClientMessage, LeaveWindowMask, mlx_loop_end,
@@ -103,15 +107,15 @@ int	main(int argc, char **argv)
 	t_state	state;
 
 	ft_bzero(&state, sizeof(state));
-	state.camera.rot = (t_vecf2){45, 57};
-	state.camera.zoom = 1;
-	state.camera.vertical_scale = 5;
 	if (argc != 2)
 		error_out(&state, "Wrong number of arguments");
 	if (parse_file(argv[1], &state))
 		error_out(&state, "Error while parsing file (is the path correct?)");
 	state.camera.pos
 		= (t_vecf3){-state.maps->size.x / 2.0, -state.maps->size.y / 2.0, 0};
+	state.camera.vertical_scale = 5;
+	state.camera.rot = (t_vecf2){0, 90};
+	state.camera.zoom = 1;
 	if (pre_map_alloc(&state) == -1)
 		error_out(&state, "Error while preparing");
 	if (safe_start_mlx(&state))
