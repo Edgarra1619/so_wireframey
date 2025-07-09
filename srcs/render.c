@@ -70,7 +70,7 @@ float	set_zoom(t_camera *camera, t_map *map)
 	camera->zoom = 1;
 	camera->vertical_scale = 1;
 	zoom = (float) (WINDOW_WIDTH * 4) / (5 * map->size.x);
-	zoom = minf(zoom, (float) (WINDOW_WIDTH * 4) / (5 * map->size.y));
+	zoom = minf(zoom, (float) (WINDOW_HEIGHT * 4) / (5 * map->size.y));
 	i.x = 0;
 	while (i.x < map->size.x)
 	{

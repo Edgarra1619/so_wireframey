@@ -92,7 +92,7 @@ t_list	*read_all_lines(const int fd)
 			ft_lstclear(&lines, free);
 			return (NULL);
 		}
-		ft_lstadd_back(&lines, new);
+		ft_lstadd_front(&lines, new);
 		content = get_next_line(fd);
 		if (errno && !content)
 		{
