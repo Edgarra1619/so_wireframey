@@ -7,9 +7,7 @@ SRCDIR = ./srcs/
 OBJDIR = ./objs/
 LIBFT = ./libft/
 MINILIBX = ~/42libraries/minilibx-linux/
-TESTARGS = ./maps/nerd.gif
-TESTARGS = ./maps/rr.gif
-TESTARGS = ./maps/naenae.gif
+TESTARGS = ./maps/test_maps/42.fdf
 CC = clang
 
 WINDOW_WIDTH = 1360
