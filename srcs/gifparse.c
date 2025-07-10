@@ -53,42 +53,6 @@ t_map	*parse_img(t_color *table, int fd, const unsigned char *const gctrl,
 	return (map.map);
 }
 
-t_gif_header	parse_header(int fd)
-{
-	t_gif_header	info;
-
-	read(fd, &info, 13);
-	return (info);
-}
-
-t_color	*parse_color_table(t_color *const table, const int size, const int fd)
-{
-	int	i;
-
-	i = 0;
-	while (i < size)
-	{
-		table[i].color = 0xFFFFFFFF;
-		read(fd, &table[i].r, 1);
-		read(fd, &table[i].g, 1);
-		read(fd, &table[i].b, 1);
-		i++;
-	}
-	return (table);
-}
-
-void	skip_blockdata(const int fd)
-{
-	char	buffer[256];
-
-	read(fd, buffer, 1);
-	while (*buffer)
-	{
-		read(fd, buffer, *buffer);
-		read(fd, buffer, 1);
-	}
-}
-
 int	skip_extensions(const int fd, unsigned char *const gctrl, char prev)
 {
 	unsigned char	buffer[256];
@@ -103,7 +67,14 @@ int	skip_extensions(const int fd, unsigned char *const gctrl, char prev)
 		read(fd, buffer, 1);
 	}
 	else if (*buffer == 0xFE || *buffer == 0x01 || *buffer == 0xFF)
-		skip_blockdata(fd);
+	{
+		read(fd, buffer, 1);
+		while (*buffer)
+		{
+			read(fd, buffer, *buffer);
+			read(fd, buffer, 1);
+		}
+	}
 	return (0);
 }
 
@@ -170,7 +141,7 @@ t_map	*parse_gif(const char *path, int *image_count)
 	*image_count = 0;
 	if (fd < 0)
 		return (NULL);
-	info = parse_header(fd);
+	read(fd, &info, 13);
 	if (ft_strncmp(info.signature, "GIF", 3) || !(info.version[0] == '8'))
 	{
 		close(fd);

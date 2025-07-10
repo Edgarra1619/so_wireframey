@@ -67,4 +67,8 @@ typedef struct s_state
 	t_vec2		mouse_pos;
 }	t_state;
 
+void	update_camera_rot(t_camera *const camera);
+void	rotate_camera(t_camera *const camera, t_vecf2 rotation);
+int		safe_start_mlx(t_state *const state);
+
 #endif

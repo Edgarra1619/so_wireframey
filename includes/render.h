@@ -31,5 +31,6 @@ void	put_grad_line(t_image *image,
 void	render_map(t_image *img,
 			const t_map *map, const t_camera *camera, t_vec2 **pre_map);
 float	set_zoom(t_camera *camera, t_map *map);
+int		in_bounds(const t_image *const image, const t_vec2 position);
 
 #endif

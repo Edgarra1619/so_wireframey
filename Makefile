@@ -1,5 +1,5 @@
 NAME = fdf
-SRCS = main.c colors.c my_math.c render_utils.c map.c hooks.c vector.c vectorf.c
+SRCS = main.c colors.c my_math.c my_math_simple.c render_utils.c map.c hooks.c vector.c vectorf.c camera.c mlx_helper.c
 SRCS += parse.c
 BONUS = 0
 OPTFLAG = 0
@@ -14,12 +14,13 @@ WINDOW_WIDTH = 1360
 WINDOW_HEIGHT = 768
 
 INCFLAGS = -I $(MINILIBX) -I ./includes/ -I $(LIBFT)
-CFLAGS = -Wall -Wextra -pg -gdwarf-4 -O$(OPTFLAG) -D WINDOW_WIDTH=$(WINDOW_WIDTH) -D WINDOW_HEIGHT=$(WINDOW_HEIGHT) -D DELAY=1
+CFLAGS = -Wall -Wextra -gdwarf-4 -O$(OPTFLAG) -D WINDOW_WIDTH=$(WINDOW_WIDTH) -D WINDOW_HEIGHT=$(WINDOW_HEIGHT) -D DELAY=1
 OBJS = $(patsubst %.c, $(OBJDIR)%.o, $(SRCS))
 
 ifeq ($(BONUS), 1)
 CFLAGS += -D BONUS
-SRCS += gifparse.c gifimg_utils.c render_bonus.c
+SRCS += gifparse.c gifimg_utils2.c gifimg_utils.c gif_color.c
+SRCS += render_bonus.c hooks_bonus.c
 else
 SRCS += render.c
 endif
@@ -52,7 +53,11 @@ $(LIBFT)libft.a:
 $(MINILIBX)libmlx.a $(MINILIBX)libmlx_Linux.a:
 	make -C $(MINILIBX)
 
-test: $(NAME) 
+test: $(NAME)
+	./$(NAME) $(TESTARGS)
+
+bonus_test:
+	make bonus
 	./$(NAME) $(TESTARGS)
 
 gprof: $(NAME)

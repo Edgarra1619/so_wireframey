@@ -19,7 +19,7 @@
 #include <state.h>
 #include <vector.h>
 
-int		in_bounds(const t_image *const image, const t_vec2 position)
+int	in_bounds(const t_image *const image, const t_vec2 position)
 {
 	if (position.x >= image->size.x || position.x < 0
 		|| position.y >= image->size.y || position.y < 0)
@@ -44,15 +44,16 @@ t_vec2	world_to_camera(const t_camera *camera, t_vec3 pos)
 				+ (float) position.y * camera->cos_rotx));
 	return (result);
 }
+
 float	set_zoom(t_camera *camera, t_map *map)
 {
-	static const	float height = (float) WINDOW_HEIGHT * 8 / 10;
-	float			zoom;
-	t_vec3			i;
+	static const float	height = (float) WINDOW_HEIGHT * 8 / 10;
+	float				zoom;
+	t_vec3				i;
 
 	camera->zoom = 1;
 	camera->vertical_scale = 1;
-	zoom = (float) (WINDOW_WIDTH * 4) / (5 * max(map->size.x, map->size.y));
+	zoom = (float)(WINDOW_WIDTH * 4) / (5 * max(map->size.x, map->size.y));
 	i.x = 0;
 	while (i.x < map->size.x)
 	{
@@ -60,9 +61,9 @@ float	set_zoom(t_camera *camera, t_map *map)
 		while (i.y < map->size.y)
 		{
 			i.z = map->height_map[i.x][i.y];
-			zoom = minf(zoom, height /
-				((float) 9 * WINDOW_HEIGHT / 10 -
-					world_to_camera(camera, i).y));
+			zoom = minf(zoom, height
+					/ ((float) 9 * WINDOW_HEIGHT / 10
+						- world_to_camera(camera, i).y));
 			i.y++;
 		}
 		i.x++;

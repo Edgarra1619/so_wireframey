@@ -15,14 +15,7 @@
 #include <color.h>
 #include <state.h>
 #include <libft.h>
-
-static int	in_bounds(const t_image *const image, const t_vec2 position)
-{
-	if (position.x >= image->size.x || position.x < 0
-		|| position.y >= image->size.y || position.y < 0)
-		return (0);
-	return (1);
-}
+#include <render.h>
 
 static inline void	put_pixel_image(t_image *const image,
 							const t_vec2 position, const t_color color)

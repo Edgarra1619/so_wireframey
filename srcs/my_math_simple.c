@@ -1,38 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   my_math.c                                          :+:      :+:    :+:   */
+/*   my_math_simple.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: edgribei <edgribei@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/16 19:53:29 by edgribei          #+#    #+#             */
-/*   Updated: 2025/06/16 19:53:30 by edgribei         ###   ########.fr       */
+/*   Created: 2025/07/10 16:50:38 by edgribei          #+#    #+#             */
+/*   Updated: 2025/07/10 16:50:53 by edgribei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int	clamp(const int num, const int min, const int max)
+float	minf(const float a, const float b)
 {
-	if (num <= min)
-		return (min);
-	if (num >= max)
-		return (max);
-	return (num);
-}
-
-float	clampf(const float num, const float min, const float max)
-{
-	if (num <= min)
-		return (min);
-	if (num >= max)
-		return (max);
-	return (num);
-}
-
-int	lerp(const int a, const int b, const float t)
-{
-	if (t >= 1)
+	if (a > b)
 		return (b);
-	if (t <= 0)
+	return (a);
+}
+
+int	max(const int a, const int b)
+{
+	if (a > b)
 		return (a);
-	return (a * (1 - t) + b * t);
+	return (b);
+}
+
+int	abs(const int a)
+{
+	if (a < 0)
+		return (-a);
+	return (a);
 }
