@@ -1,5 +1,5 @@
 NAME = fdf
-SRCS = main.c colors.c my_math.c render.c render_utils.c map.c hooks.c vector.c vectorf.c
+SRCS = main.c colors.c my_math.c render_utils.c map.c hooks.c vector.c vectorf.c
 SRCS += parse.c
 BONUS = 0
 OPTFLAG = 0
@@ -19,7 +19,9 @@ OBJS = $(patsubst %.c, $(OBJDIR)%.o, $(SRCS))
 
 ifeq ($(BONUS), 1)
 CFLAGS += -D BONUS
-SRCS += gifparse.c gifimg_utils.c
+SRCS += gifparse.c gifimg_utils.c render_bonus.c
+else
+SRCS += render.c
 endif
 
 all: $(NAME)

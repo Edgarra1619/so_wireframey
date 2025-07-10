@@ -29,15 +29,21 @@ int		in_bounds(const t_image *const image, const t_vec2 position)
 
 t_vec2	world_to_camera(const t_camera *camera, t_vec3 pos)
 {
-	(void) camera;
-	return ((t_vec2)
-		{
-				(float) WINDOW_WIDTH / 2 - camera->zoom * (pos.x - pos.y),
-				(float) 9 * WINDOW_HEIGHT / 10 -
-					camera->zoom * ((float) (pos.x + pos.y) / 2 + pos.z)
-		});
-}
+	t_vec2	result;
+	t_vecf3	position;
 
+	position.x = pos.x + camera->pos.x;
+	position.y = pos.y + camera->pos.y;
+	position.z = pos.z + camera->pos.z;
+	result.x = WINDOW_WIDTH / 2.0 + camera->zoom
+		* ((float) position.x * camera->cos_rotx
+			- (float) position.y * camera->sin_rotx);
+	result.y = WINDOW_HEIGHT / 2.0 + camera->zoom
+		* (- ((float)position.z * camera->cos_roty) / camera->vertical_scale
+			+ camera->sin_roty * ((float) position.x * camera->sin_rotx
+				+ (float) position.y * camera->cos_rotx));
+	return (result);
+}
 float	set_zoom(t_camera *camera, t_map *map)
 {
 	static const	float height = (float) WINDOW_HEIGHT * 8 / 10;
@@ -56,8 +62,7 @@ float	set_zoom(t_camera *camera, t_map *map)
 			i.z = map->height_map[i.x][i.y];
 			zoom = minf(zoom, height /
 				((float) 9 * WINDOW_HEIGHT / 10 -
-					world_to_camera(camera, (t_vec3)
-						{map->size.y - i.y, i.x, i.z}).y));
+					world_to_camera(camera, i).y));
 			i.y++;
 		}
 		i.x++;
@@ -79,8 +84,7 @@ void	pre_calculate_map(const t_camera *const camera,
 		x = -1;
 		while (++x < mapw)
 			pre_map[x][y] = world_to_camera(
-				camera, (t_vec3){maph - y, x,
-					map->height_map[x][y]});
+					camera, (t_vec3){x, y, map->height_map[x][y]});
 	}
 }
 
