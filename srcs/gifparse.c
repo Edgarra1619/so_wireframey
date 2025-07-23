@@ -141,7 +141,11 @@ t_map	*parse_gif(const char *path, int *image_count)
 	*image_count = 0;
 	if (fd < 0)
 		return (NULL);
-	read(fd, &info, 13);
+	if (read(fd, &info, 13) < 13)
+	{
+		close(fd);
+		return (NULL);
+	}
 	if (ft_strncmp(info.signature, "GIF", 3) || !(info.version[0] == '8'))
 	{
 		close(fd);

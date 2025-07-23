@@ -22,7 +22,7 @@ CFLAGS += -D BONUS
 SRCS += gifparse.c gifimg_utils2.c gifimg_utils.c gif_color.c
 SRCS += render_bonus.c hooks_bonus.c
 else
-SRCS += render.c
+SRCS += render.c set_camera.c
 endif
 
 all: $(NAME)

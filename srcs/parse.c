@@ -111,11 +111,13 @@ t_map	*parse_map_file(const char *path)
 	t_map		*map;
 
 	if (fd < 0)
+		return (NULL);
+	lines = read_all_lines(fd);
+	if (!lines)
 	{
 		close(fd);
 		return (NULL);
 	}
-	lines = read_all_lines(fd);
 	map = parse_lines(lines);
 	ft_lstclear(&lines, free);
 	close(fd);
