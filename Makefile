@@ -8,13 +8,14 @@ OBJDIR = ./objs/
 LIBFT = ./libft/
 MINILIBX = ~/42libraries/minilibx-linux/
 TESTARGS = ./maps/test_maps/42.fdf
-CC = clang
 
 WINDOW_WIDTH = 1360
 WINDOW_HEIGHT = 768
 
+CC = cc
 INCFLAGS = -I $(MINILIBX) -I ./includes/ -I $(LIBFT)
 CFLAGS = -Wall -Wextra -gdwarf-4 -O$(OPTFLAG) -D WINDOW_WIDTH=$(WINDOW_WIDTH) -D WINDOW_HEIGHT=$(WINDOW_HEIGHT) -D DELAY=1
+
 OBJS = $(patsubst %.c, $(OBJDIR)%.o, $(SRCS))
 
 ifeq ($(BONUS), 1)

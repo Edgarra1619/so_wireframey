@@ -6,7 +6,7 @@
 /*   By: edgribei <edgribei@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/16 18:49:03 by edgribei          #+#    #+#             */
-/*   Updated: 2025/06/16 19:19:46 by edgribei         ###   ########.fr       */
+/*   Updated: 2025/08/18 17:39:20 by edgribei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,11 @@ t_vec2	world_to_camera(const t_camera *camera, t_vec3 pos)
 	(void) camera;
 	return ((t_vec2)
 		{
-			(float) WINDOW_WIDTH / 2 - camera->zoom * ((pos.x - pos.y) + camera->pos.x ),
+			(float) WINDOW_WIDTH / 2 - camera->zoom
+			* ((pos.x - pos.y) + camera->pos.x),
 			(float) 9 * WINDOW_HEIGHT / 10
-			- camera->zoom * ((float)(pos.x + pos.y) / 2 - camera->pos.y + pos.z)
+			- camera->zoom * ((float)(pos.x + pos.y) / 2
+			- camera->pos.y + pos.z)
 	});
 }
 
