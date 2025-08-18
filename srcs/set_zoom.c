@@ -36,6 +36,7 @@ void	set_camera(t_camera *camera, t_map *map)
 			(5 * max(map->size.x, map->size.y)),
 			(WINDOW_HEIGHT * 4) / (5 * (maxp - minp)));
 	camera->pos.y = camera->zoom * ((WINDOW_HEIGHT * 9) / 10 - minp);
+
 /*
 screenpos.y = campos + window - camzoom * point
 oldscreenpos.y = window - point

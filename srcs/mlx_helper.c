@@ -43,6 +43,8 @@ static void	start_mlx_loop(t_state *state)
 	state->camera.vertical_scale = 5;
 	state->camera.rot = (t_vecf2){0, 0};
 	set_camera(&(state->camera), state->maps);
+	state->camera.pos.x = (float) (state->maps->size.x - state->maps->size.y)/ 2;
+	state->camera.pos.x = (float) (state->maps->size.x - state->maps->size.y)/ 3;
 	mlx_hook(state->window, KeyPress, KeyPressMask, keyboard_down_hook, state);
 	mlx_loop_hook(state->mlx, render_hook, state);
 	mlx_hook(state->window, ClientMessage, LeaveWindowMask, mlx_loop_end,

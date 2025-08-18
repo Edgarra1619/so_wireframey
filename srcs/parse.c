@@ -121,7 +121,7 @@ t_map	*parse_map_file(const char *path)
 	map = parse_lines(lines);
 	ft_lstclear(&lines, free);
 	close(fd);
-	if (map->size.x == 1 && map->size.y == 1)
+	if (map && map->size.x == 1 && map->size.y == 1)
 	{
 		free_maps(map, 1);
 		return (NULL);

@@ -10,6 +10,7 @@ void	set_camera(t_camera *camera, t_map *map)
 {
 	int		maxp;
 	int		minp;
+	int		minz;
 	t_vec3	i;
 	t_vec2	tmp;
 
@@ -28,21 +29,15 @@ void	set_camera(t_camera *camera, t_map *map)
 						(t_vec3) {map->size.y - i.y, i.x, i.z});
 			minp = min(tmp.y, minp);
 			maxp = max(tmp.y, maxp);
+			minz = min(minz, i.z);
 			i.y++;
 		}
 		i.x++;
 	}
 	camera->zoom = min((float)(WINDOW_WIDTH * 4) /
 			(5 * max(map->size.x, map->size.y)),
-			(WINDOW_HEIGHT * 4) / (5 * (maxp - minp)));
-	camera->pos.y = camera->zoom * ((WINDOW_HEIGHT * 9) / 10 - minp)
-		- (WINDOW_HEIGHT * 9) / 10;
-/*
-screenpos.y = campos + window - camzoom * point
-oldscreenpos.y = window - point
-campos = screenpos.y - window + camzoom * point
-campos = screenpos.y - window + camzoom * (window - minp)
-*/
+			(float) (WINDOW_HEIGHT * 8) / (10 * (maxp - minp)));
+	camera->pos.y = minz;
 }
 
 /*

@@ -32,9 +32,9 @@ t_vec2	world_to_camera(const t_camera *camera, t_vec3 pos)
 	(void) camera;
 	return ((t_vec2)
 		{
-			(float) WINDOW_WIDTH / 2 - camera->zoom * (pos.x - pos.y),
-			camera->pos.y + (float) 9 * WINDOW_HEIGHT / 10
-			- camera->zoom * ((float)(pos.x + pos.y) / 2 + pos.z)
+			(float) WINDOW_WIDTH / 2 - camera->zoom * ((pos.x - pos.y) + camera->pos.x ),
+			(float) 9 * WINDOW_HEIGHT / 10
+			- camera->zoom * ((float)(pos.x + pos.y) / 2 - camera->pos.y + pos.z)
 	});
 }
 
