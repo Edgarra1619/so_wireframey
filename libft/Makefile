@@ -8,7 +8,7 @@ INCLUDEDIR = ./
 OBJDIR = ./
 ARFLAGS = rc
 
-CC = clang
+CC = cc
 CFLAGS = -Wall -Wextra -Werror -gdwarf-4 -O3 -I $(INCLUDEDIR)
 
 OBJECTS = $(patsubst %.c, $(OBJDIR)%.o, $(SOURCES))
