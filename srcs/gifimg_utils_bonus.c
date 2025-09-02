@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   gifimg_utils.c                                     :+:      :+:    :+:   */
+/*   gifimg_utils_bonus.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: edgribei <edgribei@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/16 19:34:45 by edgribei          #+#    #+#             */
-/*   Updated: 2025/06/16 19:43:50 by edgribei         ###   ########.fr       */
+/*   Created: 2025/09/02 15:36:20 by edgribei          #+#    #+#             */
+/*   Updated: 2025/09/02 15:36:27 by edgribei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <vector.h>
 #include <color.h>
 #include <unistd.h>
-#include <gif_parse.h>
+#include <gif_parse_bonus.h>
 #include <stdlib.h>
 #include <string.h>
 #include <libft.h>
@@ -84,7 +84,7 @@ unsigned char	*read_data(const int fd, t_gifdata *const data)
 	size_t			current_size;
 
 	current_size = 0;
-	read(fd, &block_size, 1);
+	if (read(fd, &block_size, 1) == -1)
 	while (block_size)
 	{
 		if ((data->size + block_size) > current_size)

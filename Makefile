@@ -20,7 +20,7 @@ OBJS = $(patsubst %.c, $(OBJDIR)%.o, $(SRCS))
 
 ifeq ($(BONUS), 1)
 CFLAGS += -D BONUS
-SRCS += gifparse.c gifimg_utils2.c gifimg_utils.c gif_color.c
+SRCS += gifparse_bonus.c gifimg_utils2_bonus.c gifimg_utils_bonus.c gif_color_bonus.c
 SRCS += render_bonus.c hooks_bonus.c
 else
 SRCS += render.c set_camera.c

@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   gif_img_utils2.c                                   :+:      :+:    :+:   */
+/*   gifimg_utils2_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: edgribei <edgribei@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/10 17:27:22 by edgribei          #+#    #+#             */
-/*   Updated: 2025/07/10 17:27:42 by edgribei         ###   ########.fr       */
+/*   Created: 2025/09/02 15:36:41 by edgribei          #+#    #+#             */
+/*   Updated: 2025/09/02 15:36:45 by edgribei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <gif_parse.h>
+#include <gif_parse_bonus.h>
 #include <stdlib.h>
 
 void	add_to_map(t_gifmap *const map, const t_color color)

@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   gif_parse.h                                        :+:      :+:    :+:   */
+/*   gif_parse_bonus.h                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: edgribei <edgribei@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/16 19:54:38 by edgribei          #+#    #+#             */
-/*   Updated: 2025/06/16 19:56:01 by edgribei         ###   ########.fr       */
+/*   Created: 2025/09/02 15:35:56 by edgribei          #+#    #+#             */
+/*   Updated: 2025/09/02 15:35:58 by edgribei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GIF_PARSE_H
-# define GIF_PARSE_H
+#ifndef GIF_PARSE_BONUS_H
+# define GIF_PARSE_BONUS_H
 # include <map.h>
 # include <stdint.h>
 # include <sys/types.h>

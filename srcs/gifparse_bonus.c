@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   gifparse.c                                         :+:      :+:    :+:   */
+/*   gifparse_bonus.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: edgribei <edgribei@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/16 19:47:55 by edgribei          #+#    #+#             */
-/*   Updated: 2025/06/16 19:53:05 by edgribei         ###   ########.fr       */
+/*   Created: 2025/09/02 15:37:10 by edgribei          #+#    #+#             */
+/*   Updated: 2025/09/02 15:37:36 by edgribei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "vector.h"
+#include <vector.h>
 #include <color.h>
 #include <fcntl.h>
-#include <gif_parse.h>
+#include <gif_parse_bonus.h>
 #include <libft.h> //the list functions
 #include <map.h>
 #include <stdint.h> //various int types

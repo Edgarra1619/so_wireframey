@@ -17,7 +17,7 @@
 #include <libft.h>
 #include <state.h>
 #include <stdlib.h>
-#include <gif_parse.h>
+#include <gif_parse_bonus.h>
 #include <parse.h>
 #include <unistd.h>
 
