@@ -84,7 +84,7 @@ unsigned char	*read_data(const int fd, t_gifdata *const data)
 	size_t			current_size;
 
 	current_size = 0;
-	if (read(fd, &block_size, 1) == -1)
+	read(fd, &block_size, 1);
 	while (block_size)
 	{
 		if ((data->size + block_size) > current_size)
